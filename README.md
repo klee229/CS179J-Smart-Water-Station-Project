@@ -1,1 +1,1 @@
-# CS179JSmartWaterDispenserProject
+# CS179J-Smart-Water-Station
