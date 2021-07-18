@@ -7,6 +7,19 @@ from tkinter import ttk
 from tkinter.ttk import Button
 from tkinter import *
 
+class GUI2(tk.Tk):
+    def __init__(self):
+        tk.Tk.__init__(self)
+        self._frame = None
+        self.switch_frame(IdlePage)
+
+    def switch_frame(self, frame_class):
+        new_frame = frame_class(self)
+        if self._frame is not None:
+            self._frame.destroy()
+        self._frame = new_frame
+        self._frame.pack()
+
 
 class GUI(tk.Tk):
     def __init__(self):
@@ -39,6 +52,17 @@ class GUI(tk.Tk):
             self.frame.grid(row=0, column=0, sticky="news")
 
         self.change_frame(IdlePage)
+
+    def update_frame(self, f):
+        self.frame = self.frame_dictionary[f]
+
+        for the_frame in self.frame_object_list:
+            self.frame.destroy()
+
+        for the_frame in self.frame_object_list:
+            self.frame = the_frame(self, self.container)
+            self.frame_dictionary[the_frame] = self.frame
+            self.frame.grid(row=0, column=0, sticky="news")
 
     def change_frame(self, f):
         self.frame = self.frame_dictionary[f]
@@ -82,6 +106,7 @@ class IdlePage(tk.Frame):
 class UserRegistrationPage(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
+        
             
 
         self.welcome_new_user_screen = tk.Label(self, text = "Hello, New User!", font = ("Calibri", 12)).place(x=350,y=0)
@@ -108,7 +133,7 @@ class UserRegistrationPage(tk.Frame):
         self.usrSSelection2['values'] = ('No Activity', 'Low Activity', 'Moderate Activity', 'High Activity', 'Extreme Activity')
         self.usrSSelection2.current()
       
-        self.submit = tk.Button(self,text="Submit", command=lambda: [self.save_command(), container.change_frame(UserHomeScreen)]).place(x=350, y = 350)
+        self.submit = tk.Button(self,text="Submit", command=lambda: [self.save_command(), container.update_frame(UserHomeScreen), container.change_frame(UserHomeScreen)]).place(x=350, y = 350)
         
 
 
@@ -142,7 +167,9 @@ class UserRegistrationPage(tk.Frame):
            
 class UserHomeScreen(tk.Frame):
     def __init__(self, container, parent):
+      
         tk.Frame.__init__(self, parent)
+        
 
     
         
@@ -152,16 +179,16 @@ class UserHomeScreen(tk.Frame):
         
 
         if os.stat(filepath).st_size == 0:
-            thename = "New"
+            thename = "Error"
         else:
             file = open(filepath)
             reader = csv.reader(file)
             data = list(reader)
-            thename = str(data[2])
+            thename = str(*data[2])
 
         
         
-        self.welcome_home_screen = tk.Label(self, text = "Hello, " + thename, font = ("Calibri", 12)).place(x=350,y=0)
+        self.welcome_home_screen = tk.Label(self, text = "Hello, " + thename + "!", font = ("Calibri", 12)).place(x=350,y=0)
 
     
 
@@ -169,6 +196,7 @@ class UserHomeScreen(tk.Frame):
 class RFIDPage(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
+       
 
         self.scan_card_label = tk.Label(self, text="PLEASE SCAN YOUR RFID CARD TO CONTINUE", font=("Calibri", 12))
         self.scan_card_label.grid(row=0, column=0)
@@ -213,6 +241,6 @@ class WaterData:
         return random.choice(list(self.factDictionary.items()))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     root = GUI()
     root.mainloop()
