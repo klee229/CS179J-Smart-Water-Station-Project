@@ -1,5 +1,11 @@
 import tkinter as tk
 import random
+import csv
+import os
+import time
+from tkinter import ttk
+from tkinter.ttk import Button
+from tkinter import *
 
 
 class GUI(tk.Tk):
@@ -25,7 +31,7 @@ class GUI(tk.Tk):
         self.container.pack()
 
     def create_frames(self):
-        self.frame_object_list = [IdlePage, RFIDPage]
+        self.frame_object_list = [IdlePage, RFIDPage, UserRegistrationPage, UserHomeScreen]
 
         for the_frame in self.frame_object_list:
             self.frame = the_frame(self, self.container)
@@ -73,6 +79,92 @@ class IdlePage(tk.Frame):
         self.fact_source_label.grid(row=2, column=1, sticky="nw")
         self.next_btn.grid(row=3, column=0, columnspan=3, sticky="s")
 
+class UserRegistrationPage(tk.Frame):
+    def __init__(self, container, parent):
+        tk.Frame.__init__(self, parent)
+            
+
+        self.welcome_new_user_screen = tk.Label(self, text = "Hello, New User!", font = ("Calibri", 12)).place(x=350,y=0)
+        self.userName = tk.Label(self, text = "Name").place(x=240,y=160)
+        self.userAge = tk.Label(self, text = "Age").place(x=240,y=200)
+
+        self.inputName = tk.StringVar()
+        self.usrNameIn = tk.Entry(self, width = 30, textvariable = self.inputName).place(x=310,y=160)
+
+        self.inputAge = tk.StringVar()
+        self.usrAgeIn = tk.Entry(self, textvariable = self.inputAge, width = 30).place(x=310,y=200)
+        
+        self.usrS = tk.Label(self, text = "Are you: ").place(x=240,y=240)
+        self.s = tk.StringVar()
+        self.usrSSelection = ttk.Combobox(self, width = 7, textvariable = self.s)
+        self.usrSSelection.place(x=310,y=240)
+        self.usrSSelection['values'] = ('Male', 'Female')
+        self.usrSSelection.current()
+
+        self.usrS2 = tk.Label(self, text = "What is your activity level? ").place(x=240,y=280)
+        self.s2 = tk.StringVar()
+        self.usrSSelection2 = ttk.Combobox(self, width = 20, textvariable = self.s2)
+        self.usrSSelection2.place(x=310,y=310)
+        self.usrSSelection2['values'] = ('No Activity', 'Low Activity', 'Moderate Activity', 'High Activity', 'Extreme Activity')
+        self.usrSSelection2.current()
+      
+        self.submit = tk.Button(self,text="Submit", command=lambda: [self.save_command(), container.change_frame(UserHomeScreen)]).place(x=350, y = 350)
+        
+
+
+    def save_command(self):
+            
+            name = self.inputName.get()
+            age = self.inputAge.get()
+            gender = self.s.get()
+            activitylevel = self.s2.get()
+            
+            
+            header = ['name', 'age', 'gender', 'activitylevel']
+            nameheader = [name]
+            data = [[name, age, gender, activitylevel]]
+            
+
+            f = open("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", 'w')
+                
+            writer = csv.writer(f)
+            writer.writerow(header)
+            writer.writerow(nameheader)
+            writer.writerows(data)
+
+            
+            f.flush()
+            f.close()
+            
+            
+            
+
+           
+class UserHomeScreen(tk.Frame):
+    def __init__(self, container, parent):
+        tk.Frame.__init__(self, parent)
+
+    
+        
+        #Problem: All classes are initialized simultaneously, so this file is not updated and the program needs to be terminated for this to reflect correctly
+        
+        filepath = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+        
+
+        if os.stat(filepath).st_size == 0:
+            thename = "New"
+        else:
+            file = open(filepath)
+            reader = csv.reader(file)
+            data = list(reader)
+            thename = str(data[2])
+
+        
+        
+        self.welcome_home_screen = tk.Label(self, text = "Hello, " + thename, font = ("Calibri", 12)).place(x=350,y=0)
+
+    
+
 
 class RFIDPage(tk.Frame):
     def __init__(self, container, parent):
@@ -83,7 +175,12 @@ class RFIDPage(tk.Frame):
 
         self.back_btn = tk.Button(self, text="go back", font=("Calibri", 12),
                                   command=lambda: container.change_frame(IdlePage))
+        
+        ##Mock Test For When RFID is seeing an unregistered card
+        self.new_user_btn = tk.Button(self, text="New User", font=("Calibri", 12),
+                                  command=lambda: container.change_frame(UserRegistrationPage))
         self.back_btn.grid(row=0, column=1)
+        self.new_user_btn.grid(row=0, column=2)
 
 
 class WaterData:
