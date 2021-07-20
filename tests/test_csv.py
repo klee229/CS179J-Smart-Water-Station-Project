@@ -1,0 +1,150 @@
+import unittest
+import csv
+import pandas as pd
+
+
+class TestCSVFile(unittest.TestCase):
+
+    def test_open_write_read_close(self):
+        # example users for testing
+        columns = ['name', 'gender', 'age', 'activity_level', 'daily_hydration', 'num_days', 'num_days_goal',
+                   'water_dispensed', 'avg_intake', 'card_uid']
+        user_data = [
+            ['Chris Alexman', 'Female', '42', 'Sedentary', '2000', '100', '99', '214503', '2145.03', '734a266f'],
+            ['Ivann De la Cruz', 'Male', '81', 'Active', '2200-2400', '365', '157', '725604', '1987.96', '5d81e96d'],
+            ['Ken Lee', 'Male', '4', 'Moderate', '1400-1600', '10', '3', '13045', '1304.5', '4a273b9e']
+        ]
+
+        # NOTE: enter the exact path for your machine to run locally
+        path = ''
+
+        # open file, write data to file
+        with open(path, 'w', newline='') as csv_file:
+            writer = csv.writer(csv_file)
+            writer.writerow(columns)
+            writer.writerows(user_data)
+
+        # open file, read data from file
+        with open(path, 'r', newline='') as csv_file:
+            reader = csv.reader(csv_file)
+            row_num = 0
+            for row in reader:
+                if row_num == 0:
+                    self.assertEqual(columns, row)
+                else:
+                    self.assertEqual(user_data[row_num-1], row)
+                row_num += 1
+
+        csv_file.close()
+
+    def test_reopen_read_close(self):
+        # example users for testing
+        columns = ['name', 'gender', 'age', 'activity_level', 'daily_hydration', 'num_days', 'num_days_goal',
+                   'water_dispensed', 'avg_intake', 'card_uid']
+        user_data = [
+            ['Chris Alexman', 'Female', '42', 'Sedentary', '2000', '100', '99', '214503', '2145.03', '734a266f'],
+            ['Ivann De la Cruz', 'Male', '81', 'Active', '2200-2400', '365', '157', '725604', '1987.96', '5d81e96d'],
+            ['Ken Lee', 'Male', '4', 'Moderate', '1400-1600', '10', '3', '13045', '1304.5', '4a273b9e']
+        ]
+
+        # NOTE: enter the exact path for your machine to run locally
+        path = ''
+
+        # open file, read data from file
+        with open(path, 'r', newline='') as csv_file:
+            reader = csv.reader(csv_file)
+            row_num = 0
+            for row in reader:
+                if row_num == 0:
+                    self.assertEqual(columns, row)
+                else:
+                    self.assertEqual(user_data[row_num - 1], row)
+                row_num += 1
+
+        csv_file.close()
+
+    def test_add_row(self):
+        # example user for testing
+        example_user = ['Test User', 'Female', '100', 'Active', '2000', '100', '100', '200000', '2000', '1a2b3c4d']
+
+        # NOTE: enter the exact path for your machine to run locally
+        path = ''
+
+        # open file in append mode, write data to end of file
+        with open(path, 'a', newline='') as csv_file:
+            writer = csv.writer(csv_file)
+            writer.writerow(example_user)
+
+        # open file, read data from file
+        with open(path, 'r', newline='') as csv_file:
+            reader = csv.reader(csv_file)
+            new_row = []
+            for row in reader:
+                if row[0] == example_user[0]:
+                    new_row = row
+
+        self.assertEqual(example_user, new_row)
+
+        csv_file.close()
+
+    def test_edit_user_data(self):
+        # example users for testing
+        columns = ['name', 'gender', 'age', 'activity_level', 'daily_hydration', 'num_days', 'num_days_goal',
+                   'water_dispensed', 'avg_intake', 'card_uid']
+        user_data = [
+            ['Chris Alexman', 'Female', '42', 'Sedentary', '2000', '100', '99', '214503', '2145.03', '734a266f'],
+            ['Ivann De la Cruz', 'Male', '81', 'Active', '2200-2400', '365', '157', '725604', '1987.96', '5d81e96d'],
+            ['Ken Lee', 'Male', '4', 'Moderate', '1400-1600', '10', '3', '13045', '1304.5', '4a273b9e']
+        ]
+
+        # NOTE: enter the exact path for your machine to run locally
+        path = ''
+
+        # open file, write data to file
+        with open(path, 'w', newline='') as csv_file:
+            writer = csv.writer(csv_file)
+            writer.writerow(columns)
+            writer.writerows(user_data)
+
+        row_to_change = 0
+
+        # open file, read data from file
+        with open(path, 'r', newline='') as csv_file:
+            reader = csv.reader(csv_file)
+            row_num = 0
+            for row in reader:
+                if row[9] == '734a266f':
+                    row_to_change = row_num
+                row_num += 1
+
+        # create pandas dataframe of the csv file
+        df = pd.read_csv(path)
+
+        df.at[row_to_change - 1, 'num_days'] += 1
+
+        df.to_csv(path, index=False)
+
+        csv_file.close()
+
+        edited_user_data = [
+            ['Chris Alexman', 'Female', '42', 'Sedentary', '2000', '101', '99', '214503', '2145.03', '734a266f'],
+            ['Ivann De la Cruz', 'Male', '81', 'Active', '2200-2400', '365', '157', '725604', '1987.96', '5d81e96d'],
+            ['Ken Lee', 'Male', '4', 'Moderate', '1400-1600', '10', '3', '13045', '1304.5', '4a273b9e']
+        ]
+
+        # open file, read data from file
+        with open(path, 'r', newline='') as csv_file:
+            reader = csv.reader(csv_file)
+            row_num = 0
+            for row in reader:
+                if row_num == 0:
+                    self.assertEqual(columns, row)
+                else:
+                    self.assertEqual(edited_user_data[row_num - 1], row)
+                row_num += 1
+
+        csv_file.close()
+
+
+if __name__ == '__main__':
+    unittest.main()
