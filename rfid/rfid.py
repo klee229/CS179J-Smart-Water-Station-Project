@@ -1,59 +1,42 @@
 # SPDX-FileCopyrightText: 2021 ladyada for Adafruit Industries
 # SPDX-License-Identifier: MIT
 
-"""
-This example shows connecting to the PN532 with I2C (requires clock
-stretching support), SPI, or UART. SPI is best, it uses the most pins but
-is the most reliable and universally supported.
-After initialization, try waving various 13.56MHz RFID cards over it!
-"""
-
 import board
 import busio
 from digitalio import DigitalInOut
-
-#
-# NOTE: pick the import that matches the interface being used
-#
 from adafruit_pn532.spi import PN532_SPI
-# from adafruit_pn532.i2c import PN532_I2C
-# from adafruit_pn532.uart import PN532_UART
 
-# I2C connection:
-# i2c = busio.I2C(board.SCL, board.SDA)
 
-# Non-hardware
-# pn532 = PN532_I2C(i2c, debug=False)
+class RFID:
 
-# With I2C, we recommend connecting RSTPD_N (reset) to a digital pin for manual
-# harware reset
-# reset_pin = DigitalInOut(board.D6)
-# On Raspberry Pi, you must also connect a pin to P32 "H_Request" for hardware
-# wakeup! this means we don't need to do the I2C clock-stretch thing
-# req_pin = DigitalInOut(board.D12)
-# pn532 = PN532_I2C(i2c, debug=False, reset=reset_pin, req=req_pin)
+    def __init__(self):
+        self.reset_pin = DigitalInOut(board.D6)
+        self.req_pin = DigitalInOut(board.D12)
 
-# SPI connection:
-spi = busio.SPI(board.SCK, board.MOSI, board.MISO)
-cs_pin = DigitalInOut(board.D5)
-pn532 = PN532_SPI(spi, cs_pin, debug=False)
+        # SPI connection:
+        self.spi = busio.SPI(board.SCK, board.MOSI, board.MISO)
+        self.cs_pin = DigitalInOut(board.D5)
+        self.pn532 = PN532_SPI(self.spi, self.cs_pin, debug=False)
+        self.ic, self.ver, self.rev, self.support = self.pn532.firmware_version
+        print("Found PN532 with firmware version: {0}.{1}".format(self.ver, self.rev))
 
-# UART connection
-# uart = busio.UART(board.TX, board.RX, baudrate=115200, timeout=100)
-# pn532 = PN532_UART(uart, debug=False)
+        # Configure PN532 to communicate with MiFare cards
+        self.pn532.SAM_configuration()
 
-ic, ver, rev, support = pn532.firmware_version
-print("Found PN532 with firmware version: {0}.{1}".format(ver, rev))
+        self.uid = 0
 
-# Configure PN532 to communicate with MiFare cards
-pn532.SAM_configuration()
+    def get_uid(self):
+        print("Waiting for RFID/NFC card...")
+        while True:
+            # Check if a card is available to read
+            self.uid = self.pn532.read_passive_target(timeout=0.5)
+            print(".", end="")
+            # Try again if no card is available.
+            if self.uid is None:
+                continue
+            print("Found card with UID:", [hex(i) for i in self.uid])
 
-print("Waiting for RFID/NFC card...")
-while True:
-    # Check if a card is available to read
-    uid = pn532.read_passive_target(timeout=0.5)
-    print(".", end="")
-    # Try again if no card is available.
-    if uid is None:
-        continue
-    print("Found card with UID:", [hex(i) for i in uid])
+
+if __name__ == '__main__':
+    rfid = RFID()
+    rfid.get_uid()
