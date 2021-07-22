@@ -18,14 +18,21 @@ class RFID:
         self.cs_pin = DigitalInOut(board.D5)
         self.pn532 = PN532_SPI(self.spi, self.cs_pin, debug=False)
         self.ic, self.ver, self.rev, self.support = self.pn532.firmware_version
-        print("Found PN532 with firmware version: {0}.{1}".format(self.ver, self.rev))
 
         # Configure PN532 to communicate with MiFare cards
         self.pn532.SAM_configuration()
 
         self.uid = 0
+        self.card_dict = {
+            '734a266f': False,
+            '5d81e96d': False,
+            '4d71f56d': False,
+            'fdd1a46b': False,
+            '1d4ba46b': False,
+            'dd8b9f6b': False
+        }
 
-    def get_uid(self):
+    def output_uid(self):
         print("Waiting for RFID/NFC card...")
         while True:
             # Check if a card is available to read
@@ -36,7 +43,49 @@ class RFID:
                 continue
             print("Found card with UID:", [hex(i) for i in self.uid])
 
+    def set_uid(self, uid):
+        self.uid = uid
 
-if __name__ == '__main__':
+    def get_uid(self):
+        return self.uid
+
+    def scan_card(self):
+        self.uid = None
+
+        while self.uid is None:
+            self.uid = self.pn532.read_passive_target(timeout=0.5)
+
+        uid = [hex(i) for i in self.uid]
+        self.uid = ""
+
+        for string in uid:
+            self.uid += string[2:]
+
+        for uid in self.card_dict:
+            if uid == self.uid:
+                self.card_dict[uid] = True
+
+    def scan_card_remove(self):
+        self.uid = None
+
+        while self.uid is None:
+            self.uid = self.pn532.read_passive_target(timeout=0.5)
+
+        uid = [hex(i) for i in self.uid]
+        self.uid = ""
+
+        for string in uid:
+            self.uid += string[2:]
+
+        for uid in self.card_dict:
+            if uid == self.uid:
+                self.card_dict[uid] = False
+
+    def check_registration(self):
+        for uid in self.card_dict:
+            if uid == self.uid:
+                return self.card_dict[uid]
+
+
+if __name__ == "__main__":
     rfid = RFID()
-    rfid.get_uid()
