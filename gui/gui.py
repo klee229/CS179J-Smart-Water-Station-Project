@@ -7,19 +7,6 @@ from tkinter import ttk
 from tkinter.ttk import Button
 from tkinter import *
 
-class GUI2(tk.Tk):
-    def __init__(self):
-        tk.Tk.__init__(self)
-        self._frame = None
-        self.switch_frame(IdlePage)
-
-    def switch_frame(self, frame_class):
-        new_frame = frame_class(self)
-        if self._frame is not None:
-            self._frame.destroy()
-        self._frame = new_frame
-        self._frame.pack()
-
 
 class GUI(tk.Tk):
     def __init__(self):
@@ -93,6 +80,9 @@ class IdlePage(tk.Frame):
         self.did_you_know_label = tk.Label(self, text="Did you know?\n\n", font=("Calibri", 12, "bold"))
         self.fact_source_label = tk.Label(self, text=self.fact + "\n\n" + self.source, font=("Calibri", 12),
                                           justify="left", anchor="w")
+        
+        self.fact_source_label.after(15000, self.update_text)   
+        
         self.next_btn = tk.Button(self, text="-- Press any button to continue --", font=("Calibri", 12),
                                   command=lambda: container.change_frame(RFIDPage))
 
@@ -102,6 +92,16 @@ class IdlePage(tk.Frame):
         self.did_you_know_label.grid(row=1, column=1, sticky="nw")
         self.fact_source_label.grid(row=2, column=1, sticky="nw")
         self.next_btn.grid(row=3, column=0, columnspan=3, sticky="s")
+
+        
+            
+
+    def update_text(self):
+        self.fact, self.source = self.water_data.get_fact_source()
+        self.fact_source_label.config(text = self.fact + "\n\n" + self.source, font=("Calibri", 12),
+                                          justify="left", anchor="w")
+        #15000 = 15 seconds, this can change to a different value if need be
+        self.fact_source_label.after(15000, self.update_text)
 
 class UserRegistrationPage(tk.Frame):
     def __init__(self, container, parent):
@@ -141,13 +141,13 @@ class UserRegistrationPage(tk.Frame):
             
             name = self.inputName.get()
             age = self.inputAge.get()
-            gender = self.s.get()
+            sex = self.s.get()
             activitylevel = self.s2.get()
             
             
-            header = ['name', 'age', 'gender', 'activitylevel']
+            header = ['name', 'age', 'sex', 'activitylevel']
             nameheader = [name]
-            data = [[name, age, gender, activitylevel]]
+            data = [[name, age, sex, activitylevel]]
             
 
             f = open("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", 'w')
@@ -169,11 +169,6 @@ class UserHomeScreen(tk.Frame):
     def __init__(self, container, parent):
       
         tk.Frame.__init__(self, parent)
-        
-
-    
-        
-        #Problem: All classes are initialized simultaneously, so this file is not updated and the program needs to be terminated for this to reflect correctly
         
         filepath = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
         
@@ -239,6 +234,9 @@ class WaterData:
 
     def get_fact_source(self):
         return random.choice(list(self.factDictionary.items()))
+
+
+      
 
 
 if __name__ == "__main__":
