@@ -149,7 +149,7 @@ class UserRegistrationPage(tk.Frame):
             nameheader = [name]
             data = [[name, age, sex, activitylevel]]
             
-
+            #for final project need to change path to actual Raspberry Pi
             f = open("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", 'w')
                 
             writer = csv.writer(f)
@@ -169,7 +169,8 @@ class UserHomeScreen(tk.Frame):
     def __init__(self, container, parent):
       
         tk.Frame.__init__(self, parent)
-        
+
+        #for final project need to change path to actual Raspberry Pi
         filepath = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
         
 
@@ -227,7 +228,57 @@ class WaterData:
                                "If the world's water supply were only 100 liters (26 gallons), \n"
                                "our usable water supply of fresh water would be only about \n"
                                "0.003 liter (one-half teaspoon). ":
-                                   "- United States Bureau of Reclamation"}
+                                   "- United States Bureau of Reclamation",
+                                   
+                                "A leak that fills up a coffee cup in 10 minutes will waste over\n"
+                                "3,000 gallons of water in a year. That's 65 glasses of water every\n"
+                                "day for a year.":
+                                    "- United States Bureau of Reclamation",
+
+                                "There is the same amount of water on Earth as there was when \n"
+                                "the Earth was formed. The water from your faucet could contain \n"
+                                "molecules that dinosaurs drank.":
+                                    "- U.S. Environmental Protection Agency",
+                                
+                                "A person can live about a month without food, but only\n"
+                                "about a week without water.":
+                                    "- U.S. Environmental Protection Agency",
+
+                                "Water regulates the Earth's temperature. It also regulates the\n"
+                                "temperature of the human body, carries nutrients and oxygen to \n"
+                                "cells, cushions joints, protects organs and tissues, and removes wastes.":
+                                    "- U.S. Environmental Protection Agency",
+
+                                "There aren't many qualities that are true of all life on Earth, \n"
+                                "but the need for water is one of them. It's in all living things, \n"
+                                "whether they live at the bottom of the ocean or the driest desert.":
+                                    "- National Aeronautics and Space Administration",
+
+                                "It's possible that comets made regular water deliveries to Earth. \n"
+                                "It would take a lot of comets to fill the ocean, but comets could \n"
+                                "well have made a big contribution.":
+                                    "- National Aeronautics and Space Administration",
+
+                                "A newborn baby is 78 percent water. Adults are 55-60 percent water.\n"
+                                "Water is involved in just about everything our body does.":
+                                    "- National Aeronautics and Space Administration",
+                                   
+                                "Water is called the \"universal solvent\" because it dissolves more \n"
+                                "substances than any other liquid. This means that wherever water goes, \n"
+                                "either through the ground or through our bodies, it takes along valuable\n"
+                                "chemicals, minerals, and nutrients.":
+                                    "- United States Geological Survey",
+
+                                "Pure water has a neutral pH of 7, which is neither acidic (less than 7)\n"
+                                "nor basic (greater than 7).":
+                                    "- United States Geological Survey",
+
+                                "The water molecule is highly cohesive - it is very sticky, meaning water\n"
+                                "molecules stick to each other. Water is the most cohesive among the\n"
+                                "non-metallic liquids.":
+                                    "- United States Geological Survey",
+
+                                   }
 
     def get_water_cap(self):
         return self.water_cap
