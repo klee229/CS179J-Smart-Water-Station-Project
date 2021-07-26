@@ -8,6 +8,7 @@ from tkinter.ttk import Button
 from tkinter import *
 
 
+
 class GUI(tk.Tk):
     def __init__(self):
         super().__init__()
@@ -17,6 +18,7 @@ class GUI(tk.Tk):
         self.frame_dictionary = {}
         self.frame_object_list = []
 
+        self.csv_initialize()
         self.setup_gui()
         self.create_container()
         self.create_frames()
@@ -31,7 +33,7 @@ class GUI(tk.Tk):
         self.container.pack()
 
     def create_frames(self):
-        self.frame_object_list = [IdlePage, RFIDPage, UserRegistrationPage, UserHomeScreen]
+        self.frame_object_list = [IdlePage, RFIDPage, UserRegistrationPage, UserHomeScreen, SettingsPage, DeletionConfirmationPage ,DeletionPage]
 
         for the_frame in self.frame_object_list:
             self.frame = the_frame(self, self.container)
@@ -54,6 +56,35 @@ class GUI(tk.Tk):
     def change_frame(self, f):
         self.frame = self.frame_dictionary[f]
         self.frame.tkraise()
+
+    def csv_initialize(self):
+        name = ""
+        age = ""
+        sex = ""
+        activitylevel = ""
+            
+            
+        header = ['name', 'age', 'sex', 'activitylevel']
+        nameheader = [name]
+        ageheader = [age]
+        sexheader = [sex]
+        activityheader = [activitylevel]
+        data = [[name, age, sex, activitylevel]]
+            
+            #for final project need to change path to actual Raspberry Pi
+        file = open("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", 'w')
+                
+        writer = csv.writer(file)
+        writer.writerow(header)
+        writer.writerow(nameheader)
+        writer.writerow(ageheader)
+        writer.writerow(sexheader)
+        writer.writerow(activityheader)
+        writer.writerows(data)
+
+            
+        file.flush()
+        file.close()
 
 
 class IdlePage(tk.Frame):
@@ -83,7 +114,7 @@ class IdlePage(tk.Frame):
         
         self.fact_source_label.after(15000, self.update_text)   
         
-        self.next_btn = tk.Button(self, text="-- Press any button to continue --", font=("Calibri", 12),
+        self.next_btn = tk.Button(self, text="-- Press this button to continue --", font=("Calibri", 12),
                                   command=lambda: container.change_frame(RFIDPage))
 
         # structure the GUI page using a grid
@@ -110,6 +141,8 @@ class UserRegistrationPage(tk.Frame):
             
 
         self.welcome_new_user_screen = tk.Label(self, text = "Hello, New User!", font = ("Calibri", 12)).place(x=350,y=0)
+        
+        self.userIntro = tk.Label(self, text = "What is your: ", font = ("Calibri", 15)).place(x=240,y=120)
         self.userName = tk.Label(self, text = "Name").place(x=240,y=160)
         self.userAge = tk.Label(self, text = "Age").place(x=240,y=200)
 
@@ -147,6 +180,9 @@ class UserRegistrationPage(tk.Frame):
             
             header = ['name', 'age', 'sex', 'activitylevel']
             nameheader = [name]
+            ageheader = [age]
+            sexheader = [sex]
+            activityheader = [activitylevel]
             data = [[name, age, sex, activitylevel]]
             
             #for final project need to change path to actual Raspberry Pi
@@ -155,6 +191,9 @@ class UserRegistrationPage(tk.Frame):
             writer = csv.writer(f)
             writer.writerow(header)
             writer.writerow(nameheader)
+            writer.writerow(ageheader)
+            writer.writerow(sexheader)
+            writer.writerow(activityheader)
             writer.writerows(data)
 
             
@@ -173,6 +212,10 @@ class UserHomeScreen(tk.Frame):
         #for final project need to change path to actual Raspberry Pi
         filepath = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
         
+        #Todo: Make this compatible with multiple users by adding global variable = number of registered users, then add to each attribute in the file read
+        #Ex. thename = str(*data[2+x]), where x is the number of registered users
+        #scale the csv file accordingly
+        #OR each user can have their own csv file and this would still work, just need to change path and have if else statements for how many number of registered users there are
 
         if os.stat(filepath).st_size == 0:
             thename = "Error"
@@ -181,12 +224,92 @@ class UserHomeScreen(tk.Frame):
             reader = csv.reader(file)
             data = list(reader)
             thename = str(*data[2])
+            theage = str(*data[4])
+            thesex = str(*data[6])
+            theactivity = str(*data[8])
 
         
         
-        self.welcome_home_screen = tk.Label(self, text = "Hello, " + thename + "!", font = ("Calibri", 12)).place(x=350,y=0)
+        self.welcome_home_screen = tk.Label(self, text = "Hello, " + thename + "!", font = ("Calibri", 30)).pack()
+
+        self.user_reg_stats = tk.Label(self, text= "Your Attributes:", font = ("Calibri", 12)).place(x=250,y=100)
+
+        self.attr_1 = tk.Label(self, text= "Age: " + theage, font = ("Calibri", 12)).place(x=250,y=120)
+
+        self.attr_2 = tk.Label(self, text= "Sex: " + thesex, font = ("Calibri", 12)).place(x=250,y=145)
+
+        self.attr_3 = tk.Label(self, text= "Activity Level: " + theactivity, font = ("Calibri", 12)).place(x=250,y=170)
+
+        self.hydrationpercentage_header = tk.Label(self, text="Current Hydration Level:", font = ("Calibri", 30)).place(x=220,y=210)
+
+        self.hydrationpercentage = tk.Label(self, text="30 %", font = ("Calibri", 30)).place(x=380,y=270)
+
+        self.settings_btn = tk.Button(self, text="Settings", font=("Calibri", 12),
+                                  command=lambda: container.change_frame(SettingsPage)).place(x=700,y=420)
+
+        self.logout_btn = tk.Button(self, text="Log Out", font=("Calibri", 12),
+                                  command=lambda: container.change_frame(IdlePage)).place(x=400,y=420)
+
+        self.Dispense_label = tk.Label(self, text= "Dispense Button Enabled", font = ("Calibri", 12), fg="green").place(x=340,y=350)
+
+        self.RFID_label = tk.Label(self, text= "RFID Number: Placeholder", font = ("Calibri", 12)).place(x=50,y=420)
+
+
+class SettingsPage(tk.Frame):
+    def __init__(self, container, parent):
+        tk.Frame.__init__(self, parent)
+
+        self.settings_intro_header = tk.Label(self, text = "What Would You Like To Do?", font = ("Calibri", 20)).place(x=250,y=0)
+
+        self.delete_user_btn = tk.Button(self, text="Delete User", font=("Calibri", 12), bg="red",
+                                  command=lambda: container.change_frame(DeletionConfirmationPage)).place(x=370,y=100)
+        
+        self.go_back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
+                                  command=lambda: container.change_frame(UserHomeScreen)).place(x=380,y=200)
+
+
+class DeletionConfirmationPage(tk.Frame):
+    def __init__(self, container, parent):
+        tk.Frame.__init__(self, parent)
+
+        self.deleteconfirm_header = tk.Label(self, text = "Are You Sure?", font = ("Calibri", 20)).place(x=350,y=0)
+
+        self.delete_confirminfo_header = tk.Label(self, text = "This Action Cannot Be Undone!", font = ("Calibri", 20),fg="red").place(x=250,y=100)
+
+        self.continue_btn = tk.Button(self, text="Yes, I'm Sure", font=("Calibri", 12), bg="red",
+                                  command=lambda: [self.deleteuser_command(), container.change_frame(DeletionPage)]).place(x=500,y=280)
+
+        self.continue_btn = tk.Button(self, text="No, Go Back", font=("Calibri", 12),
+                                  command=lambda: container.change_frame(SettingsPage)).place(x=250,y=280)
+
+    def deleteuser_command(self):
+        
+        
+            
+            #for final project need to change path to actual Raspberry Pi
+            f=open("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", "w+", newline='')
+        
+    
+            f.close()
+
+      
+   
+
+
+class DeletionPage(tk.Frame):
+    def __init__(self, container, parent):
+        tk.Frame.__init__(self, parent)
+
 
     
+
+        self.delete_page_header = tk.Label(self, text = "User Deleted", font = ("Calibri", 20)).place(x=350,y=0)
+
+        self.delete_page_header = tk.Label(self, text = "All user data and the RFID card associated\n with this user has been successfully reset.", font = ("Calibri", 12)).place(x=280,y=230)
+
+        self.continue_btn = tk.Button(self, text="Continue", font=("Calibri", 12),
+                                  command=lambda: container.change_frame(IdlePage)).place(x=380,y=280)
+
 
 
 class RFIDPage(tk.Frame):
@@ -194,17 +317,17 @@ class RFIDPage(tk.Frame):
         tk.Frame.__init__(self, parent)
        
 
-        self.scan_card_label = tk.Label(self, text="PLEASE SCAN YOUR RFID CARD TO CONTINUE", font=("Calibri", 12))
-        self.scan_card_label.grid(row=0, column=0)
+        self.scan_card_label = tk.Label(self, text="PLEASE SCAN YOUR RFID CARD TO CONTINUE", font=("Calibri", 30)).pack()
+        #self.scan_card_label.grid(row=0, column=0)
 
-        self.back_btn = tk.Button(self, text="go back", font=("Calibri", 12),
-                                  command=lambda: container.change_frame(IdlePage))
+        self.back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
+                                  command=lambda: container.change_frame(IdlePage)).place(x=380,y=290)
         
         ##Mock Test For When RFID is seeing an unregistered card
-        self.new_user_btn = tk.Button(self, text="New User", font=("Calibri", 12),
-                                  command=lambda: container.change_frame(UserRegistrationPage))
-        self.back_btn.grid(row=0, column=1)
-        self.new_user_btn.grid(row=0, column=2)
+        self.new_user_btn = tk.Button(self, text="New User", font=("Calibri", 12),bg="green",
+                                  command=lambda: container.change_frame(UserRegistrationPage)).place(x=375,y=250)
+        #self.back_btn.grid(row=0, column=1)
+        #self.new_user_btn.grid(row=0, column=2)
 
 
 class WaterData:
