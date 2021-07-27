@@ -18,6 +18,7 @@ class GUI(tk.Tk):
         self.frame_dictionary = {}
         self.frame_object_list = []
 
+        #add if statement for RFID system such that the csv file only initializes when it is a new user, otherwise, do not initialize
         self.csv_initialize()
         self.setup_gui()
         self.create_container()
@@ -72,19 +73,21 @@ class GUI(tk.Tk):
         data = [[name, age, sex, activitylevel]]
             
             #for final project need to change path to actual Raspberry Pi
-        file = open("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", 'w')
+        #file = open("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", 'w')
+
+        with open("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", 'w') as f:
                 
-        writer = csv.writer(file)
-        writer.writerow(header)
-        writer.writerow(nameheader)
-        writer.writerow(ageheader)
-        writer.writerow(sexheader)
-        writer.writerow(activityheader)
-        writer.writerows(data)
+            writer = csv.writer(f)
+            writer.writerow(header)
+            writer.writerow(nameheader)
+            writer.writerow(ageheader)
+            writer.writerow(sexheader)
+            writer.writerow(activityheader)
+            writer.writerows(data)
 
             
-        file.flush()
-        file.close()
+            f.flush()
+            f.close()
 
 
 class IdlePage(tk.Frame):
@@ -186,19 +189,20 @@ class UserRegistrationPage(tk.Frame):
             data = [[name, age, sex, activitylevel]]
             
             #for final project need to change path to actual Raspberry Pi
-            f = open("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", 'w')
+            #f = open("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", 'w')
+            with open("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", 'w') as f:
                 
-            writer = csv.writer(f)
-            writer.writerow(header)
-            writer.writerow(nameheader)
-            writer.writerow(ageheader)
-            writer.writerow(sexheader)
-            writer.writerow(activityheader)
-            writer.writerows(data)
+                writer = csv.writer(f)
+                writer.writerow(header)
+                writer.writerow(nameheader)
+                writer.writerow(ageheader)
+                writer.writerow(sexheader)
+                writer.writerow(activityheader)
+                writer.writerows(data)
 
             
-            f.flush()
-            f.close()
+                f.flush()
+                f.close()
             
             
             
@@ -210,7 +214,10 @@ class UserHomeScreen(tk.Frame):
         tk.Frame.__init__(self, parent)
 
         #for final project need to change path to actual Raspberry Pi
+        #filepath = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
         filepath = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+        
+        
         
         #Todo: Make this compatible with multiple users by adding global variable = number of registered users, then add to each attribute in the file read
         #Ex. thename = str(*data[2+x]), where x is the number of registered users
@@ -220,13 +227,15 @@ class UserHomeScreen(tk.Frame):
         if os.stat(filepath).st_size == 0:
             thename = "Error"
         else:
-            file = open(filepath)
-            reader = csv.reader(file)
-            data = list(reader)
-            thename = str(*data[2])
-            theage = str(*data[4])
-            thesex = str(*data[6])
-            theactivity = str(*data[8])
+           # file = open(filepath)
+            with open(filepath, 'r') as f:
+            #reader = csv.reader(file)
+                reader = csv.reader(f)
+                data = list(reader)
+                thename = str(*data[2])
+                theage = str(*data[4])
+                thesex = str(*data[6])
+                theactivity = str(*data[8])
 
         
         
@@ -287,10 +296,11 @@ class DeletionConfirmationPage(tk.Frame):
         
             
             #for final project need to change path to actual Raspberry Pi
-            f=open("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", "w+", newline='')
+           # f=open("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", "w+", newline='')
+            with open("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", "w+", newline='') as f:
         
     
-            f.close()
+                f.close()
 
       
    
