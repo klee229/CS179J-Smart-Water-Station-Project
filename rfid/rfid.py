@@ -53,8 +53,6 @@ class RFID:
         for string in uid:
             self.uid += string[2:]
 
-        self.register_card(self.uid)
-
     def register_card(self, the_uid):
         df = pd.read_csv(self.file_path)
 
@@ -63,22 +61,8 @@ class RFID:
         card_state = df.at[index[0], 'registration_state']
 
         if not card_state:
-            df.at[index[0], 'registration_state'] = 'True'
+            df.at[index[0], 'registration_state'] = True
             df.to_csv(self.file_path, index=False)
-
-    def scan_card_delete(self):
-        self.uid = None
-
-        while self.uid is None:
-            self.uid = self.pn532.read_passive_target(timeout=0.5)
-
-        uid = [hex(i) for i in self.uid]
-        self.uid = ''
-
-        for string in uid:
-            self.uid += string[2:]
-
-        self.unregister_card(self.uid)
 
     def unregister_card(self, the_uid):
         self.uid = ''
@@ -90,7 +74,7 @@ class RFID:
         card_state = df.at[index[0], 'registration_state']
 
         if card_state:
-            df.at[index[0], 'registration_state'] = 'False'
+            df.at[index[0], 'registration_state'] = False
             df.to_csv(self.file_path, index=False)
 
     def check_registration(self, the_uid):
