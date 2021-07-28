@@ -13,11 +13,12 @@ print("Running")
 button = Button(8)
 led = LED(7)
 rly = Relay(12,False)
-#button.wait_for_press()
 #print("The button was pressed!")
-button.when_pressed = led.on
-button.when_pressed = rly.on
-button.when_released = led.off
-button.when_released = rly.off
-print('Button was pressed for', button.held_time)
-pause()
+button.wait_for_press()
+led.on()
+rly.on()
+button.wait_for_release()
+led.off()
+rly.off()
+print("Button was pressed for", button.held_time())
+exit()
