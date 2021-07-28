@@ -23,9 +23,6 @@ class GUI(tk.Tk):
         self.frame_dictionary = {}
         self.frame_object_list = []
 
-        #add if statement for RFID system such that the csv file only initializes when it is a new user, otherwise, do not initialize
-      #  self.csv_initializeold()
-
         self.csv_initialize()
 
         self.setup_gui()
@@ -42,7 +39,7 @@ class GUI(tk.Tk):
         self.container.pack()
 
     def create_frames(self):
-        self.frame_object_list = [IdlePage, RFIDPage, UserRegistrationPage, UserHomeScreen, SettingsPage, DeletionConfirmationPage ,DeletionPage]
+        self.frame_object_list = [IdlePage, RFIDPage, UserRegistrationPage, UserHomeScreen, SettingsPage, DeletionConfirmationPage ,DeletionPage, MoreInfoPage]
 
         for the_frame in self.frame_object_list:
             self.frame = the_frame(self, self.container)
@@ -95,43 +92,11 @@ class GUI(tk.Tk):
     
             df = pd.read_csv(file_path)
 
-           # df.at[1, 'num_days'] += 1
 
             df.to_csv(file_path, index=False)
     
     
     
-    
-  #  def csv_initializeold(self):
-    #    name = ""
-     #   age = ""
-      #  sex = ""
-      #  activitylevel = ""
-            
-            
-      #  header = ['name', 'age', 'sex', 'activitylevel']
-     #   nameheader = [name]
-     #   ageheader = [age]
-      #  sexheader = [sex]
-     #   activityheader = [activitylevel]
-      #  data = [[name, age, sex, activitylevel]]
-            
-            #for final project need to change path to actual Raspberry Pi
-        #file = open("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", 'w')
-
-     #   with open("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", 'w') as f:
-                
-       #     writer = csv.writer(f)
-        #    writer.writerow(header)
-        #    writer.writerow(nameheader)
-         #   writer.writerow(ageheader)
-         #   writer.writerow(sexheader)
-         #   writer.writerow(activityheader)
-        #    writer.writerows(data)
-
-            
-       #     f.flush()
-         #   f.close()
 
 
 class IdlePage(tk.Frame):
@@ -154,7 +119,7 @@ class IdlePage(tk.Frame):
 
         # define GUI labels and buttons
         self.idle_label = tk.Label(self, text="IDLE MODE", font=("Calibri", 12))
-        self.water_cap_label = tk.Label(self, text=str(self.water_cap) + " % H2O Capacity", font=("Calibri", 12))
+        self.water_cap_label = tk.Label(self, text=str(self.water_cap) + " % H2O Capacity", font=("Calibri", 12)).place(x=650,y=5)
         self.did_you_know_label = tk.Label(self, text="Did you know?\n\n", font=("Calibri", 12, "bold"))
         self.fact_source_label = tk.Label(self, text=self.fact + "\n\n" + self.source, font=("Calibri", 12),
                                           justify="left", anchor="w")
@@ -166,7 +131,7 @@ class IdlePage(tk.Frame):
 
         # structure the GUI page using a grid
         self.idle_label.grid(row=0, column=0, sticky="nw", padx=7, pady=7)
-        self.water_cap_label.grid(row=0, column=2, sticky="ne", padx=7, pady=7)
+       # self.water_cap_label.grid(row=0, column=2, sticky="ne", padx=7, pady=7)
         self.did_you_know_label.grid(row=1, column=1, sticky="nw")
         self.fact_source_label.grid(row=2, column=1, sticky="nw")
         self.next_btn.grid(row=3, column=0, columnspan=3, sticky="s")
@@ -221,10 +186,13 @@ class UserRegistrationPage(tk.Frame):
             
           
             df = pd.read_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv")   
+
+            
             df.at[0, 'name'] = self.inputName.get()
             df.at[0, 'age'] = self.inputAge.get()
             df.at[0, 'sex'] = self.s.get()
             df.at[0, 'activity_level'] = self.s2.get()
+            df.at[0, 'registration_state'] = True
 
 
             df.to_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", index=False)
@@ -245,27 +213,16 @@ class UserHomeScreen(tk.Frame):
 
         #for final project need to change path to actual Raspberry Pi
         df = pd.read_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv")   
-            
-
-
         df.to_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", index=False)
 
         
         
        
-        self.welcome_home_screen = tk.Label(self, text = "Hello, " + str(df.at[0, 'name']) + "!", font = ("Calibri", 30)).pack()
+        self.welcome_home_screen = tk.Label(self, text = "Hello, " + str(df.at[0, 'name']) + "!", font = ("Calibri", 20)).place(x=350,y=5)
 
-        self.user_reg_stats = tk.Label(self, text= "Your Attributes:", font = ("Calibri", 12)).place(x=250,y=100)
+        self.hydrationpercentage_header = tk.Label(self, text="Current Hydration Level:", font = ("Calibri", 30)).place(x=220,y=150)
 
-        self.attr_1 = tk.Label(self, text= "Age: " + str(df.at[0, 'age']), font = ("Calibri", 12)).place(x=250,y=120)
-
-        self.attr_2 = tk.Label(self, text= "Sex: " + str(df.at[0, 'sex']), font = ("Calibri", 12)).place(x=250,y=145)
-
-        self.attr_3 = tk.Label(self, text= "Activity Level: " + str(df.at[0, 'activity_level']), font = ("Calibri", 12)).place(x=250,y=170)
-
-        self.hydrationpercentage_header = tk.Label(self, text="Current Hydration Level:", font = ("Calibri", 30)).place(x=220,y=210)
-
-        self.hydrationpercentage = tk.Label(self, text="30 %", font = ("Calibri", 30)).place(x=380,y=270)
+        self.hydrationpercentage = tk.Label(self, text="30 %", font = ("Calibri", 30)).place(x=380,y=210)
 
         self.settings_btn = tk.Button(self, text="Settings", font=("Calibri", 12),
                                   command=lambda: container.change_frame(SettingsPage)).place(x=700,y=420)
@@ -273,9 +230,12 @@ class UserHomeScreen(tk.Frame):
         self.logout_btn = tk.Button(self, text="Log Out", font=("Calibri", 12),
                                   command=lambda: container.change_frame(IdlePage)).place(x=400,y=420)
 
-        self.Dispense_label = tk.Label(self, text= "Dispense Button Enabled", font = ("Calibri", 12), fg="green").place(x=340,y=350)
+        self.Dispense_label = tk.Label(self, text= "Dispense Button Enabled", font = ("Calibri", 12), fg="green").place(x=340,y=320)
 
-        self.RFID_label = tk.Label(self, text= "RFID Number: Placeholder", font = ("Calibri", 12)).place(x=50,y=420)
+        self.moreinfo_btn = tk.Button(self, text="More Info", font=("Calibri", 12),
+                                  command=lambda: container.change_frame(MoreInfoPage)).place(x=50,y=420)
+
+       
 
 
 class SettingsPage(tk.Frame):
@@ -314,19 +274,11 @@ class DeletionConfirmationPage(tk.Frame):
         df.at[0, 'age'] = ' '
         df.at[0, 'sex'] = ' '
         df.at[0, 'activity_level'] = ' '
+        df.at[0, 'registration_state'] = False
 
         #for final project need to change path to actual Raspberry Pi
         df.to_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", index=False)
         
-            
-            
-         
-
-
-
-      
-   
-
 
 class DeletionPage(tk.Frame):
     def __init__(self, container, parent):
@@ -341,6 +293,26 @@ class DeletionPage(tk.Frame):
 
         self.continue_btn = tk.Button(self, text="Continue", font=("Calibri", 12),
                                   command=lambda: container.change_frame(IdlePage)).place(x=380,y=280)
+
+
+class MoreInfoPage(tk.Frame):
+    def __init__(self, container, parent):
+        tk.Frame.__init__(self,parent)
+
+        df = pd.read_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv")   
+        df.to_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", index=False)
+
+        self.user_reg_stats = tk.Label(self, text= "Your Attributes:", font = ("Calibri", 30)).place(x=250,y=10)
+
+        self.attr_1 = tk.Label(self, text= "Age: " + str(df.at[0, 'age']), font = ("Calibri", 12)).place(x=250,y=120)
+
+        self.attr_2 = tk.Label(self, text= "Sex: " + str(df.at[0, 'sex']), font = ("Calibri", 12)).place(x=250,y=145)
+
+        self.attr_3 = tk.Label(self, text= "Activity Level: " + str(df.at[0, 'activity_level']), font = ("Calibri", 12)).place(x=250,y=170)
+
+        self.go_back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
+                                  command=lambda: container.change_frame(UserHomeScreen)).place(x=380,y=230)
+
 
 
 
@@ -358,8 +330,9 @@ class RFIDPage(tk.Frame):
         ##Mock Test For When RFID is seeing an unregistered card
         self.new_user_btn = tk.Button(self, text="New User", font=("Calibri", 12),bg="green",
                                   command=lambda: container.change_frame(UserRegistrationPage)).place(x=375,y=250)
-        #self.back_btn.grid(row=0, column=1)
-        #self.new_user_btn.grid(row=0, column=2)
+        
+        #Todo: RFID integration, if card is registered, move to homepage, if not, move to user registration page
+        #need global variable: scanned RFID number, to differentiate different users
 
 
 class WaterData:
