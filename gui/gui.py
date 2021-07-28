@@ -3,9 +3,14 @@ import random
 import csv
 import os
 import time
+import pandas as pd
+from os import path
 from tkinter import ttk
 from tkinter.ttk import Button
 from tkinter import *
+
+from pandas.core.frame import DataFrame
+
 
 
 
@@ -19,7 +24,10 @@ class GUI(tk.Tk):
         self.frame_object_list = []
 
         #add if statement for RFID system such that the csv file only initializes when it is a new user, otherwise, do not initialize
+      #  self.csv_initializeold()
+
         self.csv_initialize()
+
         self.setup_gui()
         self.create_container()
         self.create_frames()
@@ -59,35 +67,71 @@ class GUI(tk.Tk):
         self.frame.tkraise()
 
     def csv_initialize(self):
-        name = ""
-        age = ""
-        sex = ""
-        activitylevel = ""
+        file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+
+        if not path.exists(file_path):
+            columns = ['card_uid', 'registration_state', 'name', 'sex', 'age', 'activity_level', 'daily_hydration',
+            'num_days', 'num_days_goal', 'water_dispensed', 'avg_intake']
+
+            user_data = [
+                ['734a266f', 'False', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                ['5d81e96d', 'False', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                ['4d71f56d', 'False', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                ['fdd1a46b', 'False', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                ['1d4ba46b', 'False', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+                ['dd8b9f6b', 'False', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+            ]
+    
+            # open file, write data to file
+            with open(file_path, 'w', newline='') as csv_file:
+                writer = csv.writer(csv_file)
+                writer.writerow(columns)
+                writer.writerows(user_data)
+
+            csv_file.close()
+    
+        else:
+        # create pandas dataframe of the csv file
+    
+            df = pd.read_csv(file_path)
+
+           # df.at[1, 'num_days'] += 1
+
+            df.to_csv(file_path, index=False)
+    
+    
+    
+    
+  #  def csv_initializeold(self):
+    #    name = ""
+     #   age = ""
+      #  sex = ""
+      #  activitylevel = ""
             
             
-        header = ['name', 'age', 'sex', 'activitylevel']
-        nameheader = [name]
-        ageheader = [age]
-        sexheader = [sex]
-        activityheader = [activitylevel]
-        data = [[name, age, sex, activitylevel]]
+      #  header = ['name', 'age', 'sex', 'activitylevel']
+     #   nameheader = [name]
+     #   ageheader = [age]
+      #  sexheader = [sex]
+     #   activityheader = [activitylevel]
+      #  data = [[name, age, sex, activitylevel]]
             
             #for final project need to change path to actual Raspberry Pi
         #file = open("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", 'w')
 
-        with open("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", 'w') as f:
+     #   with open("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", 'w') as f:
                 
-            writer = csv.writer(f)
-            writer.writerow(header)
-            writer.writerow(nameheader)
-            writer.writerow(ageheader)
-            writer.writerow(sexheader)
-            writer.writerow(activityheader)
-            writer.writerows(data)
+       #     writer = csv.writer(f)
+        #    writer.writerow(header)
+        #    writer.writerow(nameheader)
+         #   writer.writerow(ageheader)
+         #   writer.writerow(sexheader)
+         #   writer.writerow(activityheader)
+        #    writer.writerows(data)
 
             
-            f.flush()
-            f.close()
+       #     f.flush()
+         #   f.close()
 
 
 class IdlePage(tk.Frame):
@@ -175,34 +219,17 @@ class UserRegistrationPage(tk.Frame):
 
     def save_command(self):
             
-            name = self.inputName.get()
-            age = self.inputAge.get()
-            sex = self.s.get()
-            activitylevel = self.s2.get()
-            
-            
-            header = ['name', 'age', 'sex', 'activitylevel']
-            nameheader = [name]
-            ageheader = [age]
-            sexheader = [sex]
-            activityheader = [activitylevel]
-            data = [[name, age, sex, activitylevel]]
-            
-            #for final project need to change path to actual Raspberry Pi
-            #f = open("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", 'w')
-            with open("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", 'w') as f:
-                
-                writer = csv.writer(f)
-                writer.writerow(header)
-                writer.writerow(nameheader)
-                writer.writerow(ageheader)
-                writer.writerow(sexheader)
-                writer.writerow(activityheader)
-                writer.writerows(data)
+          
+            df = pd.read_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv")   
+            df.at[0, 'name'] = self.inputName.get()
+            df.at[0, 'age'] = self.inputAge.get()
+            df.at[0, 'sex'] = self.s.get()
+            df.at[0, 'activity_level'] = self.s2.get()
 
-            
-                f.flush()
-                f.close()
+
+            df.to_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", index=False)
+         
+       
             
             
             
@@ -212,42 +239,29 @@ class UserHomeScreen(tk.Frame):
     def __init__(self, container, parent):
       
         tk.Frame.__init__(self, parent)
+             
+        #Todo: Make this compatible with multiple users use pandas and use if/else statments with increments of row number
+       
 
         #for final project need to change path to actual Raspberry Pi
-        #filepath = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-        filepath = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-        
-        
-        
-        #Todo: Make this compatible with multiple users by adding global variable = number of registered users, then add to each attribute in the file read
-        #Ex. thename = str(*data[2+x]), where x is the number of registered users
-        #scale the csv file accordingly
-        #OR each user can have their own csv file and this would still work, just need to change path and have if else statements for how many number of registered users there are
+        df = pd.read_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv")   
+            
 
-        if os.stat(filepath).st_size == 0:
-            thename = "Error"
-        else:
-           # file = open(filepath)
-            with open(filepath, 'r') as f:
-            #reader = csv.reader(file)
-                reader = csv.reader(f)
-                data = list(reader)
-                thename = str(*data[2])
-                theage = str(*data[4])
-                thesex = str(*data[6])
-                theactivity = str(*data[8])
+
+        df.to_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", index=False)
 
         
         
-        self.welcome_home_screen = tk.Label(self, text = "Hello, " + thename + "!", font = ("Calibri", 30)).pack()
+       
+        self.welcome_home_screen = tk.Label(self, text = "Hello, " + str(df.at[0, 'name']) + "!", font = ("Calibri", 30)).pack()
 
         self.user_reg_stats = tk.Label(self, text= "Your Attributes:", font = ("Calibri", 12)).place(x=250,y=100)
 
-        self.attr_1 = tk.Label(self, text= "Age: " + theage, font = ("Calibri", 12)).place(x=250,y=120)
+        self.attr_1 = tk.Label(self, text= "Age: " + str(df.at[0, 'age']), font = ("Calibri", 12)).place(x=250,y=120)
 
-        self.attr_2 = tk.Label(self, text= "Sex: " + thesex, font = ("Calibri", 12)).place(x=250,y=145)
+        self.attr_2 = tk.Label(self, text= "Sex: " + str(df.at[0, 'sex']), font = ("Calibri", 12)).place(x=250,y=145)
 
-        self.attr_3 = tk.Label(self, text= "Activity Level: " + theactivity, font = ("Calibri", 12)).place(x=250,y=170)
+        self.attr_3 = tk.Label(self, text= "Activity Level: " + str(df.at[0, 'activity_level']), font = ("Calibri", 12)).place(x=250,y=170)
 
         self.hydrationpercentage_header = tk.Label(self, text="Current Hydration Level:", font = ("Calibri", 30)).place(x=220,y=210)
 
@@ -293,14 +307,22 @@ class DeletionConfirmationPage(tk.Frame):
 
     def deleteuser_command(self):
         
+        #for final project need to change path to actual Raspberry Pi
+        df = pd.read_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv")  
+        
+        df.at[0, 'name'] = ' '
+        df.at[0, 'age'] = ' '
+        df.at[0, 'sex'] = ' '
+        df.at[0, 'activity_level'] = ' '
+
+        #for final project need to change path to actual Raspberry Pi
+        df.to_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", index=False)
         
             
-            #for final project need to change path to actual Raspberry Pi
-           # f=open("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", "w+", newline='')
-            with open("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", "w+", newline='') as f:
-        
-    
-                f.close()
+            
+         
+
+
 
       
    
