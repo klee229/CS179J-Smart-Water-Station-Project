@@ -6,7 +6,6 @@ import time
 import pandas as pd
 from os import path
 from tkinter import ttk
-#from pandas.core.frame import DataFrame
 
 
 class GUI(tk.Tk):
@@ -125,10 +124,7 @@ class IdlePage(tk.Frame):
         self.did_you_know_label.grid(row=1, column=1, sticky="nw")
         self.fact_source_label.grid(row=2, column=1, sticky="nw")
         self.next_btn.grid(row=3, column=0, columnspan=3, sticky="s")
-
-        
-            
-
+    
     def update_text(self):
         self.fact, self.source = self.water_data.get_fact_source()
         self.fact_source_label.config(text = self.fact + "\n\n" + self.source, font=("Calibri", 12),
@@ -136,21 +132,17 @@ class IdlePage(tk.Frame):
         #15000 = 15 seconds, this can change to a different value if need be
         self.fact_source_label.after(15000, self.update_text)
 
+
 class UserRegistrationPage(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
         
-            
-
         self.welcome_new_user_screen = tk.Label(self, text = "Hello, New User!", font = ("Calibri", 12)).place(x=350,y=0)
-        
         self.userIntro = tk.Label(self, text = "What is your: ", font = ("Calibri", 15)).place(x=240,y=120)
         self.userName = tk.Label(self, text = "Name").place(x=240,y=160)
         self.userAge = tk.Label(self, text = "Age").place(x=240,y=200)
-
         self.inputName = tk.StringVar()
         self.usrNameIn = tk.Entry(self, width = 30, textvariable = self.inputName).place(x=310,y=160)
-
         self.inputAge = tk.StringVar()
         self.usrAgeIn = tk.Entry(self, textvariable = self.inputAge, width = 30).place(x=310,y=200)
         
@@ -169,28 +161,18 @@ class UserRegistrationPage(tk.Frame):
         self.usrSSelection2.current()
       
         self.submit = tk.Button(self,text="Submit", command=lambda: [self.save_command(), container.update_frame(UserHomeScreen), container.change_frame(UserHomeScreen)]).place(x=350, y = 350)
-        
-
 
     def save_command(self):
             
-          
             df = pd.read_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv")   
 
-            
             df.at[0, 'name'] = self.inputName.get()
             df.at[0, 'age'] = self.inputAge.get()
             df.at[0, 'sex'] = self.s.get()
             df.at[0, 'activity_level'] = self.s2.get()
             df.at[0, 'registration_state'] = True
 
-
-            df.to_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", index=False)
-         
-       
-            
-            
-            
+            df.to_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", index=False)  
 
            
 class UserHomeScreen(tk.Frame):
@@ -199,33 +181,21 @@ class UserHomeScreen(tk.Frame):
         tk.Frame.__init__(self, parent)
              
         #Todo: Make this compatible with multiple users use pandas and use if/else statments with increments of row number
-       
-
         #for final project need to change path to actual Raspberry Pi
         df = pd.read_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv")   
         df.to_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", index=False)
-
-        
-        
        
         self.welcome_home_screen = tk.Label(self, text = "Hello, " + str(df.at[0, 'name']) + "!", font = ("Calibri", 20)).place(x=350,y=5)
-
         self.hydrationpercentage_header = tk.Label(self, text="Current Hydration Level:", font = ("Calibri", 30)).place(x=220,y=150)
-
         self.hydrationpercentage = tk.Label(self, text="30 %", font = ("Calibri", 30)).place(x=380,y=210)
+        self.Dispense_label = tk.Label(self, text= "Dispense Button Enabled", font = ("Calibri", 12), fg="green").place(x=340,y=320)
 
         self.settings_btn = tk.Button(self, text="Settings", font=("Calibri", 12),
                                   command=lambda: container.change_frame(SettingsPage)).place(x=700,y=420)
-
         self.logout_btn = tk.Button(self, text="Log Out", font=("Calibri", 12),
                                   command=lambda: container.change_frame(IdlePage)).place(x=400,y=420)
-
-        self.Dispense_label = tk.Label(self, text= "Dispense Button Enabled", font = ("Calibri", 12), fg="green").place(x=340,y=320)
-
         self.moreinfo_btn = tk.Button(self, text="More Info", font=("Calibri", 12),
                                   command=lambda: container.change_frame(MoreInfoPage)).place(x=50,y=420)
-
-       
 
 
 class SettingsPage(tk.Frame):
@@ -246,12 +216,10 @@ class DeletionConfirmationPage(tk.Frame):
         tk.Frame.__init__(self, parent)
 
         self.deleteconfirm_header = tk.Label(self, text = "Are You Sure?", font = ("Calibri", 20)).place(x=350,y=0)
-
         self.delete_confirminfo_header = tk.Label(self, text = "This Action Cannot Be Undone!", font = ("Calibri", 20),fg="red").place(x=250,y=100)
 
         self.continue_btn = tk.Button(self, text="Yes, I'm Sure", font=("Calibri", 12), bg="red",
                                   command=lambda: [self.deleteuser_command(), container.change_frame(DeletionPage)]).place(x=500,y=280)
-
         self.continue_btn = tk.Button(self, text="No, Go Back", font=("Calibri", 12),
                                   command=lambda: container.change_frame(SettingsPage)).place(x=250,y=280)
 
@@ -264,8 +232,7 @@ class DeletionConfirmationPage(tk.Frame):
         df.at[0, 'age'] = ' '
         df.at[0, 'sex'] = ' '
         df.at[0, 'activity_level'] = ' '
-        #df.at[0, 'registration_state'] = False
-
+        
         #for final project need to change path to actual Raspberry Pi
         df.to_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", index=False)
         
@@ -274,11 +241,7 @@ class DeletionPage(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
-
-    
-
         self.delete_page_header = tk.Label(self, text = "User Deleted", font = ("Calibri", 20)).place(x=350,y=0)
-
         self.delete_page_header = tk.Label(self, text = "All user data and the RFID card associated\n with this user has been successfully reset.", font = ("Calibri", 12)).place(x=280,y=230)
 
         self.continue_btn = tk.Button(self, text="Continue", font=("Calibri", 12),
@@ -293,30 +256,23 @@ class MoreInfoPage(tk.Frame):
         df.to_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", index=False)
 
         self.user_reg_stats = tk.Label(self, text= "Your Attributes:", font = ("Calibri", 30)).place(x=250,y=10)
-
         self.attr_1 = tk.Label(self, text= "Age: " + str(df.at[0, 'age']), font = ("Calibri", 12)).place(x=250,y=120)
-
         self.attr_2 = tk.Label(self, text= "Sex: " + str(df.at[0, 'sex']), font = ("Calibri", 12)).place(x=250,y=145)
-
         self.attr_3 = tk.Label(self, text= "Activity Level: " + str(df.at[0, 'activity_level']), font = ("Calibri", 12)).place(x=250,y=170)
 
         self.go_back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
                                   command=lambda: container.change_frame(UserHomeScreen)).place(x=380,y=230)
 
 
-
-
 class RFIDPage(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
        
-
         self.scan_card_label = tk.Label(self, text="PLEASE SCAN YOUR RFID CARD TO CONTINUE", font=("Calibri", 30)).pack()
         #self.scan_card_label.grid(row=0, column=0)
 
         self.back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
                                   command=lambda: container.change_frame(IdlePage)).place(x=380,y=290)
-        
         ##Mock Test For When RFID is seeing an unregistered card
         self.new_user_btn = tk.Button(self, text="New User", font=("Calibri", 12),bg="green",
                                   command=lambda: container.change_frame(UserRegistrationPage)).place(x=375,y=250)
@@ -405,9 +361,7 @@ class WaterData:
         return random.choice(list(self.factDictionary.items()))
 
 
-      
-
-
 if __name__ == "__main__":
     root = GUI()
     root.mainloop()
+    
