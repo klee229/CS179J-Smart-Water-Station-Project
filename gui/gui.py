@@ -6,12 +6,7 @@ import time
 import pandas as pd
 from os import path
 from tkinter import ttk
-from tkinter.ttk import Button
-from tkinter import *
-
-from pandas.core.frame import DataFrame
-
-
+#from pandas.core.frame import DataFrame
 
 
 class GUI(tk.Tk):
@@ -24,7 +19,6 @@ class GUI(tk.Tk):
         self.frame_object_list = []
 
         self.csv_initialize()
-
         self.setup_gui()
         self.create_container()
         self.create_frames()
@@ -92,12 +86,8 @@ class GUI(tk.Tk):
     
             df = pd.read_csv(file_path)
 
-
             df.to_csv(file_path, index=False)
     
-    
-    
-
 
 class IdlePage(tk.Frame):
     def __init__(self, container, parent):
