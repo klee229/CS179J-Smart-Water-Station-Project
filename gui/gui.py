@@ -274,7 +274,7 @@ class DeletionConfirmationPage(tk.Frame):
         df.at[0, 'age'] = ' '
         df.at[0, 'sex'] = ' '
         df.at[0, 'activity_level'] = ' '
-        df.at[0, 'registration_state'] = False
+        #df.at[0, 'registration_state'] = False
 
         #for final project need to change path to actual Raspberry Pi
         df.to_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", index=False)
