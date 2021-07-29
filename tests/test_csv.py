@@ -7,7 +7,7 @@ class TestCSVFile(unittest.TestCase):
 
     def test_open_write_read_close(self):
         # example users for testing
-        columns = ['card_uid', 'registration_state', 'name', 'gender', 'age', 'activity_level', 'daily_hydration',
+        columns = ['card_uid', 'registration_state', 'name', 'sex', 'age', 'activity_level', 'daily_hydration',
                    'num_days', 'num_days_goal', 'water_dispensed', 'avg_intake']
         user_data = [
             ['734a266f', 'True', 'Chris Smith', 'Female', '42', 'Sedentary', '2000', '100', '99', '214503', '2145.03'],
@@ -39,7 +39,7 @@ class TestCSVFile(unittest.TestCase):
 
     def test_reopen_read_close(self):
         # example users for testing
-        columns = ['card_uid', 'registration_state', 'name', 'gender', 'age', 'activity_level', 'daily_hydration',
+        columns = ['card_uid', 'registration_state', 'name', 'sex', 'age', 'activity_level', 'daily_hydration',
                    'num_days', 'num_days_goal', 'water_dispensed', 'avg_intake']
         user_data = [
             ['734a266f', 'True', 'Chris Smith', 'Female', '42', 'Sedentary', '2000', '100', '99', '214503', '2145.03'],
@@ -89,7 +89,7 @@ class TestCSVFile(unittest.TestCase):
 
     def test_edit_user_data(self):
         # example users for testing
-        columns = ['card_uid', 'registration_state', 'name', 'gender', 'age', 'activity_level', 'daily_hydration',
+        columns = ['card_uid', 'registration_state', 'name', 'sex', 'age', 'activity_level', 'daily_hydration',
                    'num_days', 'num_days_goal', 'water_dispensed', 'avg_intake']
         user_data = [
             ['734a266f', 'True', 'Chris Smith', 'Female', '42', 'Sedentary', '2000', '100', '99', '214503', '2145.03'],
@@ -154,7 +154,7 @@ class TestCSVFile(unittest.TestCase):
 
     def test_open_write_empty_read_close(self):
         # example users for testing
-        columns = ['card_uid', 'registration_state', 'name', 'gender', 'age', 'activity_level', 'daily_hydration',
+        columns = ['card_uid', 'registration_state', 'name', 'sex', 'age', 'activity_level', 'daily_hydration',
                    'num_days', 'num_days_goal', 'water_dispensed', 'avg_intake']
         user_data = [
             ['', '', '', '', '', '', '', '', '', '', ''],
@@ -186,7 +186,7 @@ class TestCSVFile(unittest.TestCase):
 
     def test_file_initialization_for_boot_up(self):
         # example users for testing
-        columns = ['card_uid', 'registration_state', 'name', 'gender', 'age', 'activity_level', 'daily_hydration',
+        columns = ['card_uid', 'registration_state', 'name', 'sex', 'age', 'activity_level', 'daily_hydration',
                    'num_days', 'num_days_goal', 'water_dispensed', 'avg_intake']
         user_data = [
             ['734a266f', 'False', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
