@@ -23,6 +23,10 @@ class GUI(tk.Tk):
         self.create_container()
         self.create_frames()
 
+        self.rfid = RFID()
+        self.card_uid = ''
+        self.card_state = False
+
     def setup_gui(self):
         self.title("Smart Water Station")
         self.geometry('800x480')
@@ -83,6 +87,25 @@ class GUI(tk.Tk):
 
             csv_file.close()
 
+    def scan_rfid_card(self):
+        self.rfid.scan_card()
+        self.card_uid = self.rfid.get_uid()
+
+        # TODO: delete comment, used for testing
+        print("gui card_uid: {}".format(self.card_uid))
+
+    def check_rfid_card_registration(self):
+        self.card_state = self.rfid.check_registration(self.card_uid)
+
+        # TODO: delete comment, used for testing
+        print("gui card_state: {}".format(self.card_state))
+
+    def get_card_uid(self):
+        return self.card_uid
+
+    def get_card_state(self):
+        return self.card_state
+
 
 class IdlePage(tk.Frame):
     def __init__(self, container, parent):
@@ -109,7 +132,6 @@ class IdlePage(tk.Frame):
         self.did_you_know_label = tk.Label(self, text="Did you know?\n\n", font=("Calibri", 12, "bold"))
         self.fact_source_label = tk.Label(self, text=self.fact + "\n\n" + self.source, font=("Calibri", 12),
                                           justify="left", anchor="w")
-        self.fact_source_label.after(10000, self.update_text)
 
         self.next_btn = tk.Button(self, text="-- Press this button to continue --", font=("Calibri", 12),
                                   command=lambda: container.change_frame(RFIDPage))
@@ -120,6 +142,8 @@ class IdlePage(tk.Frame):
         self.did_you_know_label.grid(row=1, column=1, sticky="nw")
         self.fact_source_label.grid(row=2, column=1, sticky="nw")
         self.next_btn.grid(row=3, column=0, columnspan=3, sticky="s")
+
+        self.fact_source_label.after(10000, self.update_text)
 
     def update_text(self):
         self.fact, self.source = self.water_data.get_fact_source()
@@ -133,19 +157,41 @@ class RFIDPage(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
+        self.uid = ''
+        self.state = False
+
         self.scan_card_label = tk.Label(self, text="PLEASE SCAN YOUR RFID CARD TO CONTINUE",
                                         font=("Calibri", 30)).pack()
         # self.scan_card_label.grid(row=0, column=0)
 
         self.back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
-                                  command=lambda: container.change_frame(IdlePage)).place(x=380, y=290)
+                                  command=lambda: container.change_frame(IdlePage)).place(x=380, y=350)
 
-        # Mock Test For When RFID is seeing an unregistered card
+        self.scan_card_btn = tk.Button(self, text="Scan your RFID Card now", font=("Calibri", 12),
+                                       command=lambda: self.scan_rfid_card(container)).place(x=300, y=200)
+
+        # NOTE: uncomment below to test GUI without the RFID system
         self.new_user_btn = tk.Button(self, text="New User", font=("Calibri", 12), bg="green",
                                       command=lambda: container.change_frame(UserRegistrationPage)).place(x=375, y=250)
 
-        # Todo: RFID integration, if card is registered, move to homepage, if not, move to user registration page
-        # need global variable: scanned RFID number, to differentiate different users
+        self.new_user_btn = tk.Button(self, text="User Home", font=("Calibri", 12), bg="green",
+                                      command=lambda: container.change_frame(UserHomeScreen)).place(x=375, y=300)
+
+    def scan_rfid_card(self, container):
+        container.scan_rfid_card()
+        container.check_rfid_card_registration()
+
+        self.uid = container.get_card_uid()
+        self.state = container.get_card_state()
+
+        # TODO: delete comments, used for testing
+        print("uid: {}".format(self.uid))
+        print("state: {}".format(self.state))
+
+        if self.state:
+            container.change_frame(UserHomeScreen)
+        else:
+            container.change_frame(UserRegistrationPage)
 
 
 class UserRegistrationPage(tk.Frame):
@@ -243,7 +289,7 @@ class DeletionConfirmationPage(tk.Frame):
 
         self.delete_confirm_header = tk.Label(self, text="Are You Sure?", font=("Calibri", 20)).place(x=350, y=0)
         self.delete_confirm_info_header = tk.Label(self, text="This Action Cannot Be Undone!", font=("Calibri", 20),
-                                                  fg="red").place(x=250, y=100)
+                                                   fg="red").place(x=250, y=100)
 
         self.continue_btn = tk.Button(self, text="Yes, I'm Sure", font=("Calibri", 12), bg="red",
                                       command=lambda: [self.delete_user_command(),
@@ -369,7 +415,7 @@ class WaterData:
                                "molecules stick to each other. Water is the most cohesive among the\n"
                                "non-metallic liquids.":
                                    "- United States Geological Survey",
-        }
+                               }
 
     def get_water_cap(self):
         return self.water_cap
