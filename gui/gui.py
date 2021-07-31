@@ -5,11 +5,16 @@ from os import path
 import random
 import csv
 import time
-
-from rfid.rfid import RFID
+#NOTE: comment out Line 9 to work on GUI/Pump without RFID Hardware
+#from rfid.rfid import RFID
 
 
 class GUI(tk.Tk):
+
+    #classvariable so we don't have to keep manually changing paths
+    file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+    #file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+
     def __init__(self):
         super().__init__()
 
@@ -18,15 +23,17 @@ class GUI(tk.Tk):
         self.frame_dictionary = {}
         self.frame_object_list = []
 
-        # self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-        self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+        #Can delete this if above class file_path works
+       #self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+       # self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
 
         self.csv_initialize()
         self.setup_gui()
         self.create_container()
         self.create_frames()
 
-        self.rfid = RFID()
+        #NOTE: comment out Line 36 to work on GUI/Pump without RFID Hardware
+        #self.rfid = RFID()
         self.card_uid = ''
         self.card_state = False
 
@@ -90,32 +97,34 @@ class GUI(tk.Tk):
 
             csv_file.close()
 
-    def scan_rfid_card(self):
-        self.rfid.scan_card()
-        self.card_uid = self.rfid.get_uid()
+    #NOTE: comment out Lines 102 to 127 to work on GUI/Pump without RFID Hardware
+   
+   # def scan_rfid_card(self):
+       # self.rfid.scan_card()
+       # self.card_uid = self.rfid.get_uid()
 
         # TODO: delete comment, used for testing
-        print("gui card_uid: {}".format(self.card_uid))
+      #  print("gui card_uid: {}".format(self.card_uid))
 
-    def check_rfid_card_registration(self):
-        self.card_state = self.rfid.check_registration(self.card_uid)
+   # def check_rfid_card_registration(self):
+      #  self.card_state = self.rfid.check_registration(self.card_uid)
 
         # TODO: delete comment, used for testing
-        print("gui card_state: {}".format(self.card_state))
+   #     print("gui card_state: {}".format(self.card_state))
 
-    def register_card(self):
-        self.rfid.register_card(self.card_uid)
-        self.check_rfid_card_registration()
+   # def register_card(self):
+       # self.rfid.register_card(self.card_uid)
+       # self.check_rfid_card_registration()
 
-    def unregister_card(self):
-        self.rfid.unregister_card(self.card_uid)
-        self.check_rfid_card_registration()
+   # def unregister_card(self):
+    #    self.rfid.unregister_card(self.card_uid)
+    #    self.check_rfid_card_registration()
 
-    def get_card_uid(self):
-        return self.card_uid
+   # def get_card_uid(self):
+    #    return self.card_uid
 
-    def get_card_state(self):
-        return self.card_state
+   # def get_card_state(self):
+    #    return self.card_state
 
       
 class IdlePage(tk.Frame):
@@ -179,39 +188,42 @@ class RFIDPage(tk.Frame):
         self.back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
                                   command=lambda: container.change_frame(IdlePage)).place(x=380, y=350)
 
-        self.scan_card_btn = tk.Button(self, text="Scan your RFID Card now", font=("Calibri", 12),
-                                       command=lambda: self.scan_rfid_card(container)).place(x=300, y=200)
+        # NOTE: comment out Lines 192 to 193 to test GUI without the RFID hardware
+      #  self.scan_card_btn = tk.Button(self, text="Scan your RFID Card now", font=("Calibri", 12),
+      #                                 command=lambda: self.scan_rfid_card(container)).place(x=300, y=200)
 
-        # NOTE: uncomment below to test GUI without the RFID system
+        # NOTE: comment out Lines 196 to 200 to test GUI with the RFID hardware
         self.new_user_btn = tk.Button(self, text="New User", font=("Calibri", 12), bg="green",
                                       command=lambda: container.change_frame(UserRegistrationPage)).place(x=375, y=250)
 
         self.new_user_btn = tk.Button(self, text="User Home", font=("Calibri", 12), bg="green",
                                       command=lambda: container.change_frame(UserHomeScreen)).place(x=375, y=300)
 
-    def scan_rfid_card(self, container):
-        container.scan_rfid_card()
-        container.check_rfid_card_registration()
+        # NOTE: comment out Lines 203 to 217 to test GUI/Pump without the RFID hardware
+   # def scan_rfid_card(self, container):
+      #  container.scan_rfid_card()
+       # container.check_rfid_card_registration()
 
-        self.uid = container.get_card_uid()
-        self.state = container.get_card_state()
+     #   self.uid = container.get_card_uid()
+      #  self.state = container.get_card_state()
 
         # TODO: delete comments, used for testing
-        print("uid: {}".format(self.uid))
-        print("state: {}".format(self.state))
+     #   print("uid: {}".format(self.uid))
+     #   print("state: {}".format(self.state))
 
-        if self.state:
-            container.change_frame(UserHomeScreen)
-        else:
-            container.change_frame(UserRegistrationPage)
+     #   if self.state:
+     #       container.change_frame(UserHomeScreen)
+     #   else:
+      #      container.change_frame(UserRegistrationPage)
 
             
 class UserRegistrationPage(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
-        # self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-        self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+        #self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+        #self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+        self.file_path = GUI.file_path
 
         self.uid = ''
 
@@ -246,7 +258,9 @@ class UserRegistrationPage(tk.Frame):
                                      command=lambda: container.change_frame(RFIDPage)).place(x=345,y=400)
 
     def save_command(self, container):
-        ########## FOR USE WITH RFID HARDWARE ##########
+        """
+        FOR USE WITH RFID HARDWARE
+        """
 #         self.uid = container.get_card_uid()
 
 #         # TODO: delete comment, used for testing
@@ -268,16 +282,17 @@ class UserRegistrationPage(tk.Frame):
 
 #         df.to_csv(self.file_path, index=False)
 
-
-        ########## FOR USE WITHOUT RFID HARDWARE ##########
+        """
+        FOR USE WITHOUT RFID HARDWARE
+        """
         self.uid = "734a266f"
 
         df = pd.read_csv(self.file_path)   
 
         row_num = df.index[df['card_uid'] == self.uid].tolist()
 
-        df.at[row_num[0], 'name'] = self.inputName.get()
-        df.at[row_num[0], 'age'] = self.inputAge.get()
+        df.at[row_num[0], 'name'] = self.input_name.get()
+        df.at[row_num[0], 'age'] = self.input_age.get()
         df.at[row_num[0], 'sex'] = self.s.get()
         df.at[row_num[0], 'activity_level'] = self.s2.get()
         df.at[row_num[0], 'registration_state'] = True
@@ -286,16 +301,14 @@ class UserRegistrationPage(tk.Frame):
 
         
 class UserHomeScreen(tk.Frame):
-
     uid = ''
 
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
-        # self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-        self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
-
-        # self.uid = container.get_card_uid()
+        #self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+        #self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+        self.file_path = GUI.file_path
 
         df = pd.read_csv(self.file_path)
         df.to_csv(self.file_path, index=False)
@@ -330,7 +343,7 @@ class SettingsPage(tk.Frame):
                                               command=lambda: container.change_frame(ChangeAttributesPage)).place(x=350,y=200)
         
         self.go_back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
-                                     command=lambda: container.change_frame(UserHomeScreen)).place(x=380, y=200)
+                                     command=lambda: container.change_frame(UserHomeScreen)).place(x=380, y=300)
 
 
 class ChangeAttributesPage(tk.Frame):
@@ -343,20 +356,20 @@ class ChangeAttributesPage(tk.Frame):
         self.attr_settings_header = tk.Label(self, text = "What Would You Like To Edit?", font = ("Calibri", 20)).place(x=250,y=0)
 
         self.delete_user_btn1 = tk.Button(self, text="My Name", font=("Calibri", 12),
-                                          command=lambda: [self.attributechange(1), container.update_frame(Edit_Attributes), 
-                                                           container.change_frame(Edit_Attributes)]).place(x=150,y=200)
+                                          command=lambda: [self.attributechange(1), container.update_frame(EditAttributes), 
+                                                           container.change_frame(EditAttributes)]).place(x=150,y=200)
         
         self.change_user_attr_btn = tk.Button(self, text="My Age", font=("Calibri", 12),
-                                              command=lambda: [self.attributechange(2), container.update_frame(Edit_Attributes), 
-                                                               container.change_frame(Edit_Attributes)]).place(x=280,y=200)
+                                              command=lambda: [self.attributechange(2), container.update_frame(EditAttributes), 
+                                                               container.change_frame(EditAttributes)]).place(x=280,y=200)
 
         self.change_user_attr_btn = tk.Button(self, text="My Sex", font=("Calibri", 12),
-                                              command=lambda: [self.attributechange(3), container.update_frame(Edit_Attributes), 
-                                                               container.change_frame(Edit_Attributes)]).place(x=390,y=200)
+                                              command=lambda: [self.attributechange(3), container.update_frame(EditAttributes), 
+                                                               container.change_frame(EditAttributes)]).place(x=390,y=200)
 
         self.change_user_attr_btn = tk.Button(self, text="My Activity Level", font=("Calibri", 12),
-                                              command=lambda: [self.attributechange(4), container.update_frame(Edit_Attributes), 
-                                                               container.change_frame(Edit_Attributes)]).place(x=510,y=200)
+                                              command=lambda: [self.attributechange(4), container.update_frame(EditAttributes), 
+                                                               container.change_frame(EditAttributes)]).place(x=510,y=200)
         
         self.go_back_btn1 = tk.Button(self, text="I'm Done, Go Back", font=("Calibri", 12),
                                       command=lambda: container.change_frame(SettingsPage)).place(x=350,y=300)
@@ -369,8 +382,12 @@ class EditAttributes(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
         
-        # self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-        self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+        #self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+        #self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+
+        self.file_path = GUI.file_path
+
+        self.uid = ''
 
         if ChangeAttributesPage.attributeselection == 1:
             self.userName1 = tk.Label(self, text = "Name").place(x=240,y=160)
@@ -395,44 +412,48 @@ class EditAttributes(tk.Frame):
             self.usrSSelection2_edit['values'] = ('Sedentary', 'Moderate', 'Active')
             self.usrSSelection2_edit.current()
 
-        self.submit = tk.Button(self,text="Submit", command=lambda: [self.save_command1(), container.update_frame(UserHomeScreen), 
-                                                                     container.change_frame(ChangeAttributesPage)]).place(x=350, y = 350)
+        self.submit = tk.Button(self,text="Submit",
+                                command=lambda: [self.save_command1(), container.update_frame(UserHomeScreen), 
+                                                container.change_frame(ChangeAttributesPage)]).place(x=350, y = 350)
 
     def save_command1(self):
-        ########## FOR USE WITH RFID HARDWARE ##########
+        """
+        FOR USE WITH RFID HARDWARE
+        """
     #   self.uid = container.get_card_uid()
-
+    #
     #   # TODO: delete comment, used for testing
     #    print("save command uid: {}".format(self.uid))
-
+    #
     #   df = pd.read_csv(self.file_path)
-
+    #
     #   row_num = df.index[df['card_uid'] == self.uid].tolist()
-
+    #
     #   # TODO: delete comment, used for testing
     #    print("row_num: {}".format(row_num))
-        
+    #   
     #   if ChangeAttributesPage.attributeselection == 1:
     #        df.at[row_num[0], 'name'] = self.inputName1.get()
-          
+    #     
     #    elif ChangeAttributesPage.attributeselection == 2:
     #        df.at[row_num[0], 'age'] = self.inputAge1.get()
-
+    #
     #    elif ChangeAttributesPage.attributeselection == 3:
     #        df.at[row_num[0], 'sex'] = self.s_edit.get()
-
+    #
     #    elif ChangeAttributesPage.attributeselection == 4:
     #        df.at[row_num[0], 'activity_level'] = self.s2_edit.get()
-
+    #
     #    df.to_csv(self.file_path, index=False)
     
-
-        ########## FOR USE WITHOUT RFID HARDWARE ##########
-        self.uid1 = "734a266f"
+        """
+        FOR USE WITHOUT RFID HARDWARE
+        """
+        self.uid = "734a266f"
 
         df = pd.read_csv(self.file_path)
 
-        row_num = df.index[df['card_uid'] == self.uid1].tolist()
+        row_num = df.index[df['card_uid'] == self.uid].tolist()
 
         if ChangeAttributesPage.attributeselection == 1:
             df.at[row_num[0], 'name'] = self.inputName1.get()
@@ -453,8 +474,10 @@ class DeletionConfirmationPage(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
-        # self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-        self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+        #self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+        #self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+
+        self.file_path = GUI.file_path
 
         self.uid = ''
 
@@ -469,28 +492,31 @@ class DeletionConfirmationPage(tk.Frame):
                                       command=lambda: container.change_frame(SettingsPage)).place(x=250, y=280)
 
     def delete_user_command(self, container):
-        ########## FOR USE WITH RFID HARDWARE ##########
-#         self.uid = container.get_card_uid()
+        """
+        FOR USE WITH RFID HARDWARE
+        """
+        # self.uid = container.get_card_uid()
+        #
+        # # TODO: delete comment, used for testing
+        # print("delete command uid: {}".format(self.uid))
+        #
+        # container.unregister_card()
+        #
+        # df = pd.read_csv(self.file_path)
+        #
+        # row_num = df.index[df['card_uid'] == self.uid].tolist()
+        #
+        # # TODO: delete comment, used for testing
+        # print("row_num: {}".format(row_num))
 
-#         # TODO: delete comment, used for testing
-#         print("delete command uid: {}".format(self.uid))
-
-#         container.unregister_card()
-
-#         df = pd.read_csv(self.file_path)
-
-#         row_num = df.index[df['card_uid'] == self.uid].tolist()
-
-#         # TODO: delete comment, used for testing
-#         print("row_num: {}".format(row_num))
-
-
-        ########## FOR USE WITHOUT RFID HARDWARE ##########
-        self.uid2 = "734a266f"
+        """
+        FOR USE WITHOUT RFID HARDWARE
+        """
+        self.uid = "734a266f"
 
         df = pd.read_csv(self.file_path)  
 
-        row_num = df.index[df['card_uid'] == self.uid2].tolist()
+        row_num = df.index[df['card_uid'] == self.uid].tolist()
 
         df.at[row_num[0], 'name'] = ' '
         df.at[row_num[0], 'age'] = ' '
@@ -521,8 +547,10 @@ class MoreInfoPage(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
-        # self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-        self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+        #self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+        #self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+
+        self.file_path = GUI.file_path
 
         df = pd.read_csv(self.file_path)
         df.to_csv(self.file_path, index=False)
