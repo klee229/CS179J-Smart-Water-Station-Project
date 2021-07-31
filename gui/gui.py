@@ -1,12 +1,12 @@
 import tkinter as tk
-import random
-import csv
-import os
-import time
-import sys
+from tkinter import ttk
 import pandas as pd
 from os import path
-from tkinter import ttk
+import random
+import csv
+import time
+
+from rfid.rfid import RFID
 
 
 class GUI(tk.Tk):
@@ -18,10 +18,17 @@ class GUI(tk.Tk):
         self.frame_dictionary = {}
         self.frame_object_list = []
 
+        # self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+        self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+
         self.csv_initialize()
         self.setup_gui()
         self.create_container()
         self.create_frames()
+
+        self.rfid = RFID()
+        self.card_uid = ''
+        self.card_state = False
 
     def setup_gui(self):
         self.title("Smart Water Station")
@@ -33,7 +40,9 @@ class GUI(tk.Tk):
         self.container.pack()
 
     def create_frames(self):
-        self.frame_object_list = [IdlePage, RFIDPage, UserRegistrationPage, UserHomeScreen, SettingsPage, DeletionConfirmationPage ,DeletionPage, MoreInfoPage, ChangeAttributesPage, Edit_Attributes]
+        self.frame_object_list = [IdlePage, RFIDPage, UserRegistrationPage, UserHomeScreen, SettingsPage, 
+                                  DeletionConfirmationPage ,DeletionPage, MoreInfoPage, ChangeAttributesPage, 
+                                  EditAttributes]
 
         for the_frame in self.frame_object_list:
             self.frame = the_frame(self, self.container)
@@ -58,11 +67,11 @@ class GUI(tk.Tk):
         self.frame.tkraise()
 
     def csv_initialize(self):
-        file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
 
-        if not path.exists(file_path):
+        if not path.exists(self.file_path):
+
             columns = ['card_uid', 'registration_state', 'name', 'sex', 'age', 'activity_level', 'daily_hydration',
-            'num_days', 'num_days_goal', 'water_dispensed', 'avg_intake']
+                       'num_days', 'num_days_goal', 'water_dispensed', 'avg_intake']
 
             user_data = [
                 ['734a266f', 'False', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
@@ -72,21 +81,43 @@ class GUI(tk.Tk):
                 ['1d4ba46b', 'False', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
                 ['dd8b9f6b', 'False', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
             ]
-    
+
             # open file, write data to file
-            with open(file_path, 'w', newline='') as csv_file:
+            with open(self.file_path, 'w', newline='') as csv_file:
                 writer = csv.writer(csv_file)
                 writer.writerow(columns)
                 writer.writerows(user_data)
 
             csv_file.close()
-    
-        else:
-        # create pandas dataframe of the csv file
-            df = pd.read_csv(file_path)
-            df.to_csv(file_path, index=False)
-    
 
+    def scan_rfid_card(self):
+        self.rfid.scan_card()
+        self.card_uid = self.rfid.get_uid()
+
+        # TODO: delete comment, used for testing
+        print("gui card_uid: {}".format(self.card_uid))
+
+    def check_rfid_card_registration(self):
+        self.card_state = self.rfid.check_registration(self.card_uid)
+
+        # TODO: delete comment, used for testing
+        print("gui card_state: {}".format(self.card_state))
+
+    def register_card(self):
+        self.rfid.register_card(self.card_uid)
+        self.check_rfid_card_registration()
+
+    def unregister_card(self):
+        self.rfid.unregister_card(self.card_uid)
+        self.check_rfid_card_registration()
+
+    def get_card_uid(self):
+        return self.card_uid
+
+    def get_card_state(self):
+        return self.card_state
+
+      
 class IdlePage(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
@@ -107,88 +138,141 @@ class IdlePage(tk.Frame):
 
         # define GUI labels and buttons
         self.idle_label = tk.Label(self, text="IDLE MODE", font=("Calibri", 12))
-        self.water_cap_label = tk.Label(self, text=str(self.water_cap) + " % H2O Capacity", font=("Calibri", 12)).place(x=650,y=5)
+        self.water_cap_label = tk.Label(self, text=str(self.water_cap) + " % H2O Capacity",
+                                        font=("Calibri", 12)).place(x=650, y=5)
         self.did_you_know_label = tk.Label(self, text="Did you know?\n\n", font=("Calibri", 12, "bold"))
         self.fact_source_label = tk.Label(self, text=self.fact + "\n\n" + self.source, font=("Calibri", 12),
                                           justify="left", anchor="w")
-        
-        self.fact_source_label.after(15000, self.update_text)   
-        
+
         self.next_btn = tk.Button(self, text="-- Press this button to continue --", font=("Calibri", 12),
                                   command=lambda: container.change_frame(RFIDPage))
         
         # structure the GUI page using a grid
         self.idle_label.grid(row=0, column=0, sticky="nw", padx=7, pady=7)
-       # self.water_cap_label.grid(row=0, column=2, sticky="ne", padx=7, pady=7)
+        # self.water_cap_label.grid(row=0, column=2, sticky="ne", padx=7, pady=7)
         self.did_you_know_label.grid(row=1, column=1, sticky="nw")
         self.fact_source_label.grid(row=2, column=1, sticky="nw")
         self.next_btn.grid(row=3, column=0, columnspan=3, sticky="s")
-    
+
+        self.fact_source_label.after(15000, self.update_text)
+
     def update_text(self):
         self.fact, self.source = self.water_data.get_fact_source()
-        self.fact_source_label.config(text = self.fact + "\n\n" + self.source, font=("Calibri", 12),
-                                          justify="left", anchor="w")
-        #15000 = 15 seconds, this can change to a different value if need be
-        self.fact_source_label.after(15000, self.update_text)
-    
 
+        self.fact_source_label.config(text=self.fact + "\n\n" + self.source, font=("Calibri", 12),
+                                      justify="left", anchor="w")
+        # 15000 = 15 seconds, this can change to a different value if need be
+        self.fact_source_label.after(15000, self.update_text)
+
+
+class RFIDPage(tk.Frame):
+    def __init__(self, container, parent):
+        tk.Frame.__init__(self, parent)
+
+        self.uid = ''
+        self.state = False
+
+        self.scan_card_label = tk.Label(self, text="PLEASE SCAN YOUR RFID CARD TO CONTINUE",
+                                        font=("Calibri", 30)).pack()
+        # self.scan_card_label.grid(row=0, column=0)
+
+        self.back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
+                                  command=lambda: container.change_frame(IdlePage)).place(x=380, y=350)
+
+        self.scan_card_btn = tk.Button(self, text="Scan your RFID Card now", font=("Calibri", 12),
+                                       command=lambda: self.scan_rfid_card(container)).place(x=300, y=200)
+
+        # NOTE: uncomment below to test GUI without the RFID system
+        self.new_user_btn = tk.Button(self, text="New User", font=("Calibri", 12), bg="green",
+                                      command=lambda: container.change_frame(UserRegistrationPage)).place(x=375, y=250)
+
+        self.new_user_btn = tk.Button(self, text="User Home", font=("Calibri", 12), bg="green",
+                                      command=lambda: container.change_frame(UserHomeScreen)).place(x=375, y=300)
+
+    def scan_rfid_card(self, container):
+        container.scan_rfid_card()
+        container.check_rfid_card_registration()
+
+        self.uid = container.get_card_uid()
+        self.state = container.get_card_state()
+
+        # TODO: delete comments, used for testing
+        print("uid: {}".format(self.uid))
+        print("state: {}".format(self.state))
+
+        if self.state:
+            container.change_frame(UserHomeScreen)
+        else:
+            container.change_frame(UserRegistrationPage)
+
+            
 class UserRegistrationPage(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
-        
-        self.welcome_new_user_screen = tk.Label(self, text = "Hello, New User!", font = ("Calibri", 12)).place(x=350,y=0)
-        self.userIntro = tk.Label(self, text = "What is your: ", font = ("Calibri", 15)).place(x=240,y=120)
-        self.userName = tk.Label(self, text = "Name").place(x=240,y=160)
-        self.userAge = tk.Label(self, text = "Age").place(x=240,y=200)
-        self.inputName = tk.StringVar()
-        self.usrNameIn = tk.Entry(self, width = 30, textvariable = self.inputName).place(x=310,y=160)
-        self.inputAge = tk.StringVar()
-        self.usrAgeIn = tk.Entry(self, textvariable = self.inputAge, width = 30).place(x=310,y=200)
-        
-        self.usrS = tk.Label(self, text = "Are you: ").place(x=240,y=240)
+
+        # self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+        self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+
+        self.uid = ''
+
+        self.welcome_new_user_screen = tk.Label(self, text="Hello, New User!", font=("Calibri", 12)).place(x=350, y=0)
+        self.user_intro = tk.Label(self, text="What is your: ", font=("Calibri", 15)).place(x=240, y=120)
+        self.user_name = tk.Label(self, text="Name").place(x=240, y=160)
+        self.user_age = tk.Label(self, text="Age").place(x=240, y=200)
+        self.input_name = tk.StringVar()
+        self.usr_name_in = tk.Entry(self, width=30, textvariable=self.input_name).place(x=310, y=160)
+        self.input_age = tk.StringVar()
+        self.usr_age_in = tk.Entry(self, textvariable=self.input_age, width=30).place(x=310, y=200)
+
+        self.usr_S = tk.Label(self, text="Are you: ").place(x=240, y=240)
         self.s = tk.StringVar()
-        self.usrSSelection = ttk.Combobox(self, width = 7, textvariable = self.s)
-        self.usrSSelection.place(x=310,y=240)
-        self.usrSSelection['values'] = ('Male', 'Female')
-        self.usrSSelection.current()
+        self.usr_SSelection = ttk.Combobox(self, width=7, textvariable=self.s)
+        self.usr_SSelection.place(x=310, y=240)
+        self.usr_SSelection['values'] = ('Male', 'Female')
+        self.usr_SSelection.current()
 
-        self.usrS2 = tk.Label(self, text = "What is your activity level? ").place(x=240,y=280)
+        self.usr_S2 = tk.Label(self, text="What is your activity level? ").place(x=240, y=280)
         self.s2 = tk.StringVar()
-        self.usrSSelection2 = ttk.Combobox(self, width = 20, textvariable = self.s2)
-        self.usrSSelection2.place(x=310,y=310)
-        self.usrSSelection2['values'] = ('Sedentary', 'Moderate', 'Active')
-        self.usrSSelection2.current()
-      
-        self.submit = tk.Button(self,text="Submit", font=("Calibri", 12),command=lambda: [self.save_command(), container.update_frame(UserHomeScreen), container.change_frame(UserHomeScreen)]).place(x=350, y = 350)
+        self.usr_SSelection2 = ttk.Combobox(self, width=20, textvariable=self.s2)
+        self.usr_SSelection2.place(x=310, y=310)
+        self.usr_SSelection2['values'] = ('Sedentary', 'Moderate', 'Active')
+        self.usr_SSelection2.current()
+
+        self.submit = tk.Button(self, text="Submit",
+                                command=lambda: [self.save_command(container), container.update_frame(UserHomeScreen),
+                                                 container.change_frame(UserHomeScreen)]).place(x=350, y=350)
+        
         self.go_back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
-                                  command=lambda: container.change_frame(RFIDPage)).place(x=345,y=400)
+                                     command=lambda: container.change_frame(RFIDPage)).place(x=345,y=400)
 
-    def save_command(self):
-    ########## FOR USE WITH RFID HARDWARE ##########
-    #    self.uid = container.get_card_uid()
+    def save_command(self, container):
+        ########## FOR USE WITH RFID HARDWARE ##########
+#         self.uid = container.get_card_uid()
 
-    #    # TODO: delete comment, used for testing
-    #    print("save command uid: {}".format(self.uid))
+#         # TODO: delete comment, used for testing
+#         print("save command uid: {}".format(self.uid))
 
-    #    df = pd.read_csv(self.file_path)
+#         container.register_card()
 
-    #    row_num = df.index[df['card_uid'] == self.uid].tolist()
+#         df = pd.read_csv(self.file_path)
 
-    #    # TODO: delete comment, used for testing
-    #    print("row_num: {}".format(row_num))
+#         row_num = df.index[df['card_uid'] == self.uid].tolist()
 
-    #    df.at[row_num[0], 'name'] = self.input_name.get()
-    #    df.at[row_num[0], 'age'] = self.input_age.get()
-    #    df.at[row_num[0], 'sex'] = self.s.get()
-    #    df.at[row_num[0], 'activity_level'] = self.s2.get()
+#         # TODO: delete comment, used for testing
+#         print("row_num: {}".format(row_num))
 
-    #    df.to_csv(self.file_path, index=False)
+#         df.at[row_num[0], 'name'] = self.input_name.get()
+#         df.at[row_num[0], 'age'] = self.input_age.get()
+#         df.at[row_num[0], 'sex'] = self.s.get()
+#         df.at[row_num[0], 'activity_level'] = self.s2.get()
 
-    
-    ########## FOR USE WITHOUT RFID HARDWARE ##########
+#         df.to_csv(self.file_path, index=False)
+
+
+        ########## FOR USE WITHOUT RFID HARDWARE ##########
         self.uid = "734a266f"
 
-        df = pd.read_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv")   
+        df = pd.read_csv(self.file_path)   
 
         row_num = df.index[df['card_uid'] == self.uid].tolist()
 
@@ -198,43 +282,55 @@ class UserRegistrationPage(tk.Frame):
         df.at[row_num[0], 'activity_level'] = self.s2.get()
         df.at[row_num[0], 'registration_state'] = True
 
-        df.to_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", index=False)  
+        df.to_csv(self.file_path, index=False)
 
-           
+        
 class UserHomeScreen(tk.Frame):
+
+    uid = ''
+
     def __init__(self, container, parent):
-      
         tk.Frame.__init__(self, parent)
-             
-        #for final project need to change path to actual Raspberry Pi
-        df = pd.read_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv")   
-        df.to_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", index=False)
-       
-        self.welcome_home_screen = tk.Label(self, text = "Hello, " + str(df.at[0, 'name']) + "!", font = ("Calibri", 20)).place(x=350,y=5)
-        self.hydrationpercentage_header = tk.Label(self, text="Current Hydration Level:", font = ("Calibri", 30)).place(x=220,y=150)
-        self.hydrationpercentage = tk.Label(self, text="30 %", font = ("Calibri", 30)).place(x=380,y=210)
-        self.Dispense_label = tk.Label(self, text= "Dispense Button Enabled", font = ("Calibri", 12), fg="green").place(x=340,y=320)
+
+        # self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+        self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+
+        # self.uid = container.get_card_uid()
+
+        df = pd.read_csv(self.file_path)
+        df.to_csv(self.file_path, index=False)
+
+        self.welcome_home_screen = tk.Label(self, text="Hello, " + str(df.at[0, 'name']) + "!",
+                                            font=("Calibri", 20)).place(x=350, y=5)
+        self.hydration_percentage_header = tk.Label(self, text="Current Hydration Level:",
+                                                    font=("Calibri", 30)).place(x=220, y=150)
+        self.hydration_percentage = tk.Label(self, text="30 %", font=("Calibri", 30)).place(x=380, y=210)
+        self.dispense_label = tk.Label(self, text="Dispense Button Enabled", font=("Calibri", 12),
+                                       fg="green").place(x=340, y=320)
 
         self.settings_btn = tk.Button(self, text="Settings", font=("Calibri", 12),
-                                  command=lambda: container.change_frame(SettingsPage)).place(x=700,y=420)
+                                      command=lambda: container.change_frame(SettingsPage)).place(x=700, y=420)
         self.logout_btn = tk.Button(self, text="Log Out", font=("Calibri", 12),
-                                  command=lambda: container.change_frame(IdlePage)).place(x=400,y=420)
-        self.moreinfo_btn = tk.Button(self, text="More Info", font=("Calibri", 12),
-                                  command=lambda: container.change_frame(MoreInfoPage)).place(x=50,y=420)
+                                    command=lambda: container.change_frame(IdlePage)).place(x=400, y=420)
+        self.more_info_btn = tk.Button(self, text="More Info", font=("Calibri", 12),
+                                       command=lambda: container.change_frame(MoreInfoPage)).place(x=50, y=420)
 
 
 class SettingsPage(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
-        self.settings_intro_header = tk.Label(self, text = "What Would You Like To Do?", font = ("Calibri", 20)).place(x=250,y=0)
+        self.settings_intro_header = tk.Label(self, text="What Would You Like To Do?",
+                                              font=("Calibri", 20)).place(x=250, y=0)
 
         self.delete_user_btn = tk.Button(self, text="Delete User", font=("Calibri", 12), bg="red",
-                                  command=lambda: container.change_frame(DeletionConfirmationPage)).place(x=370,y=100)
+                                         command=lambda: container.change_frame(DeletionConfirmationPage)).place(x=370,
+                                                                                                                 y=100)
         self.change_user_attr_btn = tk.Button(self, text="Edit My Attributes", font=("Calibri", 12),
-                                  command=lambda: container.change_frame(ChangeAttributesPage)).place(x=350,y=200)
+                                              command=lambda: container.change_frame(ChangeAttributesPage)).place(x=350,y=200)
+        
         self.go_back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
-                                  command=lambda: container.change_frame(UserHomeScreen)).place(x=380,y=300)
+                                     command=lambda: container.change_frame(UserHomeScreen)).place(x=380, y=200)
 
 
 class ChangeAttributesPage(tk.Frame):
@@ -244,32 +340,37 @@ class ChangeAttributesPage(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
-     
         self.attr_settings_header = tk.Label(self, text = "What Would You Like To Edit?", font = ("Calibri", 20)).place(x=250,y=0)
 
         self.delete_user_btn1 = tk.Button(self, text="My Name", font=("Calibri", 12),
-                                  command=lambda: [self.attributechange(1), container.update_frame(Edit_Attributes), container.change_frame(Edit_Attributes)]).place(x=150,y=200)
+                                          command=lambda: [self.attributechange(1), container.update_frame(Edit_Attributes), 
+                                                           container.change_frame(Edit_Attributes)]).place(x=150,y=200)
         
         self.change_user_attr_btn = tk.Button(self, text="My Age", font=("Calibri", 12),
-                                  command=lambda: [self.attributechange(2), container.update_frame(Edit_Attributes), container.change_frame(Edit_Attributes)]).place(x=280,y=200)
+                                              command=lambda: [self.attributechange(2), container.update_frame(Edit_Attributes), 
+                                                               container.change_frame(Edit_Attributes)]).place(x=280,y=200)
 
         self.change_user_attr_btn = tk.Button(self, text="My Sex", font=("Calibri", 12),
-                                  command=lambda: [self.attributechange(3), container.update_frame(Edit_Attributes), container.change_frame(Edit_Attributes)]).place(x=390,y=200)
+                                              command=lambda: [self.attributechange(3), container.update_frame(Edit_Attributes), 
+                                                               container.change_frame(Edit_Attributes)]).place(x=390,y=200)
 
         self.change_user_attr_btn = tk.Button(self, text="My Activity Level", font=("Calibri", 12),
-                                  command=lambda: [self.attributechange(4), container.update_frame(Edit_Attributes), container.change_frame(Edit_Attributes)]).place(x=510,y=200)
+                                              command=lambda: [self.attributechange(4), container.update_frame(Edit_Attributes), 
+                                                               container.change_frame(Edit_Attributes)]).place(x=510,y=200)
         
         self.go_back_btn1 = tk.Button(self, text="I'm Done, Go Back", font=("Calibri", 12),
-                                  command=lambda: container.change_frame(SettingsPage)).place(x=350,y=300)
+                                      command=lambda: container.change_frame(SettingsPage)).place(x=350,y=300)
 
     def attributechange(self, num):
-       
         ChangeAttributesPage.attributeselection = num
        
 
-class Edit_Attributes(tk.Frame):
+class EditAttributes(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
+        
+        # self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+        self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
 
         if ChangeAttributesPage.attributeselection == 1:
             self.userName1 = tk.Label(self, text = "Name").place(x=240,y=160)
@@ -294,11 +395,11 @@ class Edit_Attributes(tk.Frame):
             self.usrSSelection2_edit['values'] = ('Sedentary', 'Moderate', 'Active')
             self.usrSSelection2_edit.current()
 
-        self.submit = tk.Button(self,text="Submit", command=lambda: [self.save_command1(), container.update_frame(UserHomeScreen), container.change_frame(ChangeAttributesPage)]).place(x=350, y = 350)
+        self.submit = tk.Button(self,text="Submit", command=lambda: [self.save_command1(), container.update_frame(UserHomeScreen), 
+                                                                     container.change_frame(ChangeAttributesPage)]).place(x=350, y = 350)
 
     def save_command1(self):
-    ########## FOR USE WITH RFID HARDWARE ##########
-
+        ########## FOR USE WITH RFID HARDWARE ##########
     #   self.uid = container.get_card_uid()
 
     #   # TODO: delete comment, used for testing
@@ -312,19 +413,15 @@ class Edit_Attributes(tk.Frame):
     #    print("row_num: {}".format(row_num))
         
     #   if ChangeAttributesPage.attributeselection == 1:
-
     #        df.at[row_num[0], 'name'] = self.inputName1.get()
-            
+          
     #    elif ChangeAttributesPage.attributeselection == 2:
-            
     #        df.at[row_num[0], 'age'] = self.inputAge1.get()
 
     #    elif ChangeAttributesPage.attributeselection == 3:
-            
     #        df.at[row_num[0], 'sex'] = self.s_edit.get()
 
     #    elif ChangeAttributesPage.attributeselection == 4:
-
     #        df.at[row_num[0], 'activity_level'] = self.s2_edit.get()
 
     #    df.to_csv(self.file_path, index=False)
@@ -333,123 +430,112 @@ class Edit_Attributes(tk.Frame):
         ########## FOR USE WITHOUT RFID HARDWARE ##########
         self.uid1 = "734a266f"
 
-        df = pd.read_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv")
+        df = pd.read_csv(self.file_path)
 
         row_num = df.index[df['card_uid'] == self.uid1].tolist()
 
         if ChangeAttributesPage.attributeselection == 1:
-
             df.at[row_num[0], 'name'] = self.inputName1.get()
             
         elif ChangeAttributesPage.attributeselection == 2:
-            
             df.at[row_num[0], 'age'] = self.inputAge1.get()
 
         elif ChangeAttributesPage.attributeselection == 3:
-            
             df.at[row_num[0], 'sex'] = self.s_edit.get()
 
         elif ChangeAttributesPage.attributeselection == 4:
-
             df.at[row_num[0], 'activity_level'] = self.s2_edit.get()
             
-        df.to_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", index=False)
+        df.to_csv(self.file_path, index=False)
 
 
 class DeletionConfirmationPage(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
-        self.deleteconfirm_header = tk.Label(self, text = "Are You Sure?", font = ("Calibri", 20)).place(x=350,y=0)
-        self.delete_confirminfo_header = tk.Label(self, text = "This Action Cannot Be Undone!", font = ("Calibri", 20),fg="red").place(x=250,y=100)
+        # self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+        self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+
+        self.uid = ''
+
+        self.delete_confirm_header = tk.Label(self, text="Are You Sure?", font=("Calibri", 20)).place(x=350, y=0)
+        self.delete_confirm_info_header = tk.Label(self, text="This Action Cannot Be Undone!", font=("Calibri", 20),
+                                                   fg="red").place(x=250, y=100)
 
         self.continue_btn = tk.Button(self, text="Yes, I'm Sure", font=("Calibri", 12), bg="red",
-                                  command=lambda: [self.deleteuser_command(), container.change_frame(DeletionPage)]).place(x=500,y=280)
+                                      command=lambda: [self.delete_user_command(container),
+                                                       container.change_frame(DeletionPage)]).place(x=500, y=280)
         self.continue_btn = tk.Button(self, text="No, Go Back", font=("Calibri", 12),
-                                  command=lambda: container.change_frame(SettingsPage)).place(x=250,y=280)
+                                      command=lambda: container.change_frame(SettingsPage)).place(x=250, y=280)
 
-    def deleteuser_command(self):
-    ########## FOR USE WITH RFID HARDWARE ##########
+    def delete_user_command(self, container):
+        ########## FOR USE WITH RFID HARDWARE ##########
+#         self.uid = container.get_card_uid()
 
-    #    self.uid = container.get_card_uid()
+#         # TODO: delete comment, used for testing
+#         print("delete command uid: {}".format(self.uid))
 
-    #    # TODO: delete comment, used for testing
-    #    print("save command uid: {}".format(self.uid))
+#         container.unregister_card()
 
-    #    df = pd.read_csv(self.file_path)
+#         df = pd.read_csv(self.file_path)
 
-    #    row_num = df.index[df['card_uid'] == self.uid].tolist()
+#         row_num = df.index[df['card_uid'] == self.uid].tolist()
 
-    #    # TODO: delete comment, used for testing
-    #    print("row_num: {}".format(row_num))
-
-    #    df.at[row_num[0], 'name'] = ' '
-    #    df.at[row_num[0], 'age'] = ' '
-    #    df.at[row_num[0], 'sex'] = ' '
-    #    df.at[row_num[0], 'activity_level'] = ' '
-
-    #    df.to_csv(self.file_path, index=False)
+#         # TODO: delete comment, used for testing
+#         print("row_num: {}".format(row_num))
 
 
-    ########## FOR USE WITHOUT RFID HARDWARE ##########
+        ########## FOR USE WITHOUT RFID HARDWARE ##########
         self.uid2 = "734a266f"
 
-        #for final project need to change path to actual Raspberry Pi
-        df = pd.read_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv")  
+        df = pd.read_csv(self.file_path)  
 
         row_num = df.index[df['card_uid'] == self.uid2].tolist()
-        
+
         df.at[row_num[0], 'name'] = ' '
         df.at[row_num[0], 'age'] = ' '
         df.at[row_num[0], 'sex'] = ' '
         df.at[row_num[0], 'activity_level'] = ' '
         df.at[row_num[0], 'registration_state'] = False
-        
-        #for final project need to change path to actual Raspberry Pi
-        df.to_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", index=False)
-        
 
+        df.to_csv(self.file_path, index=False)
+
+        
 class DeletionPage(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
-        self.delete_page_header = tk.Label(self, text = "User Deleted", font = ("Calibri", 20)).place(x=350,y=0)
-        self.delete_page_header = tk.Label(self, text = "All user data and the RFID card associated\n with this user has been successfully reset.", font = ("Calibri", 12)).place(x=280,y=230)
+        self.delete_page_header = tk.Label(self, text="User Deleted", font=("Calibri", 20)).place(x=350, y=0)
+        self.delete_page_header = tk.Label(self, text="All user data and the RFID card associated\n "
+                                                      "with this user has been successfully reset.",
+                                           font=("Calibri", 12)).place(x=280, y=230)
 
         self.continue_btn = tk.Button(self, text="Continue", font=("Calibri", 12),
-                                  command=lambda: container.change_frame(IdlePage)).place(x=380,y=280)
+                                      command=lambda: container.change_frame(IdlePage)).place(x=380, y=280)
 
 
 class MoreInfoPage(tk.Frame):
-    def __init__(self, container, parent):
-        tk.Frame.__init__(self,parent)
 
-        df = pd.read_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv")   
-        df.to_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", index=False)
+    uid = ''
 
-        self.user_reg_stats = tk.Label(self, text= "Your Attributes:", font = ("Calibri", 30)).place(x=250,y=10)
-        self.attr_1 = tk.Label(self, text= "Age: " + str(df.at[0, 'age']), font = ("Calibri", 12)).place(x=250,y=120)
-        self.attr_2 = tk.Label(self, text= "Sex: " + str(df.at[0, 'sex']), font = ("Calibri", 12)).place(x=250,y=145)
-        self.attr_3 = tk.Label(self, text= "Activity Level: " + str(df.at[0, 'activity_level']), font = ("Calibri", 12)).place(x=250,y=170)
-
-        self.go_back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
-                                  command=lambda: container.change_frame(UserHomeScreen)).place(x=380,y=230)
-
-
-class RFIDPage(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
-       
-        self.scan_card_label = tk.Label(self, text="PLEASE SCAN YOUR RFID CARD TO CONTINUE", font=("Calibri", 30)).pack()
-        #self.scan_card_label.grid(row=0, column=0)
+
+        # self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+        self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+
+        df = pd.read_csv(self.file_path)
+        df.to_csv(self.file_path, index=False)
+
+        self.user_reg_stats = tk.Label(self, text="Your Attributes:", font=("Calibri", 30)).place(x=250, y=10)
+        self.attr_1 = tk.Label(self, text="Age: " + str(df.at[0, 'age']), font=("Calibri", 12)).place(x=250, y=120)
+        self.attr_2 = tk.Label(self, text="Sex: " + str(df.at[0, 'sex']), font=("Calibri", 12)).place(x=250, y=145)
+        self.attr_3 = tk.Label(self, text="Activity Level: " + str(df.at[0, 'activity_level']),
+                               font=("Calibri", 12)).place(x=250, y=170)
 
         self.back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
-                                  command=lambda: container.change_frame(IdlePage)).place(x=380,y=290)
-        
-        ##Mock Button Test For When RFID is seeing an unregistered card
-        self.new_user_btn = tk.Button(self, text="New User", font=("Calibri", 12),bg="green",
-                                  command=lambda: container.change_frame(UserRegistrationPage)).place(x=375,y=250)
-        
+                                  command=lambda: container.change_frame(UserHomeScreen)).place(x=380,y=290)
+
 
 class WaterData:
     def __init__(self):
@@ -473,56 +559,55 @@ class WaterData:
                                "our usable water supply of fresh water would be only about \n"
                                "0.003 liter (one-half teaspoon). ":
                                    "- United States Bureau of Reclamation",
-                                   
-                                "A leak that fills up a coffee cup in 10 minutes will waste over\n"
-                                "3,000 gallons of water in a year. That's 65 glasses of water every\n"
-                                "day for a year.":
-                                    "- United States Bureau of Reclamation",
 
-                                "There is the same amount of water on Earth as there was when \n"
-                                "the Earth was formed. The water from your faucet could contain \n"
-                                "molecules that dinosaurs drank.":
-                                    "- U.S. Environmental Protection Agency",
-                                
-                                "A person can live about a month without food, but only\n"
-                                "about a week without water.":
-                                    "- U.S. Environmental Protection Agency",
+                               "A leak that fills up a coffee cup in 10 minutes will waste over\n"
+                               "3,000 gallons of water in a year. That's 65 glasses of water every\n"
+                               "day for a year.":
+                                   "- United States Bureau of Reclamation",
 
-                                "Water regulates the Earth's temperature. It also regulates the\n"
-                                "temperature of the human body, carries nutrients and oxygen to \n"
-                                "cells, cushions joints, protects organs and tissues, and removes wastes.":
-                                    "- U.S. Environmental Protection Agency",
+                               "There is the same amount of water on Earth as there was when \n"
+                               "the Earth was formed. The water from your faucet could contain \n"
+                               "molecules that dinosaurs drank.":
+                                   "- U.S. Environmental Protection Agency",
 
-                                "There aren't many qualities that are true of all life on Earth, \n"
-                                "but the need for water is one of them. It's in all living things, \n"
-                                "whether they live at the bottom of the ocean or the driest desert.":
-                                    "- National Aeronautics and Space Administration",
+                               "A person can live about a month without food, but only\n"
+                               "about a week without water.":
+                                   "- U.S. Environmental Protection Agency",
 
-                                "It's possible that comets made regular water deliveries to Earth. \n"
-                                "It would take a lot of comets to fill the ocean, but comets could \n"
-                                "well have made a big contribution.":
-                                    "- National Aeronautics and Space Administration",
+                               "Water regulates the Earth's temperature. It also regulates the\n"
+                               "temperature of the human body, carries nutrients and oxygen to \n"
+                               "cells, cushions joints, protects organs and tissues, and removes wastes.":
+                                   "- U.S. Environmental Protection Agency",
 
-                                "A newborn baby is 78 percent water. Adults are 55-60 percent water.\n"
-                                "Water is involved in just about everything our body does.":
-                                    "- National Aeronautics and Space Administration",
-                                   
-                                "Water is called the \"universal solvent\" because it dissolves more \n"
-                                "substances than any other liquid. This means that wherever water goes, \n"
-                                "either through the ground or through our bodies, it takes along valuable\n"
-                                "chemicals, minerals, and nutrients.":
-                                    "- United States Geological Survey",
+                               "There aren't many qualities that are true of all life on Earth, \n"
+                               "but the need for water is one of them. It's in all living things, \n"
+                               "whether they live at the bottom of the ocean or the driest desert.":
+                                   "- National Aeronautics and Space Administration",
 
-                                "Pure water has a neutral pH of 7, which is neither acidic (less than 7)\n"
-                                "nor basic (greater than 7).":
-                                    "- United States Geological Survey",
+                               "It's possible that comets made regular water deliveries to Earth. \n"
+                               "It would take a lot of comets to fill the ocean, but comets could \n"
+                               "well have made a big contribution.":
+                                   "- National Aeronautics and Space Administration",
 
-                                "The water molecule is highly cohesive - it is very sticky, meaning water\n"
-                                "molecules stick to each other. Water is the most cohesive among the\n"
-                                "non-metallic liquids.":
-                                    "- United States Geological Survey",
+                               "A newborn baby is 78 percent water. Adults are 55-60 percent water.\n"
+                               "Water is involved in just about everything our body does.":
+                                   "- National Aeronautics and Space Administration",
 
-                                   }
+                               "Water is called the \"universal solvent\" because it dissolves more \n"
+                               "substances than any other liquid. This means that wherever water goes, \n"
+                               "either through the ground or through our bodies, it takes along valuable\n"
+                               "chemicals, minerals, and nutrients.":
+                                   "- United States Geological Survey",
+
+                               "Pure water has a neutral pH of 7, which is neither acidic (less than 7)\n"
+                               "nor basic (greater than 7).":
+                                   "- United States Geological Survey",
+
+                               "The water molecule is highly cohesive - it is very sticky, meaning water\n"
+                               "molecules stick to each other. Water is the most cohesive among the\n"
+                               "non-metallic liquids.":
+                                   "- United States Geological Survey",
+                               }
 
     def get_water_cap(self):
         return self.water_cap
@@ -531,7 +616,6 @@ class WaterData:
         return random.choice(list(self.factDictionary.items()))
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     root = GUI()
     root.mainloop()
-    
