@@ -102,6 +102,14 @@ class GUI(tk.Tk):
         # TODO: delete comment, used for testing
         print("gui card_state: {}".format(self.card_state))
 
+    def register_card(self):
+        self.rfid.register_card(self.card_uid)
+        self.check_rfid_card_registration()
+
+    def unregister_card(self):
+        self.rfid.unregister_card(self.card_uid)
+        self.check_rfid_card_registration()
+
     def get_card_uid(self):
         return self.card_uid
 
@@ -238,6 +246,8 @@ class UserRegistrationPage(tk.Frame):
         # TODO: delete comment, used for testing
         print("save command uid: {}".format(self.uid))
 
+        container.register_card()
+
         df = pd.read_csv(self.file_path)
 
         row_num = df.index[df['card_uid'] == self.uid].tolist()
@@ -254,6 +264,9 @@ class UserRegistrationPage(tk.Frame):
 
 
 class UserHomeScreen(tk.Frame):
+
+    uid = ''
+
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
@@ -321,6 +334,8 @@ class DeletionConfirmationPage(tk.Frame):
         # TODO: delete comment, used for testing
         print("delete command uid: {}".format(self.uid))
 
+        container.unregister_card()
+
         df = pd.read_csv(self.file_path)
 
         row_num = df.index[df['card_uid'] == self.uid].tolist()
@@ -350,6 +365,9 @@ class DeletionPage(tk.Frame):
 
 
 class MoreInfoPage(tk.Frame):
+
+    uid = ''
+
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
