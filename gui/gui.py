@@ -18,6 +18,9 @@ class GUI(tk.Tk):
         self.frame_dictionary = {}
         self.frame_object_list = []
 
+        # self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+        self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+
         self.csv_initialize()
         self.setup_gui()
         self.create_container()
@@ -63,10 +66,9 @@ class GUI(tk.Tk):
         self.frame.tkraise()
 
     def csv_initialize(self):
-        # file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-        file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
 
-        if not path.exists(file_path):
+        if not path.exists(self.file_path):
+
             columns = ['card_uid', 'registration_state', 'name', 'sex', 'age', 'activity_level', 'daily_hydration',
                        'num_days', 'num_days_goal', 'water_dispensed', 'avg_intake']
 
@@ -80,7 +82,7 @@ class GUI(tk.Tk):
             ]
 
             # open file, write data to file
-            with open(file_path, 'w', newline='') as csv_file:
+            with open(self.file_path, 'w', newline='') as csv_file:
                 writer = csv.writer(csv_file)
                 writer.writerow(columns)
                 writer.writerows(user_data)
@@ -198,6 +200,9 @@ class UserRegistrationPage(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
+        # self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+        self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+
         self.welcome_new_user_screen = tk.Label(self, text="Hello, New User!", font=("Calibri", 12)).place(x=350, y=0)
         self.user_intro = tk.Label(self, text="What is your: ", font=("Calibri", 15)).place(x=240, y=120)
         self.user_name = tk.Label(self, text="Name").place(x=240, y=160)
@@ -226,31 +231,25 @@ class UserRegistrationPage(tk.Frame):
                                                  container.change_frame(UserHomeScreen)]).place(x=350, y=350)
 
     def save_command(self):
-        # file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-        file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
-
-        df = pd.read_csv(file_path)
+        df = pd.read_csv(self.file_path)
 
         df.at[0, 'name'] = self.inputName.get()
         df.at[0, 'age'] = self.inputAge.get()
         df.at[0, 'sex'] = self.s.get()
         df.at[0, 'activity_level'] = self.s2.get()
 
-        df.to_csv(file_path, index=False)
+        df.to_csv(self.file_path, index=False)
 
 
 class UserHomeScreen(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
-        # Todo: Make this compatible with multiple users use pandas and use if/else statments with increments of row number
-        # for final project need to change path to actual Raspberry Pi
+        # self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+        self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
 
-        # file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-        file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
-
-        df = pd.read_csv(file_path)
-        df.to_csv(file_path, index=False)
+        df = pd.read_csv(self.file_path)
+        df.to_csv(self.file_path, index=False)
 
         self.welcome_home_screen = tk.Label(self, text="Hello, " + str(df.at[0, 'name']) + "!",
                                             font=("Calibri", 20)).place(x=350, y=5)
@@ -287,6 +286,9 @@ class DeletionConfirmationPage(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
+        # self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+        self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+
         self.delete_confirm_header = tk.Label(self, text="Are You Sure?", font=("Calibri", 20)).place(x=350, y=0)
         self.delete_confirm_info_header = tk.Label(self, text="This Action Cannot Be Undone!", font=("Calibri", 20),
                                                    fg="red").place(x=250, y=100)
@@ -298,18 +300,14 @@ class DeletionConfirmationPage(tk.Frame):
                                       command=lambda: container.change_frame(SettingsPage)).place(x=250, y=280)
 
     def delete_user_command(self):
-        # for final project need to change path to actual Raspberry Pi
-        # file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-        file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
-
-        df = pd.read_csv(file_path)
+        df = pd.read_csv(self.file_path)
 
         df.at[0, 'name'] = ' '
         df.at[0, 'age'] = ' '
         df.at[0, 'sex'] = ' '
         df.at[0, 'activity_level'] = ' '
 
-        df.to_csv(file_path, index=False)
+        df.to_csv(self.file_path, index=False)
 
 
 class DeletionPage(tk.Frame):
@@ -329,11 +327,11 @@ class MoreInfoPage(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
-        # file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-        file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+        # self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+        self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
 
-        df = pd.read_csv(file_path)
-        df.to_csv(file_path, index=False)
+        df = pd.read_csv(self.file_path)
+        df.to_csv(self.file_path, index=False)
 
         self.user_reg_stats = tk.Label(self, text="Your Attributes:", font=("Calibri", 30)).place(x=250, y=10)
         self.attr_1 = tk.Label(self, text="Age: " + str(df.at[0, 'age']), font=("Calibri", 12)).place(x=250, y=120)
