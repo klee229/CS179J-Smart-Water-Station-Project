@@ -18,8 +18,8 @@ class GUI(tk.Tk):
         self.frame_dictionary = {}
         self.frame_object_list = []
 
-        # self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-        self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+        self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+        # self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
 
         self.csv_initialize()
         self.setup_gui()
@@ -40,8 +40,8 @@ class GUI(tk.Tk):
         self.container.pack()
 
     def create_frames(self):
-        self.frame_object_list = [IdlePage, RFIDPage, UserRegistrationPage, UserHomeScreen, SettingsPage, 
-                                  DeletionConfirmationPage ,DeletionPage, MoreInfoPage, ChangeAttributesPage, 
+        self.frame_object_list = [IdlePage, RFIDPage, UserRegistrationPage, UserHomeScreen, SettingsPage,
+                                  DeletionConfirmationPage, DeletionPage, MoreInfoPage, ChangeAttributesPage,
                                   EditAttributes]
 
         for the_frame in self.frame_object_list:
@@ -69,7 +69,6 @@ class GUI(tk.Tk):
     def csv_initialize(self):
 
         if not path.exists(self.file_path):
-
             columns = ['card_uid', 'registration_state', 'name', 'sex', 'age', 'activity_level', 'daily_hydration',
                        'num_days', 'num_days_goal', 'water_dispensed', 'avg_intake']
 
@@ -117,7 +116,7 @@ class GUI(tk.Tk):
     def get_card_state(self):
         return self.card_state
 
-      
+
 class IdlePage(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
@@ -146,7 +145,7 @@ class IdlePage(tk.Frame):
 
         self.next_btn = tk.Button(self, text="-- Press this button to continue --", font=("Calibri", 12),
                                   command=lambda: container.change_frame(RFIDPage))
-        
+
         # structure the GUI page using a grid
         self.idle_label.grid(row=0, column=0, sticky="nw", padx=7, pady=7)
         # self.water_cap_label.grid(row=0, column=2, sticky="ne", padx=7, pady=7)
@@ -159,8 +158,8 @@ class IdlePage(tk.Frame):
     def update_text(self):
         self.fact, self.source = self.water_data.get_fact_source()
 
-        self.fact_source_label.config(text=self.fact + "\n\n" + self.source, font=("Calibri", 12),
-                                      justify="left", anchor="w")
+        self.fact_source_label.config(text=self.fact + "\n\n" + self.source, font=("Calibri", 12), justify="left",
+                                      anchor="w")
         # 15000 = 15 seconds, this can change to a different value if need be
         self.fact_source_label.after(15000, self.update_text)
 
@@ -205,13 +204,13 @@ class RFIDPage(tk.Frame):
         else:
             container.change_frame(UserRegistrationPage)
 
-            
+
 class UserRegistrationPage(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
-        # self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-        self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+        self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+        # self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
 
         self.uid = ''
 
@@ -241,61 +240,61 @@ class UserRegistrationPage(tk.Frame):
         self.submit = tk.Button(self, text="Submit",
                                 command=lambda: [self.save_command(container), container.update_frame(UserHomeScreen),
                                                  container.change_frame(UserHomeScreen)]).place(x=350, y=350)
-        
+
         self.go_back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
-                                     command=lambda: container.change_frame(RFIDPage)).place(x=345,y=400)
+                                     command=lambda: container.change_frame(RFIDPage)).place(x=345, y=400)
 
     def save_command(self, container):
-        ########## FOR USE WITH RFID HARDWARE ##########
-#         self.uid = container.get_card_uid()
+        """
+        FOR USE WITH RFID HARDWARE
+        """
+        # self.uid = container.get_card_uid()
+        #
+        # # TODO: delete comment, used for testing
+        # print("save command uid: {}".format(self.uid))
+        #
+        # container.register_card()
+        #
+        # df = pd.read_csv(self.file_path)
+        #
+        # row_num = df.index[df['card_uid'] == self.uid].tolist()
+        #
+        # # TODO: delete comment, used for testing
+        # print("row_num: {}".format(row_num))
+        #
+        # df.at[row_num[0], 'name'] = self.input_name.get()
+        # df.at[row_num[0], 'age'] = self.input_age.get()
+        # df.at[row_num[0], 'sex'] = self.s.get()
+        # df.at[row_num[0], 'activity_level'] = self.s2.get()
+        #
+        # df.to_csv(self.file_path, index=False)
 
-#         # TODO: delete comment, used for testing
-#         print("save command uid: {}".format(self.uid))
-
-#         container.register_card()
-
-#         df = pd.read_csv(self.file_path)
-
-#         row_num = df.index[df['card_uid'] == self.uid].tolist()
-
-#         # TODO: delete comment, used for testing
-#         print("row_num: {}".format(row_num))
-
-#         df.at[row_num[0], 'name'] = self.input_name.get()
-#         df.at[row_num[0], 'age'] = self.input_age.get()
-#         df.at[row_num[0], 'sex'] = self.s.get()
-#         df.at[row_num[0], 'activity_level'] = self.s2.get()
-
-#         df.to_csv(self.file_path, index=False)
-
-
-        ########## FOR USE WITHOUT RFID HARDWARE ##########
+        """
+        FOR USE WITHOUT RFID HARDWARE 
+        """
         self.uid = "734a266f"
 
-        df = pd.read_csv(self.file_path)   
+        df = pd.read_csv(self.file_path)
 
         row_num = df.index[df['card_uid'] == self.uid].tolist()
 
-        df.at[row_num[0], 'name'] = self.inputName.get()
-        df.at[row_num[0], 'age'] = self.inputAge.get()
+        df.at[row_num[0], 'name'] = self.input_name.get()
+        df.at[row_num[0], 'age'] = self.input_age.get()
         df.at[row_num[0], 'sex'] = self.s.get()
         df.at[row_num[0], 'activity_level'] = self.s2.get()
         df.at[row_num[0], 'registration_state'] = True
 
         df.to_csv(self.file_path, index=False)
 
-        
-class UserHomeScreen(tk.Frame):
 
+class UserHomeScreen(tk.Frame):
     uid = ''
 
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
-        # self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-        self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
-
-        # self.uid = container.get_card_uid()
+        self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+        # self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
 
         df = pd.read_csv(self.file_path)
         df.to_csv(self.file_path, index=False)
@@ -327,125 +326,139 @@ class SettingsPage(tk.Frame):
                                          command=lambda: container.change_frame(DeletionConfirmationPage)).place(x=370,
                                                                                                                  y=100)
         self.change_user_attr_btn = tk.Button(self, text="Edit My Attributes", font=("Calibri", 12),
-                                              command=lambda: container.change_frame(ChangeAttributesPage)).place(x=350,y=200)
-        
+                                              command=lambda: container.change_frame(ChangeAttributesPage)).place(x=350,
+                                                                                                                  y=200)
+
         self.go_back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
-                                     command=lambda: container.change_frame(UserHomeScreen)).place(x=380, y=200)
+                                     command=lambda: container.change_frame(UserHomeScreen)).place(x=380, y=300)
 
 
 class ChangeAttributesPage(tk.Frame):
-
-    attributeselection = 0
+    attribute_selection = 0
 
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
-        self.attr_settings_header = tk.Label(self, text = "What Would You Like To Edit?", font = ("Calibri", 20)).place(x=250,y=0)
+        self.attr_settings_header = tk.Label(self, text="What Would You Like To Edit?",
+                                             font=("Calibri", 20)).place(x=250, y=0)
 
         self.delete_user_btn1 = tk.Button(self, text="My Name", font=("Calibri", 12),
-                                          command=lambda: [self.attributechange(1), container.update_frame(Edit_Attributes), 
-                                                           container.change_frame(Edit_Attributes)]).place(x=150,y=200)
-        
+                                          command=lambda: [self.attribute_change(1),
+                                                           container.update_frame(EditAttributes),
+                                                           container.change_frame(EditAttributes)]).place(x=150, y=200)
+
         self.change_user_attr_btn = tk.Button(self, text="My Age", font=("Calibri", 12),
-                                              command=lambda: [self.attributechange(2), container.update_frame(Edit_Attributes), 
-                                                               container.change_frame(Edit_Attributes)]).place(x=280,y=200)
+                                              command=lambda: [self.attribute_change(2),
+                                                               container.update_frame(EditAttributes),
+                                                               container.change_frame(EditAttributes)]).place(x=280,
+                                                                                                              y=200)
 
         self.change_user_attr_btn = tk.Button(self, text="My Sex", font=("Calibri", 12),
-                                              command=lambda: [self.attributechange(3), container.update_frame(Edit_Attributes), 
-                                                               container.change_frame(Edit_Attributes)]).place(x=390,y=200)
+                                              command=lambda: [self.attribute_change(3),
+                                                               container.update_frame(EditAttributes),
+                                                               container.change_frame(EditAttributes)]).place(x=390,
+                                                                                                              y=200)
 
         self.change_user_attr_btn = tk.Button(self, text="My Activity Level", font=("Calibri", 12),
-                                              command=lambda: [self.attributechange(4), container.update_frame(Edit_Attributes), 
-                                                               container.change_frame(Edit_Attributes)]).place(x=510,y=200)
-        
-        self.go_back_btn1 = tk.Button(self, text="I'm Done, Go Back", font=("Calibri", 12),
-                                      command=lambda: container.change_frame(SettingsPage)).place(x=350,y=300)
+                                              command=lambda: [self.attribute_change(4),
+                                                               container.update_frame(EditAttributes),
+                                                               container.change_frame(EditAttributes)]).place(x=510,
+                                                                                                              y=200)
 
-    def attributechange(self, num):
-        ChangeAttributesPage.attributeselection = num
-       
+        self.go_back_btn1 = tk.Button(self, text="I'm Done, Go Back", font=("Calibri", 12),
+                                      command=lambda: container.change_frame(SettingsPage)).place(x=350, y=300)
+
+    def attribute_change(self, num):
+        ChangeAttributesPage.attribute_selection = num
+
 
 class EditAttributes(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
-        
-        # self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-        self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
 
-        if ChangeAttributesPage.attributeselection == 1:
-            self.userName1 = tk.Label(self, text = "Name").place(x=240,y=160)
+        self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+        # self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+
+        self.uid = ''
+
+        if ChangeAttributesPage.attribute_selection == 1:
+            self.userName1 = tk.Label(self, text="Name").place(x=240, y=160)
             self.inputName1 = tk.StringVar()
-            self.usrNameIn1 = tk.Entry(self, width = 30, textvariable = self.inputName1).place(x=310,y=160)
-        elif ChangeAttributesPage.attributeselection == 2:
-            self.userAge1 = tk.Label(self, text = "Age").place(x=240,y=160)
+            self.usrNameIn1 = tk.Entry(self, width=30, textvariable=self.inputName1).place(x=310, y=160)
+        elif ChangeAttributesPage.attribute_selection == 2:
+            self.userAge1 = tk.Label(self, text="Age").place(x=240, y=160)
             self.inputAge1 = tk.StringVar()
-            self.usrAgeIn1 = tk.Entry(self, width = 30, textvariable = self.inputAge1).place(x=310,y=160)
-        elif ChangeAttributesPage.attributeselection == 3:
-            self.usrS_edit = tk.Label(self, text = "Are you: ").place(x=270,y=160)
+            self.usrAgeIn1 = tk.Entry(self, width=30, textvariable=self.inputAge1).place(x=310, y=160)
+        elif ChangeAttributesPage.attribute_selection == 3:
+            self.usrS_edit = tk.Label(self, text="Are you: ").place(x=270, y=160)
             self.s_edit = tk.StringVar()
-            self.usrSSelection_edit = ttk.Combobox(self, width = 7, textvariable = self.s_edit)
-            self.usrSSelection_edit.place(x=340,y=160)
+            self.usrSSelection_edit = ttk.Combobox(self, width=7, textvariable=self.s_edit)
+            self.usrSSelection_edit.place(x=340, y=160)
             self.usrSSelection_edit['values'] = ('Male', 'Female')
             self.usrSSelection_edit.current()
-        elif ChangeAttributesPage.attributeselection == 4:
-            self.usrS2_edit = tk.Label(self, text = "What is your activity level? ").place(x=240,y=160)
+        elif ChangeAttributesPage.attribute_selection == 4:
+            self.usrS2_edit = tk.Label(self, text="What is your activity level? ").place(x=240, y=160)
             self.s2_edit = tk.StringVar()
-            self.usrSSelection2_edit = ttk.Combobox(self, width = 20, textvariable = self.s2_edit)
-            self.usrSSelection2_edit.place(x=310,y=190)
+            self.usrSSelection2_edit = ttk.Combobox(self, width=20, textvariable=self.s2_edit)
+            self.usrSSelection2_edit.place(x=310, y=190)
             self.usrSSelection2_edit['values'] = ('Sedentary', 'Moderate', 'Active')
             self.usrSSelection2_edit.current()
 
-        self.submit = tk.Button(self,text="Submit", command=lambda: [self.save_command1(), container.update_frame(UserHomeScreen), 
-                                                                     container.change_frame(ChangeAttributesPage)]).place(x=350, y = 350)
+        self.submit = tk.Button(self, text="Submit",
+                                command=lambda: [self.save_command1(container), container.update_frame(UserHomeScreen),
+                                                 container.change_frame(ChangeAttributesPage)]).place(x=350, y=350)
 
-    def save_command1(self):
-        ########## FOR USE WITH RFID HARDWARE ##########
-    #   self.uid = container.get_card_uid()
+    def save_command1(self, container):
+        """
+        FOR USE WITH RFID HARDWARE
+        """
+        # self.uid = container.get_card_uid()
+        #
+        # # TODO: delete comment, used for testing
+        # print("save command uid: {}".format(self.uid))
+        #
+        # df = pd.read_csv(self.file_path)
+        #
+        # row_num = df.index[df['card_uid'] == self.uid].tolist()
+        #
+        # # TODO: delete comment, used for testing
+        # print("row_num: {}".format(row_num))
+        #
+        # if ChangeAttributesPage.attribute_selection == 1:
+        #     df.at[row_num[0], 'name'] = self.inputName1.get()
+        #
+        # elif ChangeAttributesPage.attribute_selection == 2:
+        #     df.at[row_num[0], 'age'] = self.inputAge1.get()
+        #
+        # elif ChangeAttributesPage.attribute_selection == 3:
+        #     df.at[row_num[0], 'sex'] = self.s_edit.get()
+        #
+        # elif ChangeAttributesPage.attribute_selection == 4:
+        #     df.at[row_num[0], 'activity_level'] = self.s2_edit.get()
+        #
+        # df.to_csv(self.file_path, index=False)
 
-    #   # TODO: delete comment, used for testing
-    #    print("save command uid: {}".format(self.uid))
-
-    #   df = pd.read_csv(self.file_path)
-
-    #   row_num = df.index[df['card_uid'] == self.uid].tolist()
-
-    #   # TODO: delete comment, used for testing
-    #    print("row_num: {}".format(row_num))
-        
-    #   if ChangeAttributesPage.attributeselection == 1:
-    #        df.at[row_num[0], 'name'] = self.inputName1.get()
-          
-    #    elif ChangeAttributesPage.attributeselection == 2:
-    #        df.at[row_num[0], 'age'] = self.inputAge1.get()
-
-    #    elif ChangeAttributesPage.attributeselection == 3:
-    #        df.at[row_num[0], 'sex'] = self.s_edit.get()
-
-    #    elif ChangeAttributesPage.attributeselection == 4:
-    #        df.at[row_num[0], 'activity_level'] = self.s2_edit.get()
-
-    #    df.to_csv(self.file_path, index=False)
-    
-
-        ########## FOR USE WITHOUT RFID HARDWARE ##########
-        self.uid1 = "734a266f"
+        """
+        FOR USE WITHOUT RFID HARDWARE 
+        """
+        self.uid = "734a266f"
 
         df = pd.read_csv(self.file_path)
 
-        row_num = df.index[df['card_uid'] == self.uid1].tolist()
+        row_num = df.index[df['card_uid'] == self.uid].tolist()
 
-        if ChangeAttributesPage.attributeselection == 1:
+        if ChangeAttributesPage.attribute_selection == 1:
             df.at[row_num[0], 'name'] = self.inputName1.get()
-            
-        elif ChangeAttributesPage.attributeselection == 2:
+
+        elif ChangeAttributesPage.attribute_selection == 2:
             df.at[row_num[0], 'age'] = self.inputAge1.get()
 
-        elif ChangeAttributesPage.attributeselection == 3:
+        elif ChangeAttributesPage.attribute_selection == 3:
             df.at[row_num[0], 'sex'] = self.s_edit.get()
 
-        elif ChangeAttributesPage.attributeselection == 4:
+        elif ChangeAttributesPage.attribute_selection == 4:
             df.at[row_num[0], 'activity_level'] = self.s2_edit.get()
-            
+
         df.to_csv(self.file_path, index=False)
 
 
@@ -453,8 +466,8 @@ class DeletionConfirmationPage(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
-        # self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-        self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+        self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+        # self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
 
         self.uid = ''
 
@@ -469,28 +482,38 @@ class DeletionConfirmationPage(tk.Frame):
                                       command=lambda: container.change_frame(SettingsPage)).place(x=250, y=280)
 
     def delete_user_command(self, container):
-        ########## FOR USE WITH RFID HARDWARE ##########
-#         self.uid = container.get_card_uid()
+        """
+        FOR USE WITH RFID HARDWARE
+        """
+        # self.uid = container.get_card_uid()
+        #
+        # # TODO: delete comment, used for testing
+        # print("delete command uid: {}".format(self.uid))
+        #
+        # container.unregister_card()
+        #
+        # df = pd.read_csv(self.file_path)
+        #
+        # row_num = df.index[df['card_uid'] == self.uid].tolist()
+        #
+        # # TODO: delete comment, used for testing
+        # print("row_num: {}".format(row_num))
+        #
+        # df.at[row_num[0], 'name'] = ' '
+        # df.at[row_num[0], 'age'] = ' '
+        # df.at[row_num[0], 'sex'] = ' '
+        # df.at[row_num[0], 'activity_level'] = ' '
+        #
+        # df.to_csv(self.file_path, index=False)
 
-#         # TODO: delete comment, used for testing
-#         print("delete command uid: {}".format(self.uid))
+        """
+        FOR USE WITHOUT RFID HARDWARE 
+        """
+        self.uid = "734a266f"
 
-#         container.unregister_card()
+        df = pd.read_csv(self.file_path)
 
-#         df = pd.read_csv(self.file_path)
-
-#         row_num = df.index[df['card_uid'] == self.uid].tolist()
-
-#         # TODO: delete comment, used for testing
-#         print("row_num: {}".format(row_num))
-
-
-        ########## FOR USE WITHOUT RFID HARDWARE ##########
-        self.uid2 = "734a266f"
-
-        df = pd.read_csv(self.file_path)  
-
-        row_num = df.index[df['card_uid'] == self.uid2].tolist()
+        row_num = df.index[df['card_uid'] == self.uid].tolist()
 
         df.at[row_num[0], 'name'] = ' '
         df.at[row_num[0], 'age'] = ' '
@@ -500,7 +523,7 @@ class DeletionConfirmationPage(tk.Frame):
 
         df.to_csv(self.file_path, index=False)
 
-        
+
 class DeletionPage(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
@@ -515,14 +538,13 @@ class DeletionPage(tk.Frame):
 
 
 class MoreInfoPage(tk.Frame):
-
     uid = ''
 
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
-        # self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-        self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+        self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+        # self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
 
         df = pd.read_csv(self.file_path)
         df.to_csv(self.file_path, index=False)
@@ -534,7 +556,7 @@ class MoreInfoPage(tk.Frame):
                                font=("Calibri", 12)).place(x=250, y=170)
 
         self.back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
-                                  command=lambda: container.change_frame(UserHomeScreen)).place(x=380,y=290)
+                                  command=lambda: container.change_frame(UserHomeScreen)).place(x=380, y=290)
 
 
 class WaterData:
