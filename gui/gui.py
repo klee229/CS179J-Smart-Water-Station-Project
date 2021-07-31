@@ -159,18 +159,46 @@ class UserRegistrationPage(tk.Frame):
         self.usrSSelection2['values'] = ('Sedentary', 'Moderate', 'Active')
         self.usrSSelection2.current()
       
-        self.submit = tk.Button(self,text="Submit", command=lambda: [self.save_command(), container.update_frame(UserHomeScreen), container.change_frame(UserHomeScreen)]).place(x=350, y = 350)
+        self.submit = tk.Button(self,text="Submit", font=("Calibri", 12),command=lambda: [self.save_command(), container.update_frame(UserHomeScreen), container.change_frame(UserHomeScreen)]).place(x=350, y = 350)
+        self.go_back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
+                                  command=lambda: container.change_frame(RFIDPage)).place(x=345,y=400)
 
     def save_command(self):
-            
-            df = pd.read_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv")   
+    ########## FOR USE WITH RFID HARDWARE ##########
+    #    self.uid = container.get_card_uid()
 
-            df.at[0, 'name'] = self.inputName.get()
-            df.at[0, 'age'] = self.inputAge.get()
-            df.at[0, 'sex'] = self.s.get()
-            df.at[0, 'activity_level'] = self.s2.get()
+    #    # TODO: delete comment, used for testing
+    #    print("save command uid: {}".format(self.uid))
 
-            df.to_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", index=False)  
+    #    df = pd.read_csv(self.file_path)
+
+    #    row_num = df.index[df['card_uid'] == self.uid].tolist()
+
+    #    # TODO: delete comment, used for testing
+    #    print("row_num: {}".format(row_num))
+
+    #    df.at[row_num[0], 'name'] = self.input_name.get()
+    #    df.at[row_num[0], 'age'] = self.input_age.get()
+    #    df.at[row_num[0], 'sex'] = self.s.get()
+    #    df.at[row_num[0], 'activity_level'] = self.s2.get()
+
+    #    df.to_csv(self.file_path, index=False)
+
+    
+    ########## FOR USE WITHOUT RFID HARDWARE ##########
+        self.uid = "734a266f"
+
+        df = pd.read_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv")   
+
+        row_num = df.index[df['card_uid'] == self.uid].tolist()
+
+        df.at[row_num[0], 'name'] = self.inputName.get()
+        df.at[row_num[0], 'age'] = self.inputAge.get()
+        df.at[row_num[0], 'sex'] = self.s.get()
+        df.at[row_num[0], 'activity_level'] = self.s2.get()
+        df.at[row_num[0], 'registration_state'] = True
+
+        df.to_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", index=False)  
 
            
 class UserHomeScreen(tk.Frame):
@@ -178,7 +206,6 @@ class UserHomeScreen(tk.Frame):
       
         tk.Frame.__init__(self, parent)
              
-        #Todo: Make this compatible with multiple users use pandas and use if/else statments with increments of row number
         #for final project need to change path to actual Raspberry Pi
         df = pd.read_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv")   
         df.to_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", index=False)
@@ -244,8 +271,6 @@ class Edit_Attributes(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
-        
-      #  print(attributeselection)
         if ChangeAttributesPage.attributeselection == 1:
             self.userName1 = tk.Label(self, text = "Name").place(x=240,y=160)
             self.inputName1 = tk.StringVar()
@@ -272,23 +297,61 @@ class Edit_Attributes(tk.Frame):
         self.submit = tk.Button(self,text="Submit", command=lambda: [self.save_command1(), container.update_frame(UserHomeScreen), container.change_frame(ChangeAttributesPage)]).place(x=350, y = 350)
 
     def save_command1(self):
+    ########## FOR USE WITH RFID HARDWARE ##########
+
+    #   self.uid = container.get_card_uid()
+
+    #   # TODO: delete comment, used for testing
+    #    print("save command uid: {}".format(self.uid))
+
+    #   df = pd.read_csv(self.file_path)
+
+    #   row_num = df.index[df['card_uid'] == self.uid].tolist()
+
+    #   # TODO: delete comment, used for testing
+    #    print("row_num: {}".format(row_num))
         
+    #   if ChangeAttributesPage.attributeselection == 1:
+
+    #        df.at[row_num[0], 'name'] = self.inputName1.get()
+            
+    #    elif ChangeAttributesPage.attributeselection == 2:
+            
+    #        df.at[row_num[0], 'age'] = self.inputAge1.get()
+
+    #    elif ChangeAttributesPage.attributeselection == 3:
+            
+    #        df.at[row_num[0], 'sex'] = self.s_edit.get()
+
+    #    elif ChangeAttributesPage.attributeselection == 4:
+
+    #        df.at[row_num[0], 'activity_level'] = self.s2_edit.get()
+
+    #    df.to_csv(self.file_path, index=False)
+    
+
+        ########## FOR USE WITHOUT RFID HARDWARE ##########
+        self.uid1 = "734a266f"
+
         df = pd.read_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv")
+
+        row_num = df.index[df['card_uid'] == self.uid1].tolist()
+
         if ChangeAttributesPage.attributeselection == 1:
 
-            df.at[0, 'name'] = self.inputName1.get()
+            df.at[row_num[0], 'name'] = self.inputName1.get()
             
         elif ChangeAttributesPage.attributeselection == 2:
             
-            df.at[0, 'age'] = self.inputAge1.get()
+            df.at[row_num[0], 'age'] = self.inputAge1.get()
 
         elif ChangeAttributesPage.attributeselection == 3:
             
-            df.at[0, 'sex'] = self.s_edit.get()
+            df.at[row_num[0], 'sex'] = self.s_edit.get()
 
         elif ChangeAttributesPage.attributeselection == 4:
 
-            df.at[0, 'activity_level'] = self.s2_edit.get()
+            df.at[row_num[0], 'activity_level'] = self.s2_edit.get()
             
         df.to_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", index=False)
 
@@ -306,14 +369,41 @@ class DeletionConfirmationPage(tk.Frame):
                                   command=lambda: container.change_frame(SettingsPage)).place(x=250,y=280)
 
     def deleteuser_command(self):
-        
+    ########## FOR USE WITH RFID HARDWARE ##########
+
+    #    self.uid = container.get_card_uid()
+
+    #    # TODO: delete comment, used for testing
+    #    print("save command uid: {}".format(self.uid))
+
+    #    df = pd.read_csv(self.file_path)
+
+    #    row_num = df.index[df['card_uid'] == self.uid].tolist()
+
+    #    # TODO: delete comment, used for testing
+    #    print("row_num: {}".format(row_num))
+
+    #    df.at[row_num[0], 'name'] = ' '
+    #    df.at[row_num[0], 'age'] = ' '
+    #    df.at[row_num[0], 'sex'] = ' '
+    #    df.at[row_num[0], 'activity_level'] = ' '
+
+    #    df.to_csv(self.file_path, index=False)
+
+
+    ########## FOR USE WITHOUT RFID HARDWARE ##########
+        self.uid2 = "734a266f"
+
         #for final project need to change path to actual Raspberry Pi
         df = pd.read_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv")  
+
+        row_num = df.index[df['card_uid'] == self.uid2].tolist()
         
-        df.at[0, 'name'] = ' '
-        df.at[0, 'age'] = ' '
-        df.at[0, 'sex'] = ' '
-        df.at[0, 'activity_level'] = ' '
+        df.at[row_num[0], 'name'] = ' '
+        df.at[row_num[0], 'age'] = ' '
+        df.at[row_num[0], 'sex'] = ' '
+        df.at[row_num[0], 'activity_level'] = ' '
+        df.at[row_num[0], 'registration_state'] = False
         
         #for final project need to change path to actual Raspberry Pi
         df.to_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", index=False)
