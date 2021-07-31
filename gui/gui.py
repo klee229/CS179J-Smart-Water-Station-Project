@@ -3,6 +3,7 @@ import random
 import csv
 import os
 import time
+import sys
 import pandas as pd
 from os import path
 from tkinter import ttk
@@ -32,7 +33,7 @@ class GUI(tk.Tk):
         self.container.pack()
 
     def create_frames(self):
-        self.frame_object_list = [IdlePage, RFIDPage, UserRegistrationPage, UserHomeScreen, SettingsPage, DeletionConfirmationPage ,DeletionPage, MoreInfoPage]
+        self.frame_object_list = [IdlePage, RFIDPage, UserRegistrationPage, UserHomeScreen, SettingsPage, DeletionConfirmationPage ,DeletionPage, MoreInfoPage, ChangeAttributesPage, Edit_Attributes]
 
         for the_frame in self.frame_object_list:
             self.frame = the_frame(self, self.container)
@@ -82,9 +83,7 @@ class GUI(tk.Tk):
     
         else:
         # create pandas dataframe of the csv file
-    
             df = pd.read_csv(file_path)
-
             df.to_csv(file_path, index=False)
     
 
@@ -117,7 +116,7 @@ class IdlePage(tk.Frame):
         
         self.next_btn = tk.Button(self, text="-- Press this button to continue --", font=("Calibri", 12),
                                   command=lambda: container.change_frame(RFIDPage))
-
+        
         # structure the GUI page using a grid
         self.idle_label.grid(row=0, column=0, sticky="nw", padx=7, pady=7)
        # self.water_cap_label.grid(row=0, column=2, sticky="ne", padx=7, pady=7)
@@ -131,7 +130,7 @@ class IdlePage(tk.Frame):
                                           justify="left", anchor="w")
         #15000 = 15 seconds, this can change to a different value if need be
         self.fact_source_label.after(15000, self.update_text)
-
+    
 
 class UserRegistrationPage(tk.Frame):
     def __init__(self, container, parent):
@@ -157,7 +156,7 @@ class UserRegistrationPage(tk.Frame):
         self.s2 = tk.StringVar()
         self.usrSSelection2 = ttk.Combobox(self, width = 20, textvariable = self.s2)
         self.usrSSelection2.place(x=310,y=310)
-        self.usrSSelection2['values'] = ('No Activity', 'Low Activity', 'Moderate Activity', 'High Activity', 'Extreme Activity')
+        self.usrSSelection2['values'] = ('Sedentary', 'Moderate', 'Active')
         self.usrSSelection2.current()
       
         self.submit = tk.Button(self,text="Submit", command=lambda: [self.save_command(), container.update_frame(UserHomeScreen), container.change_frame(UserHomeScreen)]).place(x=350, y = 350)
@@ -170,7 +169,6 @@ class UserRegistrationPage(tk.Frame):
             df.at[0, 'age'] = self.inputAge.get()
             df.at[0, 'sex'] = self.s.get()
             df.at[0, 'activity_level'] = self.s2.get()
-            df.at[0, 'registration_state'] = True
 
             df.to_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", index=False)  
 
@@ -206,9 +204,93 @@ class SettingsPage(tk.Frame):
 
         self.delete_user_btn = tk.Button(self, text="Delete User", font=("Calibri", 12), bg="red",
                                   command=lambda: container.change_frame(DeletionConfirmationPage)).place(x=370,y=100)
-        
+        self.change_user_attr_btn = tk.Button(self, text="Edit My Attributes", font=("Calibri", 12),
+                                  command=lambda: container.change_frame(ChangeAttributesPage)).place(x=350,y=200)
         self.go_back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
-                                  command=lambda: container.change_frame(UserHomeScreen)).place(x=380,y=200)
+                                  command=lambda: container.change_frame(UserHomeScreen)).place(x=380,y=300)
+
+
+class ChangeAttributesPage(tk.Frame):
+
+    attributeselection = 0
+
+    def __init__(self, container, parent):
+        tk.Frame.__init__(self, parent)
+
+     
+        self.attr_settings_header = tk.Label(self, text = "What Would You Like To Edit?", font = ("Calibri", 20)).place(x=250,y=0)
+
+        self.delete_user_btn1 = tk.Button(self, text="My Name", font=("Calibri", 12),
+                                  command=lambda: [self.attributechange(1), container.update_frame(Edit_Attributes), container.change_frame(Edit_Attributes)]).place(x=150,y=200)
+        
+        self.change_user_attr_btn = tk.Button(self, text="My Age", font=("Calibri", 12),
+                                  command=lambda: [self.attributechange(2), container.update_frame(Edit_Attributes), container.change_frame(Edit_Attributes)]).place(x=280,y=200)
+
+        self.change_user_attr_btn = tk.Button(self, text="My Sex", font=("Calibri", 12),
+                                  command=lambda: [self.attributechange(3), container.update_frame(Edit_Attributes), container.change_frame(Edit_Attributes)]).place(x=390,y=200)
+
+        self.change_user_attr_btn = tk.Button(self, text="My Activity Level", font=("Calibri", 12),
+                                  command=lambda: [self.attributechange(4), container.update_frame(Edit_Attributes), container.change_frame(Edit_Attributes)]).place(x=510,y=200)
+        
+        self.go_back_btn1 = tk.Button(self, text="I'm Done, Go Back", font=("Calibri", 12),
+                                  command=lambda: container.change_frame(SettingsPage)).place(x=350,y=300)
+
+    def attributechange(self, num):
+       
+        ChangeAttributesPage.attributeselection = num
+       
+
+class Edit_Attributes(tk.Frame):
+    def __init__(self, container, parent):
+        tk.Frame.__init__(self, parent)
+
+        
+      #  print(attributeselection)
+        if ChangeAttributesPage.attributeselection == 1:
+            self.userName1 = tk.Label(self, text = "Name").place(x=240,y=160)
+            self.inputName1 = tk.StringVar()
+            self.usrNameIn1 = tk.Entry(self, width = 30, textvariable = self.inputName1).place(x=310,y=160)
+        elif ChangeAttributesPage.attributeselection == 2:
+            self.userAge1 = tk.Label(self, text = "Age").place(x=240,y=160)
+            self.inputAge1 = tk.StringVar()
+            self.usrAgeIn1 = tk.Entry(self, width = 30, textvariable = self.inputAge1).place(x=310,y=160)
+        elif ChangeAttributesPage.attributeselection == 3:
+            self.usrS_edit = tk.Label(self, text = "Are you: ").place(x=270,y=160)
+            self.s_edit = tk.StringVar()
+            self.usrSSelection_edit = ttk.Combobox(self, width = 7, textvariable = self.s_edit)
+            self.usrSSelection_edit.place(x=340,y=160)
+            self.usrSSelection_edit['values'] = ('Male', 'Female')
+            self.usrSSelection_edit.current()
+        elif ChangeAttributesPage.attributeselection == 4:
+            self.usrS2_edit = tk.Label(self, text = "What is your activity level? ").place(x=240,y=160)
+            self.s2_edit = tk.StringVar()
+            self.usrSSelection2_edit = ttk.Combobox(self, width = 20, textvariable = self.s2_edit)
+            self.usrSSelection2_edit.place(x=310,y=190)
+            self.usrSSelection2_edit['values'] = ('Sedentary', 'Moderate', 'Active')
+            self.usrSSelection2_edit.current()
+
+        self.submit = tk.Button(self,text="Submit", command=lambda: [self.save_command1(), container.update_frame(UserHomeScreen), container.change_frame(ChangeAttributesPage)]).place(x=350, y = 350)
+
+    def save_command1(self):
+        
+        df = pd.read_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv")
+        if ChangeAttributesPage.attributeselection == 1:
+
+            df.at[0, 'name'] = self.inputName1.get()
+            
+        elif ChangeAttributesPage.attributeselection == 2:
+            
+            df.at[0, 'age'] = self.inputAge1.get()
+
+        elif ChangeAttributesPage.attributeselection == 3:
+            
+            df.at[0, 'sex'] = self.s_edit.get()
+
+        elif ChangeAttributesPage.attributeselection == 4:
+
+            df.at[0, 'activity_level'] = self.s2_edit.get()
+            
+        df.to_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", index=False)
 
 
 class DeletionConfirmationPage(tk.Frame):
@@ -273,13 +355,11 @@ class RFIDPage(tk.Frame):
 
         self.back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
                                   command=lambda: container.change_frame(IdlePage)).place(x=380,y=290)
-        ##Mock Test For When RFID is seeing an unregistered card
+        
+        ##Mock Button Test For When RFID is seeing an unregistered card
         self.new_user_btn = tk.Button(self, text="New User", font=("Calibri", 12),bg="green",
                                   command=lambda: container.change_frame(UserRegistrationPage)).place(x=375,y=250)
         
-        #Todo: RFID integration, if card is registered, move to homepage, if not, move to user registration page
-        #need global variable: scanned RFID number, to differentiate different users
-
 
 class WaterData:
     def __init__(self):
