@@ -92,3 +92,4 @@ class RFID:
 
 if __name__ == '__main__':
     rfid = RFID()
+    
