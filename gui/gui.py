@@ -203,6 +203,8 @@ class UserRegistrationPage(tk.Frame):
         # self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
         self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
 
+        self.uid = ''
+
         self.welcome_new_user_screen = tk.Label(self, text="Hello, New User!", font=("Calibri", 12)).place(x=350, y=0)
         self.user_intro = tk.Label(self, text="What is your: ", font=("Calibri", 15)).place(x=240, y=120)
         self.user_name = tk.Label(self, text="Name").place(x=240, y=160)
@@ -227,16 +229,26 @@ class UserRegistrationPage(tk.Frame):
         self.usr_SSelection2.current()
 
         self.submit = tk.Button(self, text="Submit",
-                                command=lambda: [self.save_command(), container.update_frame(UserHomeScreen),
+                                command=lambda: [self.save_command(container), container.update_frame(UserHomeScreen),
                                                  container.change_frame(UserHomeScreen)]).place(x=350, y=350)
 
-    def save_command(self):
+    def save_command(self, container):
+        self.uid = container.get_card_uid()
+
+        # TODO: delete comment, used for testing
+        print("save command uid: {}".format(self.uid))
+
         df = pd.read_csv(self.file_path)
 
-        df.at[0, 'name'] = self.inputName.get()
-        df.at[0, 'age'] = self.inputAge.get()
-        df.at[0, 'sex'] = self.s.get()
-        df.at[0, 'activity_level'] = self.s2.get()
+        row_num = df.index[df['card_uid'] == self.uid].tolist()
+
+        # TODO: delete comment, used for testing
+        print("row_num: {}".format(row_num))
+
+        df.at[row_num[0], 'name'] = self.input_name.get()
+        df.at[row_num[0], 'age'] = self.input_age.get()
+        df.at[row_num[0], 'sex'] = self.s.get()
+        df.at[row_num[0], 'activity_level'] = self.s2.get()
 
         df.to_csv(self.file_path, index=False)
 
