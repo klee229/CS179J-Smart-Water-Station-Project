@@ -7,15 +7,11 @@ import sys
 import pandas as pd
 from os import path
 from tkinter import ttk
-sys.path.append('C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/rfid')
-#requires hardware for proper import
-#from rfid import RFID
+
 
 class GUI(tk.Tk):
     def __init__(self):
         super().__init__()
-
-        #rfid = RFID()
 
         self.frame = None
         self.container = None
@@ -120,9 +116,6 @@ class IdlePage(tk.Frame):
         
         self.next_btn = tk.Button(self, text="-- Press this button to continue --", font=("Calibri", 12),
                                   command=lambda: container.change_frame(RFIDPage))
-
-        #self.next_btn = tk.Button(self, text="-- Press this button to continue --", font=("Calibri", 12),
-        #                          command=lambda: [self.gui_to_rfid(), container.change_frame(RFIDPage)])
         
         # structure the GUI page using a grid
         self.idle_label.grid(row=0, column=0, sticky="nw", padx=7, pady=7)
@@ -138,12 +131,6 @@ class IdlePage(tk.Frame):
         #15000 = 15 seconds, this can change to a different value if need be
         self.fact_source_label.after(15000, self.update_text)
     
-    ###add to command in self.next_btn, to call this function so that the scanner is able to scan by the time the frame changes, REFER TO LINES 126, 127. UPDATE: This does not work
-    #Problem: It waits for a scan before changing frames
-    #def gui_to_rfid(self):
-      #rfid.scan_card()
-      
-
 
 class UserRegistrationPage(tk.Frame):
     def __init__(self, container, parent):
@@ -169,7 +156,7 @@ class UserRegistrationPage(tk.Frame):
         self.s2 = tk.StringVar()
         self.usrSSelection2 = ttk.Combobox(self, width = 20, textvariable = self.s2)
         self.usrSSelection2.place(x=310,y=310)
-        self.usrSSelection2['values'] = ('No Activity', 'Low Activity', 'Moderate Activity', 'High Activity', 'Extreme Activity')
+        self.usrSSelection2['values'] = ('Sedentary', 'Moderate', 'Active')
         self.usrSSelection2.current()
       
         self.submit = tk.Button(self,text="Submit", command=lambda: [self.save_command(), container.update_frame(UserHomeScreen), container.change_frame(UserHomeScreen)]).place(x=350, y = 350)
@@ -182,7 +169,6 @@ class UserRegistrationPage(tk.Frame):
             df.at[0, 'age'] = self.inputAge.get()
             df.at[0, 'sex'] = self.s.get()
             df.at[0, 'activity_level'] = self.s2.get()
-            df.at[0, 'registration_state'] = True
 
             df.to_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv", index=False)  
 
@@ -280,15 +266,13 @@ class Edit_Attributes(tk.Frame):
             self.s2_edit = tk.StringVar()
             self.usrSSelection2_edit = ttk.Combobox(self, width = 20, textvariable = self.s2_edit)
             self.usrSSelection2_edit.place(x=310,y=190)
-            self.usrSSelection2_edit['values'] = ('No Activity', 'Low Activity', 'Moderate Activity', 'High Activity', 'Extreme Activity')
+            self.usrSSelection2_edit['values'] = ('Sedentary', 'Moderate', 'Active')
             self.usrSSelection2_edit.current()
 
         self.submit = tk.Button(self,text="Submit", command=lambda: [self.save_command1(), container.update_frame(UserHomeScreen), container.change_frame(ChangeAttributesPage)]).place(x=350, y = 350)
 
     def save_command1(self):
         
-
-        #nested if, elif statements for multiple users
         df = pd.read_csv("C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv")
         if ChangeAttributesPage.attributeselection == 1:
 
@@ -372,20 +356,10 @@ class RFIDPage(tk.Frame):
         self.back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
                                   command=lambda: container.change_frame(IdlePage)).place(x=380,y=290)
         
-        
         ##Mock Button Test For When RFID is seeing an unregistered card
         self.new_user_btn = tk.Button(self, text="New User", font=("Calibri", 12),bg="green",
                                   command=lambda: container.change_frame(UserRegistrationPage)).place(x=375,y=250)
         
-        #TODO: RFID integration, if card is registered, move to homepage, if not, move to user registration page
-        #need global variable: scanned RFID number, to differentiate different users
-    
-       #registered = rfid.check_registration()
-       #if registered:
-            #change frame to UserHomeScreen
-        #if not registered:
-            #change frame to UserRegistrationPage
-
 
 class WaterData:
     def __init__(self):

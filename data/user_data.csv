@@ -1,5 +1,5 @@
 card_uid,registration_state,name,sex,age,activity_level,daily_hydration,num_days,num_days_goal,water_dispensed,avg_intake
-734a266f,True,Ken,Male,21,Low Activity, , , , , 
+734a266f,True,Ken,Male,21,Active, , , , , 
 5d81e96d,False, , , , , , , , , 
 4d71f56d,False, , , , , , , , , 
 fdd1a46b,False, , , , , , , , , 
