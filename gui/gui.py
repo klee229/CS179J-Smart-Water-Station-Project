@@ -260,6 +260,8 @@ class UserHomeScreen(tk.Frame):
         # self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
         self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
 
+        # self.uid = container.get_card_uid()
+
         df = pd.read_csv(self.file_path)
         df.to_csv(self.file_path, index=False)
 
@@ -301,23 +303,35 @@ class DeletionConfirmationPage(tk.Frame):
         # self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
         self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
 
+        self.uid = ''
+
         self.delete_confirm_header = tk.Label(self, text="Are You Sure?", font=("Calibri", 20)).place(x=350, y=0)
         self.delete_confirm_info_header = tk.Label(self, text="This Action Cannot Be Undone!", font=("Calibri", 20),
                                                    fg="red").place(x=250, y=100)
 
         self.continue_btn = tk.Button(self, text="Yes, I'm Sure", font=("Calibri", 12), bg="red",
-                                      command=lambda: [self.delete_user_command(),
+                                      command=lambda: [self.delete_user_command(container),
                                                        container.change_frame(DeletionPage)]).place(x=500, y=280)
         self.continue_btn = tk.Button(self, text="No, Go Back", font=("Calibri", 12),
                                       command=lambda: container.change_frame(SettingsPage)).place(x=250, y=280)
 
-    def delete_user_command(self):
+    def delete_user_command(self, container):
+        self.uid = container.get_card_uid()
+
+        # TODO: delete comment, used for testing
+        print("delete command uid: {}".format(self.uid))
+
         df = pd.read_csv(self.file_path)
 
-        df.at[0, 'name'] = ' '
-        df.at[0, 'age'] = ' '
-        df.at[0, 'sex'] = ' '
-        df.at[0, 'activity_level'] = ' '
+        row_num = df.index[df['card_uid'] == self.uid].tolist()
+
+        # TODO: delete comment, used for testing
+        print("row_num: {}".format(row_num))
+
+        df.at[row_num[0], 'name'] = ' '
+        df.at[row_num[0], 'age'] = ' '
+        df.at[row_num[0], 'sex'] = ' '
+        df.at[row_num[0], 'activity_level'] = ' '
 
         df.to_csv(self.file_path, index=False)
 
@@ -434,6 +448,6 @@ class WaterData:
         return random.choice(list(self.factDictionary.items()))
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     root = GUI()
     root.mainloop()
