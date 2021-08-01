@@ -602,7 +602,8 @@ class WaterData:
     def get_fact_source(self):
         return random.choice(list(self.factDictionary.items()))
 
-########## GUI_NO_HARDWARE Implementation: DELETE BELOW FOR FINAL PROJECT ##########
+
+########## GUI_NO_HARDWARE Implementation: DELETE BELOW FOR FINAL PROJECT, UP TO LINE 1117##########
 
 class GUI_NO_HARDWARE(tk.Tk):
 
