@@ -18,8 +18,8 @@ class GUI(tk.Tk):
         self.frame_dictionary = {}
         self.frame_object_list = []
 
-        self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-        # self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+        # self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"/
+        self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
 
         self.csv_initialize()
         self.setup_gui()
@@ -93,14 +93,8 @@ class GUI(tk.Tk):
         self.rfid.scan_card()
         self.card_uid = self.rfid.get_uid()
 
-        # TODO: delete comment, used for testing
-        print("gui card_uid: {}".format(self.card_uid))
-
     def check_rfid_card_registration(self):
         self.card_state = self.rfid.check_registration(self.card_uid)
-
-        # TODO: delete comment, used for testing
-        print("gui card_state: {}".format(self.card_state))
 
     def register_card(self):
         self.rfid.register_card(self.card_uid)
@@ -181,7 +175,9 @@ class RFIDPage(tk.Frame):
         self.scan_card_btn = tk.Button(self, text="Scan your RFID Card now", font=("Calibri", 12),
                                        command=lambda: self.scan_rfid_card(container)).place(x=300, y=200)
 
-        # NOTE: uncomment below to test GUI without the RFID system
+        """
+        FOR USE WITHOUT RFID HARDWARE
+        """
         self.new_user_btn = tk.Button(self, text="New User", font=("Calibri", 12), bg="green",
                                       command=lambda: container.change_frame(UserRegistrationPage)).place(x=375, y=250)
 
@@ -195,10 +191,6 @@ class RFIDPage(tk.Frame):
         self.uid = container.get_card_uid()
         self.state = container.get_card_state()
 
-        # TODO: delete comments, used for testing
-        print("uid: {}".format(self.uid))
-        print("state: {}".format(self.state))
-
         if self.state:
             container.change_frame(UserHomeScreen)
         else:
@@ -209,8 +201,8 @@ class UserRegistrationPage(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
-        self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-        # self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+        # self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+        self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
 
         self.uid = ''
 
@@ -248,31 +240,9 @@ class UserRegistrationPage(tk.Frame):
         """
         FOR USE WITH RFID HARDWARE
         """
-        # self.uid = container.get_card_uid()
-        #
-        # # TODO: delete comment, used for testing
-        # print("save command uid: {}".format(self.uid))
-        #
-        # container.register_card()
-        #
-        # df = pd.read_csv(self.file_path)
-        #
-        # row_num = df.index[df['card_uid'] == self.uid].tolist()
-        #
-        # # TODO: delete comment, used for testing
-        # print("row_num: {}".format(row_num))
-        #
-        # df.at[row_num[0], 'name'] = self.input_name.get()
-        # df.at[row_num[0], 'age'] = self.input_age.get()
-        # df.at[row_num[0], 'sex'] = self.s.get()
-        # df.at[row_num[0], 'activity_level'] = self.s2.get()
-        #
-        # df.to_csv(self.file_path, index=False)
+        self.uid = container.get_card_uid()
 
-        """
-        FOR USE WITHOUT RFID HARDWARE 
-        """
-        self.uid = "734a266f"
+        container.register_card()
 
         df = pd.read_csv(self.file_path)
 
@@ -282,9 +252,25 @@ class UserRegistrationPage(tk.Frame):
         df.at[row_num[0], 'age'] = self.input_age.get()
         df.at[row_num[0], 'sex'] = self.s.get()
         df.at[row_num[0], 'activity_level'] = self.s2.get()
-        df.at[row_num[0], 'registration_state'] = True
 
         df.to_csv(self.file_path, index=False)
+
+        """
+        FOR USE WITHOUT RFID HARDWARE 
+        """
+        # self.uid = "734a266f"
+        #
+        # df = pd.read_csv(self.file_path)
+        #
+        # row_num = df.index[df['card_uid'] == self.uid].tolist()
+        #
+        # df.at[row_num[0], 'name'] = self.input_name.get()
+        # df.at[row_num[0], 'age'] = self.input_age.get()
+        # df.at[row_num[0], 'sex'] = self.s.get()
+        # df.at[row_num[0], 'activity_level'] = self.s2.get()
+        # df.at[row_num[0], 'registration_state'] = True
+        #
+        # df.to_csv(self.file_path, index=False)
 
 
 class UserHomeScreen(tk.Frame):
@@ -293,8 +279,8 @@ class UserHomeScreen(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
-        self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-        # self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+        # self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+        self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
 
         df = pd.read_csv(self.file_path)
         df.to_csv(self.file_path, index=False)
@@ -376,8 +362,8 @@ class EditAttributes(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
-        self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-        # self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+        # self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+        self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
 
         self.uid = ''
 
@@ -412,36 +398,7 @@ class EditAttributes(tk.Frame):
         """
         FOR USE WITH RFID HARDWARE
         """
-        # self.uid = container.get_card_uid()
-        #
-        # # TODO: delete comment, used for testing
-        # print("save command uid: {}".format(self.uid))
-        #
-        # df = pd.read_csv(self.file_path)
-        #
-        # row_num = df.index[df['card_uid'] == self.uid].tolist()
-        #
-        # # TODO: delete comment, used for testing
-        # print("row_num: {}".format(row_num))
-        #
-        # if ChangeAttributesPage.attribute_selection == 1:
-        #     df.at[row_num[0], 'name'] = self.inputName1.get()
-        #
-        # elif ChangeAttributesPage.attribute_selection == 2:
-        #     df.at[row_num[0], 'age'] = self.inputAge1.get()
-        #
-        # elif ChangeAttributesPage.attribute_selection == 3:
-        #     df.at[row_num[0], 'sex'] = self.s_edit.get()
-        #
-        # elif ChangeAttributesPage.attribute_selection == 4:
-        #     df.at[row_num[0], 'activity_level'] = self.s2_edit.get()
-        #
-        # df.to_csv(self.file_path, index=False)
-
-        """
-        FOR USE WITHOUT RFID HARDWARE 
-        """
-        self.uid = "734a266f"
+        self.uid = container.get_card_uid()
 
         df = pd.read_csv(self.file_path)
 
@@ -461,13 +418,36 @@ class EditAttributes(tk.Frame):
 
         df.to_csv(self.file_path, index=False)
 
+        """
+        FOR USE WITHOUT RFID HARDWARE 
+        """
+        # self.uid = "734a266f"
+        #
+        # df = pd.read_csv(self.file_path)
+        #
+        # row_num = df.index[df['card_uid'] == self.uid].tolist()
+        #
+        # if ChangeAttributesPage.attribute_selection == 1:
+        #     df.at[row_num[0], 'name'] = self.inputName1.get()
+        #
+        # elif ChangeAttributesPage.attribute_selection == 2:
+        #     df.at[row_num[0], 'age'] = self.inputAge1.get()
+        #
+        # elif ChangeAttributesPage.attribute_selection == 3:
+        #     df.at[row_num[0], 'sex'] = self.s_edit.get()
+        #
+        # elif ChangeAttributesPage.attribute_selection == 4:
+        #     df.at[row_num[0], 'activity_level'] = self.s2_edit.get()
+        #
+        # df.to_csv(self.file_path, index=False)
+
 
 class DeletionConfirmationPage(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
-        self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-        # self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+        # self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+        self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
 
         self.uid = ''
 
@@ -485,31 +465,9 @@ class DeletionConfirmationPage(tk.Frame):
         """
         FOR USE WITH RFID HARDWARE
         """
-        # self.uid = container.get_card_uid()
-        #
-        # # TODO: delete comment, used for testing
-        # print("delete command uid: {}".format(self.uid))
-        #
-        # container.unregister_card()
-        #
-        # df = pd.read_csv(self.file_path)
-        #
-        # row_num = df.index[df['card_uid'] == self.uid].tolist()
-        #
-        # # TODO: delete comment, used for testing
-        # print("row_num: {}".format(row_num))
-        #
-        # df.at[row_num[0], 'name'] = ' '
-        # df.at[row_num[0], 'age'] = ' '
-        # df.at[row_num[0], 'sex'] = ' '
-        # df.at[row_num[0], 'activity_level'] = ' '
-        #
-        # df.to_csv(self.file_path, index=False)
+        self.uid = container.get_card_uid()
 
-        """
-        FOR USE WITHOUT RFID HARDWARE 
-        """
-        self.uid = "734a266f"
+        container.unregister_card()
 
         df = pd.read_csv(self.file_path)
 
@@ -519,9 +477,25 @@ class DeletionConfirmationPage(tk.Frame):
         df.at[row_num[0], 'age'] = ' '
         df.at[row_num[0], 'sex'] = ' '
         df.at[row_num[0], 'activity_level'] = ' '
-        df.at[row_num[0], 'registration_state'] = False
 
         df.to_csv(self.file_path, index=False)
+
+        """
+        FOR USE WITHOUT RFID HARDWARE 
+        """
+        # self.uid = "734a266f"
+        #
+        # df = pd.read_csv(self.file_path)
+        #
+        # row_num = df.index[df['card_uid'] == self.uid].tolist()
+        #
+        # df.at[row_num[0], 'name'] = ' '
+        # df.at[row_num[0], 'age'] = ' '
+        # df.at[row_num[0], 'sex'] = ' '
+        # df.at[row_num[0], 'activity_level'] = ' '
+        # df.at[row_num[0], 'registration_state'] = False
+        #
+        # df.to_csv(self.file_path, index=False)
 
 
 class DeletionPage(tk.Frame):
@@ -543,8 +517,8 @@ class MoreInfoPage(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
-        self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-        # self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+        # self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+        self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
 
         df = pd.read_csv(self.file_path)
         df.to_csv(self.file_path, index=False)
