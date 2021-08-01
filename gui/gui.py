@@ -5,13 +5,16 @@ from os import path
 import random
 import csv
 import time
-#NOTE: comment out Line 9 to work on GUI/Pump without RFID Hardware
+
+"""
+FOR USE WITH RFID HARDWARE: Uncomment Line 13
+FOR USE WITHOUT RFID HARDWARE: Comment out Line 13
+"""
 #from rfid.rfid import RFID
 
 
 class GUI(tk.Tk):
-
-    #classvariable so we don't have to keep manually changing paths
+    
     file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
     #file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
 
@@ -23,16 +26,15 @@ class GUI(tk.Tk):
         self.frame_dictionary = {}
         self.frame_object_list = []
 
-        #Can delete this if above class file_path works
-       #self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-       # self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
-
         self.csv_initialize()
         self.setup_gui()
         self.create_container()
         self.create_frames()
 
-        #NOTE: comment out Line 36 to work on GUI/Pump without RFID Hardware
+        """
+        FOR USE WITH RFID HARDWARE: Uncomment line 38
+        FOR USE WITHOUT RFID HARDWARE: Comment out line 38
+        """
         #self.rfid = RFID()
         self.card_uid = ''
         self.card_state = False
@@ -97,8 +99,10 @@ class GUI(tk.Tk):
 
             csv_file.close()
 
-    #NOTE: comment out Lines 102 to 127 to work on GUI/Pump without RFID Hardware
-   
+    """
+    FOR USE WITH RFID HARDWARE: Uncomment Lines 106-131
+    FOR USE WITHOUT RFID HARDWARE: Comment out Lines 106-131
+    """
    # def scan_rfid_card(self):
        # self.rfid.scan_card()
        # self.card_uid = self.rfid.get_uid()
@@ -188,18 +192,23 @@ class RFIDPage(tk.Frame):
         self.back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
                                   command=lambda: container.change_frame(IdlePage)).place(x=380, y=350)
 
-        # NOTE: comment out Lines 192 to 193 to test GUI without the RFID hardware
+        """
+        FOR USE WITH RFID HARDWARE: Comment out Lines 202-206. Uncomment Lines 199-200
+        FOR USE WITHOUT RFID HARDWARE: Comment out Lines 199-200. Uncomment Lines 202-206
+        """
       #  self.scan_card_btn = tk.Button(self, text="Scan your RFID Card now", font=("Calibri", 12),
       #                                 command=lambda: self.scan_rfid_card(container)).place(x=300, y=200)
 
-        # NOTE: comment out Lines 196 to 200 to test GUI with the RFID hardware
         self.new_user_btn = tk.Button(self, text="New User", font=("Calibri", 12), bg="green",
                                       command=lambda: container.change_frame(UserRegistrationPage)).place(x=375, y=250)
 
         self.new_user_btn = tk.Button(self, text="User Home", font=("Calibri", 12), bg="green",
                                       command=lambda: container.change_frame(UserHomeScreen)).place(x=375, y=300)
 
-        # NOTE: comment out Lines 203 to 217 to test GUI/Pump without the RFID hardware
+        """
+        FOR USE WITH RFID HARDWARE: Uncomment Lines 212-226
+        FOR USE WITHOUT RFID HARDWARE: Comment out Lines 212-226
+        """
    # def scan_rfid_card(self, container):
       #  container.scan_rfid_card()
        # container.check_rfid_card_registration()
@@ -221,8 +230,6 @@ class UserRegistrationPage(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
-        #self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-        #self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
         self.file_path = GUI.file_path
 
         self.uid = ''
@@ -259,7 +266,8 @@ class UserRegistrationPage(tk.Frame):
 
     def save_command(self, container):
         """
-        FOR USE WITH RFID HARDWARE
+        FOR USE WITH RFID HARDWARE: Comment out Lines 284, 288, and 299. Uncomment Lines 272-282
+        FOR USE WITHOUT RFID HARDWARE: Comment out Lines 272-282. Uncomment Lines 284, 288, and 299
         """
 #         self.uid = container.get_card_uid()
 
@@ -268,23 +276,11 @@ class UserRegistrationPage(tk.Frame):
 
 #         container.register_card()
 
-#         df = pd.read_csv(self.file_path)
-
 #         row_num = df.index[df['card_uid'] == self.uid].tolist()
 
 #         # TODO: delete comment, used for testing
 #         print("row_num: {}".format(row_num))
-
-#         df.at[row_num[0], 'name'] = self.input_name.get()
-#         df.at[row_num[0], 'age'] = self.input_age.get()
-#         df.at[row_num[0], 'sex'] = self.s.get()
-#         df.at[row_num[0], 'activity_level'] = self.s2.get()
-
-#         df.to_csv(self.file_path, index=False)
-
-        """
-        FOR USE WITHOUT RFID HARDWARE
-        """
+     
         self.uid = "734a266f"
 
         df = pd.read_csv(self.file_path)   
@@ -295,6 +291,11 @@ class UserRegistrationPage(tk.Frame):
         df.at[row_num[0], 'age'] = self.input_age.get()
         df.at[row_num[0], 'sex'] = self.s.get()
         df.at[row_num[0], 'activity_level'] = self.s2.get()
+        df.at[row_num[0], 'daily_hydration'] = 0
+        df.at[row_num[0], 'num_days'] = 0
+        df.at[row_num[0], 'num_days_goal'] = 0
+        df.at[row_num[0], 'water_dispensed'] = 0
+        df.at[row_num[0], 'avg_intake'] = 0
         df.at[row_num[0], 'registration_state'] = True
 
         df.to_csv(self.file_path, index=False)
@@ -306,18 +307,29 @@ class UserHomeScreen(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
-        #self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-        #self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
         self.file_path = GUI.file_path
+        """
+        FOR USE WITH RFID HARDWARE: Comment out Line 319 and 326. Uncomment Lines 315-317, 322-324
+        FOR USE WITHOUT RFID HARDWARE: Comment out Lines 315-317, 322-324. Uncomment Lines 319 and 326
+        """
+       # self.uid = container.get_card_uid()
+       # TODO: delete comment, used for testing
+       # print("userhomescreen uid: {}".format(self.uid))
 
+        self.uid = "734a266f"
         df = pd.read_csv(self.file_path)
-        df.to_csv(self.file_path, index=False)
 
-        self.welcome_home_screen = tk.Label(self, text="Hello, " + str(df.at[0, 'name']) + "!",
+        #row_num = df.index[df['card_uid'] == self.uid].tolist()
+        # TODO: delete comment, used for testing
+        # print("row_num: {}".format(row_num))
+
+        row_num = df.index[df['card_uid'] == self.uid].tolist()
+
+        self.welcome_home_screen = tk.Label(self, text="Hello, " + df.at[row_num[0], 'name'] + "!",
                                             font=("Calibri", 20)).place(x=350, y=5)
         self.hydration_percentage_header = tk.Label(self, text="Current Hydration Level:",
                                                     font=("Calibri", 30)).place(x=220, y=150)
-        self.hydration_percentage = tk.Label(self, text="30 %", font=("Calibri", 30)).place(x=380, y=210)
+        self.hydration_percentage = tk.Label(self, text = df.at[row_num[0], 'daily_hydration'] + "%", font=("Calibri", 30)).place(x=380, y=210)
         self.dispense_label = tk.Label(self, text="Dispense Button Enabled", font=("Calibri", 12),
                                        fg="green").place(x=340, y=320)
 
@@ -327,6 +339,7 @@ class UserHomeScreen(tk.Frame):
                                     command=lambda: container.change_frame(IdlePage)).place(x=400, y=420)
         self.more_info_btn = tk.Button(self, text="More Info", font=("Calibri", 12),
                                        command=lambda: container.change_frame(MoreInfoPage)).place(x=50, y=420)
+        df.to_csv(self.file_path, index=False)
 
 
 class SettingsPage(tk.Frame):
@@ -381,9 +394,6 @@ class ChangeAttributesPage(tk.Frame):
 class EditAttributes(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
-        
-        #self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-        #self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
 
         self.file_path = GUI.file_path
 
@@ -418,7 +428,8 @@ class EditAttributes(tk.Frame):
 
     def save_command1(self):
         """
-        FOR USE WITH RFID HARDWARE
+        FOR USE WITH RFID HARDWARE: Comment out Lines 446, 450. Uncomment Lines 434-444
+        FOR USE WITHOUT RFID HARDWARE: Comment out Lines 434-444. uncomment Lines 446, 450
         """
     #   self.uid = container.get_card_uid()
     #
@@ -431,26 +442,9 @@ class EditAttributes(tk.Frame):
     #
     #   # TODO: delete comment, used for testing
     #    print("row_num: {}".format(row_num))
-    #   
-    #   if ChangeAttributesPage.attributeselection == 1:
-    #        df.at[row_num[0], 'name'] = self.inputName1.get()
-    #     
-    #    elif ChangeAttributesPage.attributeselection == 2:
-    #        df.at[row_num[0], 'age'] = self.inputAge1.get()
-    #
-    #    elif ChangeAttributesPage.attributeselection == 3:
-    #        df.at[row_num[0], 'sex'] = self.s_edit.get()
-    #
-    #    elif ChangeAttributesPage.attributeselection == 4:
-    #        df.at[row_num[0], 'activity_level'] = self.s2_edit.get()
-    #
-    #    df.to_csv(self.file_path, index=False)
     
-        """
-        FOR USE WITHOUT RFID HARDWARE
-        """
         self.uid = "734a266f"
-
+        
         df = pd.read_csv(self.file_path)
 
         row_num = df.index[df['card_uid'] == self.uid].tolist()
@@ -474,9 +468,6 @@ class DeletionConfirmationPage(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
-        #self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-        #self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
-
         self.file_path = GUI.file_path
 
         self.uid = ''
@@ -493,7 +484,8 @@ class DeletionConfirmationPage(tk.Frame):
 
     def delete_user_command(self, container):
         """
-        FOR USE WITH RFID HARDWARE
+        FOR USE WITH RFID HARDWARE: Comment out Lines 504, 508, 519. Uncomment Lines 490-502
+        FOR USE WITHOUT RFID HARDWARE: Comment out Lines 490-502. Uncomment Lines 504, 508, 519
         """
         # self.uid = container.get_card_uid()
         #
@@ -509,9 +501,6 @@ class DeletionConfirmationPage(tk.Frame):
         # # TODO: delete comment, used for testing
         # print("row_num: {}".format(row_num))
 
-        """
-        FOR USE WITHOUT RFID HARDWARE
-        """
         self.uid = "734a266f"
 
         df = pd.read_csv(self.file_path)  
@@ -522,6 +511,11 @@ class DeletionConfirmationPage(tk.Frame):
         df.at[row_num[0], 'age'] = ' '
         df.at[row_num[0], 'sex'] = ' '
         df.at[row_num[0], 'activity_level'] = ' '
+        df.at[row_num[0], 'daily_hydration'] = ' '
+        df.at[row_num[0], 'num_days'] = ' '
+        df.at[row_num[0], 'num_days_goal'] = ' '
+        df.at[row_num[0], 'water_dispensed'] = ' '
+        df.at[row_num[0], 'avg_intake'] = ' '
         df.at[row_num[0], 'registration_state'] = False
 
         df.to_csv(self.file_path, index=False)
@@ -547,23 +541,37 @@ class MoreInfoPage(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
-        #self.file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-        #self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+        """
+        FOR USE WITH RFID HARDWARE: Comment out Lines 552 and 560. Uncomment Lines 551, 554-555, and 559
+        FOR USE WITHOUT RFID HARDWARE: Comment out Line 551, 554-555, and 559. Uncomment Lines 552 and 560
+        """
 
         self.file_path = GUI.file_path
 
+        #self.uid = container.get_card_uid()
+        self.uid = "734a266f"
+
+        #TODO: delete comment, used for testing
+        #print("MoreInfoPage uid: {}".format(self.uid))
+
         df = pd.read_csv(self.file_path)
-        df.to_csv(self.file_path, index=False)
+
+        #row_num = df.index[df['card_uid'] == self.uid].tolist()
+        row_num = df.index[df['card_uid'] == self.uid].tolist()
 
         self.user_reg_stats = tk.Label(self, text="Your Attributes:", font=("Calibri", 30)).place(x=250, y=10)
-        self.attr_1 = tk.Label(self, text="Age: " + str(df.at[0, 'age']), font=("Calibri", 12)).place(x=250, y=120)
-        self.attr_2 = tk.Label(self, text="Sex: " + str(df.at[0, 'sex']), font=("Calibri", 12)).place(x=250, y=145)
-        self.attr_3 = tk.Label(self, text="Activity Level: " + str(df.at[0, 'activity_level']),
+        self.attr_1 = tk.Label(self, text="Age: " + df.at[row_num[0], 'age'], font=("Calibri", 12)).place(x=250, y=120)
+        self.attr_2 = tk.Label(self, text="Sex: " + df.at[row_num[0], 'sex'], font=("Calibri", 12)).place(x=250, y=145)
+        self.attr_3 = tk.Label(self, text="Activity Level: " + df.at[row_num[0], 'activity_level'],
                                font=("Calibri", 12)).place(x=250, y=170)
+        self.attr_4 = tk.Label(self, text="Number of Days Where Goal Has Been Met: " + df.at[row_num[0], 'num_days_goal'], font=("Calibri", 12)).place(x=220, y=195)
+        self.attr_5 = tk.Label(self, text="Water Amount You Have Dispensed: " + df.at[row_num[0], 'water_dispensed'], font=("Calibri", 12)).place(x=220, y=220)
+        self.attr_6 = tk.Label(self, text="Your Average Water Intake: " + df.at[row_num[0], 'avg_intake'], font=("Calibri", 12)).place(x=220, y=245)
 
         self.back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
                                   command=lambda: container.change_frame(UserHomeScreen)).place(x=380,y=290)
 
+        df.to_csv(self.file_path, index=False)
 
 class WaterData:
     def __init__(self):
