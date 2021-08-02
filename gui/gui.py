@@ -292,12 +292,9 @@ class UserHomeScreen(tk.Frame):
         self.logout_btn = tk.Button(self, text="Log Out", font=("Calibri", 12),
                                     command=lambda: container.change_frame(IdlePage)).place(x=400, y=420)
         self.more_info_btn = tk.Button(self, text="More Info", font=("Calibri", 12),
-                                       command=lambda: [self.change_to_more_info_page(),
-                                                        container.change_frame(MoreInfoPage)]).place(x=50, y=420)
-        df.to_csv(self.file_path, index=False)
+                                       command=lambda: container.change_frame(MoreInfoPage)).place(x=50, y=420)
 
-    def change_to_more_info_page(self):
-        MoreInfoPage.uid = self.uid
+        df.to_csv(self.file_path, index=False)
 
 
 class SettingsPage(tk.Frame):
