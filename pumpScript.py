@@ -23,5 +23,5 @@ button.wait_for_release()
 led.off()
 rly.off()
 btnPressTime = time.time() - pushed
-print("Button was pressed for %.2f", btnPressTime)
+print 'Button was pressed for %.2f seconds' % btnPressTime
 exit()
