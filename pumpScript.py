@@ -1,5 +1,6 @@
 from gpiozero import LED, Button, OutputDevice
 from signal import pause
+import time
 
 # OutputDevice is a generic device, which we can use as the basis
 # for a new class, which we will call "relay" and use to control it
@@ -10,15 +11,17 @@ class Relay(OutputDevice):
 
 
 print("Running")
-button = Button(8)
-led = LED(7)
+button = Button(14)
+led = LED(15)
 rly = Relay(12,False)
 #print("The button was pressed!")
 button.wait_for_press()
+pushed = time.time()
 led.on()
 rly.on()
 button.wait_for_release()
 led.off()
 rly.off()
-print("Button was pressed for", button.held_time())
+btnPressTime = time.time() - pushed
+print("Button was pressed for %.2f", btnPressTime)
 exit()
