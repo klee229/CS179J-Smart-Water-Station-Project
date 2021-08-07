@@ -5,15 +5,18 @@ from os import path
 import random
 import csv
 import time
+import os
 
-from rfid.rfid import RFID
+#from rfid.rfid import RFID
+from pump.pump import pump_active
 
 
 class GUI(tk.Tk):
     # ADD FILE PATHS HERE, Comment out unused file_paths
 
     # file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-    file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+    #file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+    file_path = "/home/pi/Desktop/CS179J-Smart-Water-Station/data/user_data.csv"
 
     def __init__(self):
         super().__init__()
@@ -28,7 +31,7 @@ class GUI(tk.Tk):
         self.create_container()
         self.create_frames()
 
-        self.rfid = RFID()
+        #self.rfid = RFID()
         self.card_uid = ''
         self.card_state = False
 
@@ -299,6 +302,8 @@ class UserHomeScreen(tk.Frame):
                                     command=lambda: container.change_frame(IdlePage)).place(x=400, y=420)
         self.more_info_btn = tk.Button(self, text="More Info", font=("Calibri", 12),
                                        command=lambda: container.change_frame(MoreInfoPage)).place(x=50, y=420)
+        self.dispense_btn = tk.Button(self, text="Dispense", font=("Calibri", 12),
+                                      command=lambda: pump_active()).place(x=200, y=100)
 
         df.to_csv(self.file_path, index=False)
 
@@ -597,9 +602,9 @@ GUI_NO_HARDWARE Implementation: DELETE BELOW FOR FINAL PROJECT, UP TO LINE 1117
 class GUI_NO_HARDWARE(tk.Tk):
     # ADD FILE PATHS HERE, Comment out unused file_paths
 
-    file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-
-    # file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+    #file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+    #file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+    file_path = "/home/pi/Desktop/CS179J-Smart-Water-Station/data/user_data.csv"
 
     def __init__(self):
         super().__init__()
@@ -837,7 +842,11 @@ class UserHomeScreen_NH(tk.Frame):
                                     command=lambda: container.change_frame(IdlePage_NH)).place(x=400, y=420)
         self.more_info_btn = tk.Button(self, text="More Info", font=("Calibri", 12),
                                        command=lambda: container.change_frame(MoreInfoPage_NH)).place(x=50, y=420)
+        self.dispense_btn = tk.Button(self, text="Dispense", font=("Calibri", 12),
+                                      command=lambda: pump_active()).place(x=200, y=100)
         df.to_csv(self.file_path, index=False)
+        
+        
 
 
 class SettingsPage_NH(tk.Frame):
@@ -1147,6 +1156,6 @@ if __name__ == '__main__':
         self.rfid = RFID()                              (on Line 31)
     """
 
-    root = GUI()
-    # root = GUI_NO_HARDWARE()
+    #root = GUI()
+    root = GUI_NO_HARDWARE()
     root.mainloop()
