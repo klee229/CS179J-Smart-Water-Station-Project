@@ -26,11 +26,21 @@ def pump_active():
 	button.wait_for_release()
 	led.off()
 	rly.off()
+<<<<<<< HEAD
 	btn_press_time = time.time() - pushed
 	print ('Button was pressed for {:.2f} seconds'.format(btn_press_time))
 	return btn_press_time * 0.0275 # approximate calculation
+=======
+	btnPressTime = time.time() - pushed
+	print('Button was pressed for %.2f seconds' % btnPressTime)
+	return btnPressTime * 0.0275 # approximate calculation
+>>>>>>> 17d7542a2922698aeb000c72da1cbf77d34f355c
 
 
 if __name__ == "__main__":
     wtr = pump_active()
+<<<<<<< HEAD
     print("Water consumed: {:.2f} L".format(wtr))
+=======
+    print("Water consumed: %.2f L" % wtr)
+>>>>>>> 17d7542a2922698aeb000c72da1cbf77d34f355c
