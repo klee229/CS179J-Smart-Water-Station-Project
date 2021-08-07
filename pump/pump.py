@@ -5,7 +5,7 @@ import time
 # OutputDevice is a generic device, which we can use as the basis
 # for a new class, which we will call "relay" and use to control it
 
-#commented lines are for testing purposes
+# commented lines are for testing purposes
 
 
 class Relay(OutputDevice):
@@ -17,7 +17,7 @@ def pump_active():
 	print("Running")
 	button = Button(14)
 	led = LED(15)
-	rly = Relay(12,False)
+	rly = Relay(12, False)
 	# print("The button was pressed!")
 	button.wait_for_press()
 	pushed = time.time()
@@ -27,10 +27,10 @@ def pump_active():
 	led.off()
 	rly.off()
 	btn_press_time = time.time() - pushed
-	print ('Button was pressed for {:.2f} seconds'.format(btn_press_time))
-	return btn_press_time * 0.0275 # approximate calculation
+	print('Button was pressed for {:.2f} seconds'.format(btn_press_time))
+	return btn_press_time * 0.0275  # approximate calculation
 
 
 if __name__ == "__main__":
-    wtr = pump_active()
-    print("Water consumed: {:.2f} L".format(wtr))
+	wtr = pump_active()
+	print("Water consumed: {:.2f} L".format(wtr))
