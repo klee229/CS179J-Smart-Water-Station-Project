@@ -443,26 +443,6 @@ class DeletionConfirmationPage(tk.Frame):
 
         row_num = df.index[df['card_uid'] == self.uid].tolist()
 
-        # df.at[row_num[0], 'name'] = ' '
-        # df.at[row_num[0], 'age'] = 0
-        # df.at[row_num[0], 'sex'] = ' '
-        # df.at[row_num[0], 'activity_level'] = ' '
-        # df.at[row_num[0], 'daily_hydration'] = 0
-        # df.at[row_num[0], 'num_days'] = 0
-        # df.at[row_num[0], 'num_days_goal'] = 0
-        # df.at[row_num[0], 'water_dispensed'] = 0.0
-        # df.at[row_num[0], 'avg_intake'] = 0.0
-
-        # df.at[row_num[0], 'name'] = ' '
-        # df.at[row_num[0], 'age'] = ' '
-        # df.at[row_num[0], 'sex'] = ' '
-        # df.at[row_num[0], 'activity_level'] = ' '
-        # df.at[row_num[0], 'daily_hydration'] = ' '
-        # df.at[row_num[0], 'num_days'] = ' '
-        # df.at[row_num[0], 'num_days_goal'] = ' '
-        # df.at[row_num[0], 'water_dispensed'] = ' '
-        # df.at[row_num[0], 'avg_intake'] = ' '
-
         df.at[row_num[0], 'name'] = ' '
         df.at[row_num[0], 'age'] = 0
         df.at[row_num[0], 'sex'] = ' '
@@ -675,16 +655,18 @@ class GUI_NO_HARDWARE(tk.Tk):
     def csv_initialize(self):
 
         if not path.exists(self.file_path):
-            columns = ['card_uid', 'registration_state', 'name', 'sex', 'age', 'activity_level', 'daily_hydration',
-                       'num_days', 'num_days_goal', 'water_dispensed', 'avg_intake']
+            columns = ['card_uid', 'registration_state', 'name', 'age', 'sex', 'activity_level',
+                       'daily_hydration_lower', 'daily_hydration_upper', 'water_dispensed',
+                       'percent_dispensed_of_daily', 'num_days', 'num_days_goal', 'avg_intake'
+                       ]
 
             user_data = [
-                ['734a266f', 'False', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-                ['5d81e96d', 'False', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-                ['4d71f56d', 'False', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-                ['fdd1a46b', 'False', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-                ['1d4ba46b', 'False', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-                ['dd8b9f6b', 'False', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+                ['734a266f', False, ' ', 0, ' ', ' ', 0, 0, 0, 0.0, 0, 0, 0.0],
+                ['5d81e96d', False, ' ', 0, ' ', ' ', 0, 0, 0, 0.0, 0, 0, 0.0],
+                ['4d71f56d', False, ' ', 0, ' ', ' ', 0, 0, 0, 0.0, 0, 0, 0.0],
+                ['fdd1a46b', False, ' ', 0, ' ', ' ', 0, 0, 0, 0.0, 0, 0, 0.0],
+                ['1d4ba46b', False, ' ', 0, ' ', ' ', 0, 0, 0, 0.0, 0, 0, 0.0],
+                ['dd8b9f6b', False, ' ', 0, ' ', ' ', 0, 0, 0, 0.0, 0, 0, 0.0]
             ]
 
             # open file, write data to file
@@ -716,7 +698,7 @@ class IdlePage_NH(tk.Frame):
 
         # define GUI labels and buttons
         self.idle_label = tk.Label(self, text="IDLE MODE", font=("Calibri", 12))
-        self.water_cap_label = tk.Label(self, text=self.water_cap + " % H2O Capacity",
+        self.water_cap_label = tk.Label(self, text=str(self.water_cap) + " % H2O Capacity",
                                         font=("Calibri", 12)).place(x=650, y=5)
         self.did_you_know_label = tk.Label(self, text="Did you know?\n\n", font=("Calibri", 12, "bold"))
         self.fact_source_label = tk.Label(self, text=self.fact + "\n\n" + self.source, font=("Calibri", 12),
@@ -815,12 +797,13 @@ class UserRegistrationPage_NH(tk.Frame):
         df.at[row_num[0], 'age'] = self.input_age.get()
         df.at[row_num[0], 'sex'] = self.s.get()
         df.at[row_num[0], 'activity_level'] = self.s2.get()
-        df.at[row_num[0], 'daily_hydration'] = 0
+        df.at[row_num[0], 'daily_hydration_lower'] = 0
+        df.at[row_num[0], 'daily_hydration_upper'] = 0
+        df.at[row_num[0], 'water_dispensed'] = 0.0
+        df.at[row_num[0], 'percent_dispensed_of_daily'] = 0.0
         df.at[row_num[0], 'num_days'] = 0
         df.at[row_num[0], 'num_days_goal'] = 0
-        df.at[row_num[0], 'water_dispensed'] = 0
-        df.at[row_num[0], 'avg_intake'] = 0
-        df.at[row_num[0], 'registration_state'] = True
+        df.at[row_num[0], 'avg_intake'] = 0.0
 
         df.to_csv(self.file_path, index=False)
 
@@ -838,11 +821,11 @@ class UserHomeScreen_NH(tk.Frame):
 
         row_num = df.index[df['card_uid'] == self.uid].tolist()
 
-        self.welcome_home_screen = tk.Label(self, text="Hello, " + df.at[row_num[0], 'name'] + "!",
+        self.welcome_home_screen = tk.Label(self, text="Hello, " + str(df.at[row_num[0], 'name']) + "!",
                                             font=("Calibri", 20)).place(x=350, y=5)
         self.hydration_percentage_header = tk.Label(self, text="Current Hydration Level:",
                                                     font=("Calibri", 30)).place(x=220, y=150)
-        self.hydration_percentage = tk.Label(self, text=df.at[row_num[0], 'daily_hydration'] + "%",
+        self.hydration_percentage = tk.Label(self, text=str(df.at[row_num[0], 'percent_dispensed_of_daily']) + "%",
                                              font=("Calibri", 30)).place(x=380, y=210)
         self.dispense_label = tk.Label(self, text="Dispense Button Enabled", font=("Calibri", 12),
                                        fg="green").place(x=340, y=320)
@@ -999,15 +982,16 @@ class DeletionConfirmationPage_NH(tk.Frame):
         row_num = df.index[df['card_uid'] == self.uid].tolist()
 
         df.at[row_num[0], 'name'] = ' '
-        df.at[row_num[0], 'age'] = ' '
+        df.at[row_num[0], 'age'] = 0
         df.at[row_num[0], 'sex'] = ' '
         df.at[row_num[0], 'activity_level'] = ' '
-        df.at[row_num[0], 'daily_hydration'] = ' '
-        df.at[row_num[0], 'num_days'] = ' '
-        df.at[row_num[0], 'num_days_goal'] = ' '
-        df.at[row_num[0], 'water_dispensed'] = ' '
-        df.at[row_num[0], 'avg_intake'] = ' '
-        df.at[row_num[0], 'registration_state'] = False
+        df.at[row_num[0], 'daily_hydration_lower'] = 0
+        df.at[row_num[0], 'daily_hydration_upper'] = 0
+        df.at[row_num[0], 'water_dispensed'] = 0
+        df.at[row_num[0], 'percent_dispensed_of_daily'] = 0.0
+        df.at[row_num[0], 'num_days'] = 0
+        df.at[row_num[0], 'num_days_goal'] = 0
+        df.at[row_num[0], 'avg_intake'] = 0.0
 
         df.to_csv(self.file_path, index=False)
 
