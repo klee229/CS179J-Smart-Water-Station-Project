@@ -8,7 +8,7 @@ import time
 import os
 
 #from rfid.rfid import RFID
-from pump.pump import pumpActive
+from pump.pump import pump_active
 
 
 class GUI(tk.Tk):
@@ -74,16 +74,18 @@ class GUI(tk.Tk):
     def csv_initialize(self):
 
         if not path.exists(self.file_path):
-            columns = ['card_uid', 'registration_state', 'name', 'sex', 'age', 'activity_level', 'daily_hydration',
-                       'num_days', 'num_days_goal', 'water_dispensed', 'avg_intake']
+            columns = ['card_uid', 'registration_state', 'name', 'age', 'sex', 'activity_level',
+                       'daily_hydration_lower', 'daily_hydration_upper', 'water_dispensed',
+                       'percent_dispensed_of_daily', 'num_days', 'num_days_goal', 'avg_intake'
+                       ]
 
             user_data = [
-                ['734a266f', 'False', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-                ['5d81e96d', 'False', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-                ['4d71f56d', 'False', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-                ['fdd1a46b', 'False', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-                ['1d4ba46b', 'False', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-                ['dd8b9f6b', 'False', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+                ['734a266f', False, ' ', 0, ' ', ' ', 0, 0, 0, 0.0, 0, 0, 0.0],
+                ['5d81e96d', False, ' ', 0, ' ', ' ', 0, 0, 0, 0.0, 0, 0, 0.0],
+                ['4d71f56d', False, ' ', 0, ' ', ' ', 0, 0, 0, 0.0, 0, 0, 0.0],
+                ['fdd1a46b', False, ' ', 0, ' ', ' ', 0, 0, 0, 0.0, 0, 0, 0.0],
+                ['1d4ba46b', False, ' ', 0, ' ', ' ', 0, 0, 0, 0.0, 0, 0, 0.0],
+                ['dd8b9f6b', False, ' ', 0, ' ', ' ', 0, 0, 0, 0.0, 0, 0, 0.0]
             ]
 
             # open file, write data to file
@@ -200,8 +202,10 @@ class RFIDPage(tk.Frame):
         MoreInfoPage.uid = self.uid
 
         if self.state:
+            container.update_frame(UserHomeScreen)
             container.change_frame(UserHomeScreen)
         else:
+            container.update_frame(UserRegistrationPage)
             container.change_frame(UserRegistrationPage)
 
 
@@ -256,11 +260,13 @@ class UserRegistrationPage(tk.Frame):
         df.at[row_num[0], 'age'] = self.input_age.get()
         df.at[row_num[0], 'sex'] = self.s.get()
         df.at[row_num[0], 'activity_level'] = self.s2.get()
-        df.at[row_num[0], 'daily_hydration'] = 0
+        df.at[row_num[0], 'daily_hydration_lower'] = 0
+        df.at[row_num[0], 'daily_hydration_upper'] = 0
+        df.at[row_num[0], 'water_dispensed'] = 0.0
+        df.at[row_num[0], 'percent_dispensed_of_daily'] = 0.0
         df.at[row_num[0], 'num_days'] = 0
         df.at[row_num[0], 'num_days_goal'] = 0
-        df.at[row_num[0], 'water_dispensed'] = 0
-        df.at[row_num[0], 'avg_intake'] = 0
+        df.at[row_num[0], 'avg_intake'] = 0.0
 
         df.to_csv(self.file_path, index=False)
 
@@ -281,11 +287,11 @@ class UserHomeScreen(tk.Frame):
         if len(row_num) is 0:
             row_num.append(0)
 
-        self.welcome_home_screen = tk.Label(self, text="Hello, " + df.at[row_num[0], 'name'] + "!",
+        self.welcome_home_screen = tk.Label(self, text="Hello, " + str(df.at[row_num[0], 'name']) + "!",
                                             font=("Calibri", 20)).place(x=350, y=5)
         self.hydration_percentage_header = tk.Label(self, text="Current Hydration Level:",
                                                     font=("Calibri", 30)).place(x=220, y=150)
-        self.hydration_percentage = tk.Label(self, text=df.at[row_num[0], 'daily_hydration'] + "%",
+        self.hydration_percentage = tk.Label(self, text=str(df.at[row_num[0], 'percent_dispensed_of_daily']) + "%",
                                              font=("Calibri", 30)).place(x=380, y=210)
         self.dispense_label = tk.Label(self, text="Dispense Button Enabled", font=("Calibri", 12),
                                        fg="green").place(x=340, y=320)
@@ -296,6 +302,8 @@ class UserHomeScreen(tk.Frame):
                                     command=lambda: container.change_frame(IdlePage)).place(x=400, y=420)
         self.more_info_btn = tk.Button(self, text="More Info", font=("Calibri", 12),
                                        command=lambda: container.change_frame(MoreInfoPage)).place(x=50, y=420)
+        self.dispense_btn = tk.Button(self, text="Dispense", font=("Calibri", 12),
+                                      command=lambda: pump_active()).place(x=200, y=100)
 
         df.to_csv(self.file_path, index=False)
 
@@ -441,14 +449,16 @@ class DeletionConfirmationPage(tk.Frame):
         row_num = df.index[df['card_uid'] == self.uid].tolist()
 
         df.at[row_num[0], 'name'] = ' '
-        df.at[row_num[0], 'age'] = ' '
+        df.at[row_num[0], 'age'] = 0
         df.at[row_num[0], 'sex'] = ' '
         df.at[row_num[0], 'activity_level'] = ' '
-        df.at[row_num[0], 'daily_hydration'] = ' '
-        df.at[row_num[0], 'num_days'] = ' '
-        df.at[row_num[0], 'num_days_goal'] = ' '
-        df.at[row_num[0], 'water_dispensed'] = ' '
-        df.at[row_num[0], 'avg_intake'] = ' '
+        df.at[row_num[0], 'daily_hydration_lower'] = 0
+        df.at[row_num[0], 'daily_hydration_upper'] = 0
+        df.at[row_num[0], 'water_dispensed'] = 0
+        df.at[row_num[0], 'percent_dispensed_of_daily'] = 0.0
+        df.at[row_num[0], 'num_days'] = 0
+        df.at[row_num[0], 'num_days_goal'] = 0
+        df.at[row_num[0], 'avg_intake'] = 0.0
 
         df.to_csv(self.file_path, index=False)
 
@@ -484,16 +494,19 @@ class MoreInfoPage(tk.Frame):
             row_num.append(0)
 
         self.user_reg_stats = tk.Label(self, text="Your Attributes:", font=("Calibri", 30)).place(x=250, y=10)
-        self.attr_1 = tk.Label(self, text="Age: " + df.at[row_num[0], 'age'], font=("Calibri", 12)).place(x=250, y=120)
-        self.attr_2 = tk.Label(self, text="Sex: " + df.at[row_num[0], 'sex'], font=("Calibri", 12)).place(x=250, y=145)
-        self.attr_3 = tk.Label(self, text="Activity Level: " + df.at[row_num[0], 'activity_level'],
+        self.attr_1 = tk.Label(self, text="Age: " + str(df.at[row_num[0], 'age']),
+                               font=("Calibri", 12)).place(x=250, y=120)
+        self.attr_2 = tk.Label(self, text="Sex: " + str(df.at[row_num[0], 'sex']), font=("Calibri", 12)).place(x=250,
+                                                                                                               y=145)
+        self.attr_3 = tk.Label(self, text="Activity Level: " + str(df.at[row_num[0], 'activity_level']),
                                font=("Calibri", 12)).place(x=250, y=170)
-        self.attr_4 = tk.Label(self,
-                               text="Number of Days Where Goal Has Been Met: " + df.at[row_num[0], 'num_days_goal'],
+        self.attr_4 = tk.Label(self, text="Number of Days Where Goal Has Been Met: "
+                                          + str(df.at[row_num[0], 'num_days_goal']),
                                font=("Calibri", 12)).place(x=220, y=195)
-        self.attr_5 = tk.Label(self, text="Water Amount You Have Dispensed: " + df.at[row_num[0], 'water_dispensed'],
+        self.attr_5 = tk.Label(self, text="Water Amount You Have Dispensed: "
+                                          + str(df.at[row_num[0], 'water_dispensed']),
                                font=("Calibri", 12)).place(x=220, y=220)
-        self.attr_6 = tk.Label(self, text="Your Average Water Intake: " + df.at[row_num[0], 'avg_intake'],
+        self.attr_6 = tk.Label(self, text="Your Average Water Intake: " + str(df.at[row_num[0], 'avg_intake']),
                                font=("Calibri", 12)).place(x=220, y=245)
 
         self.back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
@@ -507,7 +520,7 @@ class WaterData:
         self.water_cap = 99  # TODO: determine water_cap from the pump system
 
         self.factDictionary = {"Water covers about 71% of the earth's surface.":
-                                   "- United States Bureau of Reclamation",
+                               "- United States Bureau of Reclamation",
 
                                "2.5% of the earth's fresh water is unavailable: locked up \n"
                                "in glaciers, polar ice caps, atmosphere, and soil; \n"
@@ -644,29 +657,22 @@ class GUI_NO_HARDWARE(tk.Tk):
     def change_frame(self, f):
         self.frame = self.frame_dictionary[f]
         self.frame.tkraise()
-        print(f)
-        if self.frame == self.frame_dictionary[UserHomeScreen_NH]:
-                pid = os.fork()
-                if pid == 0: #child
-                        pumpActive()
-                        #update water values
-                        os.exit(0)
-                else:
-                        os.waitpid(pid,0)
 
     def csv_initialize(self):
 
         if not path.exists(self.file_path):
-            columns = ['card_uid', 'registration_state', 'name', 'sex', 'age', 'activity_level', 'daily_hydration',
-                       'num_days', 'num_days_goal', 'water_dispensed', 'avg_intake']
+            columns = ['card_uid', 'registration_state', 'name', 'age', 'sex', 'activity_level',
+                       'daily_hydration_lower', 'daily_hydration_upper', 'water_dispensed',
+                       'percent_dispensed_of_daily', 'num_days', 'num_days_goal', 'avg_intake'
+                       ]
 
             user_data = [
-                ['734a266f', 'False', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-                ['5d81e96d', 'False', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-                ['4d71f56d', 'False', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-                ['fdd1a46b', 'False', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-                ['1d4ba46b', 'False', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
-                ['dd8b9f6b', 'False', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ']
+                ['734a266f', False, ' ', 0, ' ', ' ', 0, 0, 0, 0.0, 0, 0, 0.0],
+                ['5d81e96d', False, ' ', 0, ' ', ' ', 0, 0, 0, 0.0, 0, 0, 0.0],
+                ['4d71f56d', False, ' ', 0, ' ', ' ', 0, 0, 0, 0.0, 0, 0, 0.0],
+                ['fdd1a46b', False, ' ', 0, ' ', ' ', 0, 0, 0, 0.0, 0, 0, 0.0],
+                ['1d4ba46b', False, ' ', 0, ' ', ' ', 0, 0, 0, 0.0, 0, 0, 0.0],
+                ['dd8b9f6b', False, ' ', 0, ' ', ' ', 0, 0, 0, 0.0, 0, 0, 0.0]
             ]
 
             # open file, write data to file
@@ -797,12 +803,13 @@ class UserRegistrationPage_NH(tk.Frame):
         df.at[row_num[0], 'age'] = self.input_age.get()
         df.at[row_num[0], 'sex'] = self.s.get()
         df.at[row_num[0], 'activity_level'] = self.s2.get()
-        df.at[row_num[0], 'daily_hydration'] = 0
+        df.at[row_num[0], 'daily_hydration_lower'] = 0
+        df.at[row_num[0], 'daily_hydration_upper'] = 0
+        df.at[row_num[0], 'water_dispensed'] = 0.0
+        df.at[row_num[0], 'percent_dispensed_of_daily'] = 0.0
         df.at[row_num[0], 'num_days'] = 0
         df.at[row_num[0], 'num_days_goal'] = 0
-        df.at[row_num[0], 'water_dispensed'] = 0
-        df.at[row_num[0], 'avg_intake'] = 0
-        df.at[row_num[0], 'registration_state'] = True
+        df.at[row_num[0], 'avg_intake'] = 0.0
 
         df.to_csv(self.file_path, index=False)
 
@@ -820,11 +827,11 @@ class UserHomeScreen_NH(tk.Frame):
 
         row_num = df.index[df['card_uid'] == self.uid].tolist()
 
-        self.welcome_home_screen = tk.Label(self, text="Hello, " + df.at[row_num[0], 'name'] + "!",
+        self.welcome_home_screen = tk.Label(self, text="Hello, " + str(df.at[row_num[0], 'name']) + "!",
                                             font=("Calibri", 20)).place(x=350, y=5)
         self.hydration_percentage_header = tk.Label(self, text="Current Hydration Level:",
                                                     font=("Calibri", 30)).place(x=220, y=150)
-        self.hydration_percentage = tk.Label(self, text=df.at[row_num[0], 'daily_hydration'] + "%",
+        self.hydration_percentage = tk.Label(self, text=str(df.at[row_num[0], 'percent_dispensed_of_daily']) + "%",
                                              font=("Calibri", 30)).place(x=380, y=210)
         self.dispense_label = tk.Label(self, text="Dispense Button Enabled", font=("Calibri", 12),
                                        fg="green").place(x=340, y=320)
@@ -835,7 +842,11 @@ class UserHomeScreen_NH(tk.Frame):
                                     command=lambda: container.change_frame(IdlePage_NH)).place(x=400, y=420)
         self.more_info_btn = tk.Button(self, text="More Info", font=("Calibri", 12),
                                        command=lambda: container.change_frame(MoreInfoPage_NH)).place(x=50, y=420)
+        self.dispense_btn = tk.Button(self, text="Dispense", font=("Calibri", 12),
+                                      command=lambda: pump_active()).place(x=200, y=100)
         df.to_csv(self.file_path, index=False)
+        
+        
 
 
 class SettingsPage_NH(tk.Frame):
@@ -981,15 +992,16 @@ class DeletionConfirmationPage_NH(tk.Frame):
         row_num = df.index[df['card_uid'] == self.uid].tolist()
 
         df.at[row_num[0], 'name'] = ' '
-        df.at[row_num[0], 'age'] = ' '
+        df.at[row_num[0], 'age'] = 0
         df.at[row_num[0], 'sex'] = ' '
         df.at[row_num[0], 'activity_level'] = ' '
-        df.at[row_num[0], 'daily_hydration'] = ' '
-        df.at[row_num[0], 'num_days'] = ' '
-        df.at[row_num[0], 'num_days_goal'] = ' '
-        df.at[row_num[0], 'water_dispensed'] = ' '
-        df.at[row_num[0], 'avg_intake'] = ' '
-        df.at[row_num[0], 'registration_state'] = False
+        df.at[row_num[0], 'daily_hydration_lower'] = 0
+        df.at[row_num[0], 'daily_hydration_upper'] = 0
+        df.at[row_num[0], 'water_dispensed'] = 0
+        df.at[row_num[0], 'percent_dispensed_of_daily'] = 0.0
+        df.at[row_num[0], 'num_days'] = 0
+        df.at[row_num[0], 'num_days_goal'] = 0
+        df.at[row_num[0], 'avg_intake'] = 0.0
 
         df.to_csv(self.file_path, index=False)
 
