@@ -1,7 +1,7 @@
-card_uid,registration_state,name,sex,age,activity_level,daily_hydration,num_days,num_days_goal,water_dispensed,avg_intake
-734a266f,False, , , , , , , , , 
-5d81e96d,False, , , , , , , , , 
-4d71f56d,False, , , , , , , , , 
-fdd1a46b,False, , , , , , , , , 
-1d4ba46b,False, , , , , , , , , 
-dd8b9f6b,False, , , , , , , , , 
+card_uid,registration_state,name,age,sex,activity_level,daily_hydration_lower,daily_hydration_upper,water_dispensed,percent_dispensed_of_daily,num_days,num_days_goal,avg_intake
+734a266f,False, ,0, , ,0,0,0,0.0,0,0,0.0
+5d81e96d,False, ,0, , ,0,0,0,0.0,0,0,0.0
+4d71f56d,False, ,0, , ,0,0,0,0.0,0,0,0.0
+fdd1a46b,False, ,0, , ,0,0,0,0.0,0,0,0.0
+1d4ba46b,False, ,0, , ,0,0,0,0.0,0,0,0.0
+dd8b9f6b,False, ,0, , ,0,0,0,0.0,0,0,0.0
