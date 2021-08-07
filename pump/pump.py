@@ -18,7 +18,7 @@ def pump_active():
 	button = Button(14)
 	led = LED(15)
 	rly = Relay(12,False)
-	#print("The button was pressed!")
+	# print("The button was pressed!")
 	button.wait_for_press()
 	pushed = time.time()
 	led.on()
@@ -27,7 +27,7 @@ def pump_active():
 	led.off()
 	rly.off()
 	btnPressTime = time.time() - pushed
-	print ('Button was pressed for %.2f seconds' % btnPressTime)
+	print('Button was pressed for %.2f seconds' % btnPressTime)
 	return btnPressTime * 0.0275 # approximate calculation
 
 
