@@ -13,7 +13,7 @@ class Relay(OutputDevice):
 		super(Relay, self).__init__(pin, active_high)
 
 
-def pumpActive(): 
+def pump_active(): 
 	print("Running")
 	button = Button(14)
 	led = LED(15)
@@ -32,5 +32,5 @@ def pumpActive():
 
 
 if __name__ == "__main__":
-    wtr = pumpActive()
+    wtr = pump_active()
     print("Water consumed: %.2f L" % wtr)
