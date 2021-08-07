@@ -8,7 +8,7 @@ import time
 import os
 
 #from rfid.rfid import RFID
-from pump.pump import pumpActive
+from pump.pump import pump_active
 
 
 class GUI(tk.Tk):
@@ -303,7 +303,7 @@ class UserHomeScreen(tk.Frame):
         self.more_info_btn = tk.Button(self, text="More Info", font=("Calibri", 12),
                                        command=lambda: container.change_frame(MoreInfoPage)).place(x=50, y=420)
         self.dispense_btn = tk.Button(self, text="Dispense", font=("Calibri", 12),
-                                      command=lambda: pumpActive()).place(x=200, y=100)
+                                      command=lambda: pump_active()).place(x=200, y=100)
 
         df.to_csv(self.file_path, index=False)
 
@@ -657,15 +657,6 @@ class GUI_NO_HARDWARE(tk.Tk):
     def change_frame(self, f):
         self.frame = self.frame_dictionary[f]
         self.frame.tkraise()
-        # print(f)
-        #if self.frame == self.frame_dictionary[UserHomeScreen_NH]:
-         #       pid = os.fork()
-         #       if pid == 0: #child
-          #              pumpActive()
-                        #update water values
-           #             os.exit()
-            #    else:
-             #           os.waitpid(pid,0)
 
     def csv_initialize(self):
 
@@ -852,7 +843,7 @@ class UserHomeScreen_NH(tk.Frame):
         self.more_info_btn = tk.Button(self, text="More Info", font=("Calibri", 12),
                                        command=lambda: container.change_frame(MoreInfoPage_NH)).place(x=50, y=420)
         self.dispense_btn = tk.Button(self, text="Dispense", font=("Calibri", 12),
-                                      command=lambda: pumpActive()).place(x=200, y=100)
+                                      command=lambda: pump_active()).place(x=200, y=100)
         df.to_csv(self.file_path, index=False)
         
         
