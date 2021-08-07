@@ -472,6 +472,7 @@ class DeletionPage(tk.Frame):
 
 
 class MoreInfoPage(tk.Frame):
+    # TODO: add more parameters
     uid = ''
 
     def __init__(self, container, parent):
@@ -514,7 +515,7 @@ class WaterData:
         self.water_cap = 99  # TODO: determine water_cap from the pump system
 
         self.factDictionary = {"Water covers about 71% of the earth's surface.":
-                                   "- United States Bureau of Reclamation",
+                               "- United States Bureau of Reclamation",
 
                                "2.5% of the earth's fresh water is unavailable: locked up \n"
                                "in glaciers, polar ice caps, atmosphere, and soil; \n"
@@ -1047,7 +1048,7 @@ class WaterData_NH:
         self.water_cap = 99  # TODO: determine water_cap from the pump system
 
         self.factDictionary = {"Water covers about 71% of the earth's surface.":
-                                   "- United States Bureau of Reclamation",
+                               "- United States Bureau of Reclamation",
 
                                "2.5% of the earth's fresh water is unavailable: locked up \n"
                                "in glaciers, polar ice caps, atmosphere, and soil; \n"
@@ -1125,21 +1126,22 @@ class WaterData_NH:
 DELETE UP TO HERE FOR FINAL PROJECT WITH HARDWARE ONLY
 """
 
+
 if __name__ == '__main__':
     """
     FOR WORKING WITH RFID HARDWARE: 
-
+   
     Use root = GUI()
-
+    
     Uncomment RFID imports:
         from rfid.rfid import RFID                      (on Line 8)
         self.rfid = RFID()                              (on Line 31)
-
-
+    
+    
     FOR WORKING WITHOUT RFID HARDWARE: 
-
+    
     Use root = GUI_NO_HARDWARE(), and
-
+    
     comment out RFID imports: 
         from rfid.rfid import RFID                      (on Line 8)
         self.rfid = RFID()                              (on Line 31)
