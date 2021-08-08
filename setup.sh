@@ -1,3 +1,3 @@
 #!/bin/bash
 
-sudo pip3 install .
+pip3 install .
