@@ -304,7 +304,7 @@ class UserHomeScreen(tk.Frame):
                                     command=lambda: container.change_frame(IdlePage)).place(x=380, y=420)
         self.more_info_btn = tk.Button(self, text="More Info", font=("Calibri", 12),
                                        command=lambda: container.change_frame(MoreInfoPage)).place(x=50, y=420)
-        self.dispense_btn = tk.Button(self, text="Dispense", font=("Calibri", 12),
+        self.dispense_btn = tk.Button(self, text="Enable Dispenser", font=("Calibri", 12),
                                       command=lambda: pump_active()).place(x=340, y=320)
 
         df.to_csv(self.file_path, index=False)
