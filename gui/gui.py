@@ -332,204 +332,62 @@ class UserHomeScreen(tk.Frame):
        #     row_num.append(0)
         
         """
-        These values are probably wrong, using them as placeholders for now
         This function needs to be called in multiple places: button to go to UserHomeScreen, Registration submit button, change attributes submit button
         """
         
         if df.at[row_num[0], 'age'] == 2 or df.at[row_num[0], 'age'] == 3:
-            df.at[row_num[0], 'daily_hydration_lower'] = 1076
-            df.at[row_num[0], 'daily_hydration_upper'] = 1076
-            
-            if df.at[row_num[0], 'activity_level'] == "Sedentary":
-                df.at[row_num[0], 'daily_hydration_lower'] = 256
-                df.at[row_num[0], 'daily_hydration_upper'] = 256
+            df.at[row_num[0], 'daily_hydration_lower'] = 1000
+            df.at[row_num[0], 'daily_hydration_upper'] = 1400
 
         elif df.at[row_num[0], 'sex'] == "Male":
             if df.at[row_num[0], 'age'] > 3 and df.at[row_num[0], 'age'] <= 8:
-                df.at[row_num[0], 'daily_hydration_lower'] = 1214
-                df.at[row_num[0], 'daily_hydration_upper'] = 1214
-
-                if df.at[row_num[0], 'activity_level'] == "Sedentary":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 144
-                    df.at[row_num[0], 'daily_hydration_upper'] = 144
-                
-                if df.at[row_num[0], 'activity_level'] == "Active":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 144
-                    df.at[row_num[0], 'daily_hydration_upper'] = 144
+                df.at[row_num[0], 'daily_hydration_lower'] = 1400
+                df.at[row_num[0], 'daily_hydration_upper'] = 1600
         
             elif df.at[row_num[0], 'age'] > 8 and df.at[row_num[0], 'age'] <= 13:
-                df.at[row_num[0], 'daily_hydration_lower'] = 1523
-                df.at[row_num[0], 'daily_hydration_upper'] = 1523
-
-                if df.at[row_num[0], 'activity_level'] == "Sedentary":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Moderate":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Active":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+                df.at[row_num[0], 'daily_hydration_lower'] = 1800
+                df.at[row_num[0], 'daily_hydration_upper'] = 2000
 
             elif df.at[row_num[0], 'age'] > 13 and df.at[row_num[0], 'age'] <= 18:
-                df.at[row_num[0], 'daily_hydration_lower'] = 2450
-                df.at[row_num[0], 'daily_hydration_upper'] = 2450
-
-                if df.at[row_num[0], 'activity_level'] == "Sedentary":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Moderate":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Active":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+                df.at[row_num[0], 'daily_hydration_lower'] = 2400
+                df.at[row_num[0], 'daily_hydration_upper'] = 2800
             
             elif df.at[row_num[0], 'age'] > 18 and df.at[row_num[0], 'age'] <= 30:
-                df.at[row_num[0], 'daily_hydration_lower'] = 3189
-                df.at[row_num[0], 'daily_hydration_upper'] = 3189
-
-                if df.at[row_num[0], 'activity_level'] == "Sedentary":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Moderate":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Active":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+                df.at[row_num[0], 'daily_hydration_lower'] = 2600
+                df.at[row_num[0], 'daily_hydration_upper'] = 2800
             
             elif df.at[row_num[0], 'age'] > 30 and df.at[row_num[0], 'age'] <= 50:
-                df.at[row_num[0], 'daily_hydration_lower'] = 3361
-                df.at[row_num[0], 'daily_hydration_upper'] = 3361
-
-                if df.at[row_num[0], 'activity_level'] == "Sedentary":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Moderate":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Active":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+                df.at[row_num[0], 'daily_hydration_lower'] = 2400
+                df.at[row_num[0], 'daily_hydration_upper'] = 2600
 
             elif df.at[row_num[0], 'age'] > 50:
-                df.at[row_num[0], 'daily_hydration_lower'] = 2595
-                df.at[row_num[0], 'daily_hydration_upper'] = 2595
-
-                if df.at[row_num[0], 'activity_level'] == "Sedentary":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Moderate":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Active":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
+                df.at[row_num[0], 'daily_hydration_lower'] = 2200
+                df.at[row_num[0], 'daily_hydration_upper'] = 2400
 
         elif df.at[row_num[0], 'sex'] == "Female":
             if df.at[row_num[0], 'age'] > 3 and df.at[row_num[0], 'age'] <= 8:
-                df.at[row_num[0], 'daily_hydration_lower'] = 1214
-                df.at[row_num[0], 'daily_hydration_upper'] = 1214
-
-                if df.at[row_num[0], 'activity_level'] == "Sedentary":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 144
-                    df.at[row_num[0], 'daily_hydration_upper'] = 144
-                
-                if df.at[row_num[0], 'activity_level'] == "Active":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 144
-                    df.at[row_num[0], 'daily_hydration_upper'] = 144
+                df.at[row_num[0], 'daily_hydration_lower'] = 1400
+                df.at[row_num[0], 'daily_hydration_upper'] = 1600
         
             elif df.at[row_num[0], 'age'] > 8 and df.at[row_num[0], 'age'] <= 13:
-                df.at[row_num[0], 'daily_hydration_lower'] = 1523
-                df.at[row_num[0], 'daily_hydration_upper'] = 1523
-
-                if df.at[row_num[0], 'activity_level'] == "Sedentary":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Moderate":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Active":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+                df.at[row_num[0], 'daily_hydration_lower'] = 1600
+                df.at[row_num[0], 'daily_hydration_upper'] = 2000
 
             elif df.at[row_num[0], 'age'] > 13 and df.at[row_num[0], 'age'] <= 18:
-                df.at[row_num[0], 'daily_hydration_lower'] = 2450
-                df.at[row_num[0], 'daily_hydration_upper'] = 2450
-
-                if df.at[row_num[0], 'activity_level'] == "Sedentary":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Moderate":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Active":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+                df.at[row_num[0], 'daily_hydration_lower'] = 2000
+                df.at[row_num[0], 'daily_hydration_upper'] = 2000
             
             elif df.at[row_num[0], 'age'] > 18 and df.at[row_num[0], 'age'] <= 30:
-                df.at[row_num[0], 'daily_hydration_lower'] = 3189
-                df.at[row_num[0], 'daily_hydration_upper'] = 3189
-
-                if df.at[row_num[0], 'activity_level'] == "Sedentary":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Moderate":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Active":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+                df.at[row_num[0], 'daily_hydration_lower'] = 2000
+                df.at[row_num[0], 'daily_hydration_upper'] = 2200
             
             elif df.at[row_num[0], 'age'] > 30 and df.at[row_num[0], 'age'] <= 50:
-                df.at[row_num[0], 'daily_hydration_lower'] = 3361
-                df.at[row_num[0], 'daily_hydration_upper'] = 3361
-
-                if df.at[row_num[0], 'activity_level'] == "Sedentary":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Moderate":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Active":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+                df.at[row_num[0], 'daily_hydration_lower'] = 2000
+                df.at[row_num[0], 'daily_hydration_upper'] = 2000
 
             elif df.at[row_num[0], 'age'] > 50:
-                df.at[row_num[0], 'daily_hydration_lower'] = 2595
-                df.at[row_num[0], 'daily_hydration_upper'] = 2595
-
-                if df.at[row_num[0], 'activity_level'] == "Sedentary":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Moderate":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Active":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+                df.at[row_num[0], 'daily_hydration_lower'] = 1800
+                df.at[row_num[0], 'daily_hydration_upper'] = 1800
 
         df.to_csv(self.file_path, index=False)
 
@@ -1090,204 +948,62 @@ class UserHomeScreen_NH(tk.Frame):
         row_num = df.index[df['card_uid'] == self.uid].tolist()
         
         """
-        These values are probably wrong, using them as placeholders for now
         This function needs to be called in multiple places: button to go to UserHomeScreen, Registration submit button, change attributes submit button
         """
         
         if df.at[row_num[0], 'age'] == 2 or df.at[row_num[0], 'age'] == 3:
-            df.at[row_num[0], 'daily_hydration_lower'] = 1076
-            df.at[row_num[0], 'daily_hydration_upper'] = 1076
-            
-            if df.at[row_num[0], 'activity_level'] == "Sedentary":
-                df.at[row_num[0], 'daily_hydration_lower'] = 256
-                df.at[row_num[0], 'daily_hydration_upper'] = 256
+            df.at[row_num[0], 'daily_hydration_lower'] = 1000
+            df.at[row_num[0], 'daily_hydration_upper'] = 1400
 
         elif df.at[row_num[0], 'sex'] == "Male":
             if df.at[row_num[0], 'age'] > 3 and df.at[row_num[0], 'age'] <= 8:
-                df.at[row_num[0], 'daily_hydration_lower'] = 1214
-                df.at[row_num[0], 'daily_hydration_upper'] = 1214
-
-                if df.at[row_num[0], 'activity_level'] == "Sedentary":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 144
-                    df.at[row_num[0], 'daily_hydration_upper'] = 144
-                
-                if df.at[row_num[0], 'activity_level'] == "Active":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 144
-                    df.at[row_num[0], 'daily_hydration_upper'] = 144
+                df.at[row_num[0], 'daily_hydration_lower'] = 1400
+                df.at[row_num[0], 'daily_hydration_upper'] = 1600
         
             elif df.at[row_num[0], 'age'] > 8 and df.at[row_num[0], 'age'] <= 13:
-                df.at[row_num[0], 'daily_hydration_lower'] = 1523
-                df.at[row_num[0], 'daily_hydration_upper'] = 1523
-
-                if df.at[row_num[0], 'activity_level'] == "Sedentary":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Moderate":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Active":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+                df.at[row_num[0], 'daily_hydration_lower'] = 1800
+                df.at[row_num[0], 'daily_hydration_upper'] = 2000
 
             elif df.at[row_num[0], 'age'] > 13 and df.at[row_num[0], 'age'] <= 18:
-                df.at[row_num[0], 'daily_hydration_lower'] = 2450
-                df.at[row_num[0], 'daily_hydration_upper'] = 2450
-
-                if df.at[row_num[0], 'activity_level'] == "Sedentary":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Moderate":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Active":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+                df.at[row_num[0], 'daily_hydration_lower'] = 2400
+                df.at[row_num[0], 'daily_hydration_upper'] = 2800
             
             elif df.at[row_num[0], 'age'] > 18 and df.at[row_num[0], 'age'] <= 30:
-                df.at[row_num[0], 'daily_hydration_lower'] = 3189
-                df.at[row_num[0], 'daily_hydration_upper'] = 3189
-
-                if df.at[row_num[0], 'activity_level'] == "Sedentary":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Moderate":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Active":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+                df.at[row_num[0], 'daily_hydration_lower'] = 2600
+                df.at[row_num[0], 'daily_hydration_upper'] = 2800
             
             elif df.at[row_num[0], 'age'] > 30 and df.at[row_num[0], 'age'] <= 50:
-                df.at[row_num[0], 'daily_hydration_lower'] = 3361
-                df.at[row_num[0], 'daily_hydration_upper'] = 3361
-
-                if df.at[row_num[0], 'activity_level'] == "Sedentary":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Moderate":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Active":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+                df.at[row_num[0], 'daily_hydration_lower'] = 2400
+                df.at[row_num[0], 'daily_hydration_upper'] = 2600
 
             elif df.at[row_num[0], 'age'] > 50:
-                df.at[row_num[0], 'daily_hydration_lower'] = 2595
-                df.at[row_num[0], 'daily_hydration_upper'] = 2595
-
-                if df.at[row_num[0], 'activity_level'] == "Sedentary":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Moderate":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Active":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
+                df.at[row_num[0], 'daily_hydration_lower'] = 2200
+                df.at[row_num[0], 'daily_hydration_upper'] = 2400
 
         elif df.at[row_num[0], 'sex'] == "Female":
             if df.at[row_num[0], 'age'] > 3 and df.at[row_num[0], 'age'] <= 8:
-                df.at[row_num[0], 'daily_hydration_lower'] = 1214
-                df.at[row_num[0], 'daily_hydration_upper'] = 1214
-
-                if df.at[row_num[0], 'activity_level'] == "Sedentary":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 144
-                    df.at[row_num[0], 'daily_hydration_upper'] = 144
-                
-                if df.at[row_num[0], 'activity_level'] == "Active":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 144
-                    df.at[row_num[0], 'daily_hydration_upper'] = 144
+                df.at[row_num[0], 'daily_hydration_lower'] = 1400
+                df.at[row_num[0], 'daily_hydration_upper'] = 1600
         
             elif df.at[row_num[0], 'age'] > 8 and df.at[row_num[0], 'age'] <= 13:
-                df.at[row_num[0], 'daily_hydration_lower'] = 1523
-                df.at[row_num[0], 'daily_hydration_upper'] = 1523
-
-                if df.at[row_num[0], 'activity_level'] == "Sedentary":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Moderate":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Active":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+                df.at[row_num[0], 'daily_hydration_lower'] = 1600
+                df.at[row_num[0], 'daily_hydration_upper'] = 2000
 
             elif df.at[row_num[0], 'age'] > 13 and df.at[row_num[0], 'age'] <= 18:
-                df.at[row_num[0], 'daily_hydration_lower'] = 2450
-                df.at[row_num[0], 'daily_hydration_upper'] = 2450
-
-                if df.at[row_num[0], 'activity_level'] == "Sedentary":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Moderate":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Active":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+                df.at[row_num[0], 'daily_hydration_lower'] = 2000
+                df.at[row_num[0], 'daily_hydration_upper'] = 2000
             
             elif df.at[row_num[0], 'age'] > 18 and df.at[row_num[0], 'age'] <= 30:
-                df.at[row_num[0], 'daily_hydration_lower'] = 3189
-                df.at[row_num[0], 'daily_hydration_upper'] = 3189
-
-                if df.at[row_num[0], 'activity_level'] == "Sedentary":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Moderate":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Active":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+                df.at[row_num[0], 'daily_hydration_lower'] = 2000
+                df.at[row_num[0], 'daily_hydration_upper'] = 2200
             
             elif df.at[row_num[0], 'age'] > 30 and df.at[row_num[0], 'age'] <= 50:
-                df.at[row_num[0], 'daily_hydration_lower'] = 3361
-                df.at[row_num[0], 'daily_hydration_upper'] = 3361
-
-                if df.at[row_num[0], 'activity_level'] == "Sedentary":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Moderate":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Active":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+                df.at[row_num[0], 'daily_hydration_lower'] = 2000
+                df.at[row_num[0], 'daily_hydration_upper'] = 2000
 
             elif df.at[row_num[0], 'age'] > 50:
-                df.at[row_num[0], 'daily_hydration_lower'] = 2595
-                df.at[row_num[0], 'daily_hydration_upper'] = 2595
-
-                if df.at[row_num[0], 'activity_level'] == "Sedentary":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Moderate":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
-
-                if df.at[row_num[0], 'activity_level'] == "Active":
-                    df.at[row_num[0], 'daily_hydration_lower'] = 73
-                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+                df.at[row_num[0], 'daily_hydration_lower'] = 1800
+                df.at[row_num[0], 'daily_hydration_upper'] = 1800
 
         df.to_csv(self.file_path, index=False)    
         
