@@ -5,9 +5,8 @@ from os import path
 import random
 import csv
 import time
-import os
 
-#from rfid.rfid import RFID
+from rfid.rfid import RFID
 from pump.pump import pump_active
 
 
@@ -15,10 +14,9 @@ class GUI(tk.Tk):
     # ADD FILE PATHS HERE, Comment out unused file_paths
 
     # file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-    #file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
-    #file_path = "/home/pi/Desktop/CS179J-Smart-Water-Station/data/user_data.csv"
-    file_path = "/home/kenlee/Documents/GitHub/CS179J-Smart-Water-Station-Project/data/user_data.csv"
-    
+    # file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+    # file_path = "/home/pi/Desktop/CS179J-Smart-Water-Station/data/user_data.csv"
+    file_path = "/home/kenlee/Documents/GitHub/CS179J-Smart-Water-Station-Project/data/user_data.csv"   
 
     def __init__(self):
         super().__init__()
@@ -33,7 +31,7 @@ class GUI(tk.Tk):
         self.create_container()
         self.create_frames()
 
-        #self.rfid = RFID()
+        self.rfid = RFID()
         self.card_uid = ''
         self.card_state = False
 
@@ -77,17 +75,17 @@ class GUI(tk.Tk):
 
         if not path.exists(self.file_path):
             columns = ['card_uid', 'registration_state', 'name', 'age', 'sex', 'activity_level',
-                       'daily_hydration_lower', 'daily_hydration_upper', 'water_dispensed',
-                       'percent_dispensed_of_daily', 'num_days', 'num_days_goal', 'avg_intake'
+                       'daily_hydration_lower', 'daily_hydration_upper', 'water_dispensed', 'total_dispensed',
+                       'percent_dispensed_of_daily', 'num_days', 'num_days_goal', 'avg_intake', 'last_login'
                        ]
 
             user_data = [
-                ['734a266f', False, ' ', 0, ' ', ' ', 0, 0, 0, 0.0, 0, 0, 0.0],
-                ['5d81e96d', False, ' ', 0, ' ', ' ', 0, 0, 0, 0.0, 0, 0, 0.0],
-                ['4d71f56d', False, ' ', 0, ' ', ' ', 0, 0, 0, 0.0, 0, 0, 0.0],
-                ['fdd1a46b', False, ' ', 0, ' ', ' ', 0, 0, 0, 0.0, 0, 0, 0.0],
-                ['1d4ba46b', False, ' ', 0, ' ', ' ', 0, 0, 0, 0.0, 0, 0, 0.0],
-                ['dd8b9f6b', False, ' ', 0, ' ', ' ', 0, 0, 0, 0.0, 0, 0, 0.0]
+                ['734a266f', False, ' ', 0, ' ', ' ', 0, 0, 0, 0, 0.0, 0, 0, 0.0, ' '],
+                ['5d81e96d', False, ' ', 0, ' ', ' ', 0, 0, 0, 0, 0.0, 0, 0, 0.0, ' '],
+                ['4d71f56d', False, ' ', 0, ' ', ' ', 0, 0, 0, 0, 0.0, 0, 0, 0.0, ' '],
+                ['fdd1a46b', False, ' ', 0, ' ', ' ', 0, 0, 0, 0, 0.0, 0, 0, 0.0, ' '],
+                ['1d4ba46b', False, ' ', 0, ' ', ' ', 0, 0, 0, 0, 0.0, 0, 0, 0.0, ' '],
+                ['dd8b9f6b', False, ' ', 0, ' ', ' ', 0, 0, 0, 0, 0.0, 0, 0, 0.0, ' ']
             ]
 
             # open file, write data to file
@@ -135,13 +133,11 @@ class IdlePage(tk.Frame):
         self.columnconfigure(2, minsize=200, weight=1)
 
         self.water_data = WaterData()
-        #self.water_cap = self.water_data.get_water_cap()
+
         self.fact, self.source = self.water_data.get_fact_source()
 
         # define GUI labels and buttons
         self.idle_label = tk.Label(self, text="IDLE MODE", font=("Calibri", 12))
-        #self.water_cap_label = tk.Label(self, text=str(self.water_cap) + " % H2O Capacity",
-        #                                font=("Calibri", 12)).place(x=650, y=5)
         self.did_you_know_label = tk.Label(self, text="Did you know?\n\n", font=("Calibri", 12, "bold"))
         self.fact_source_label = tk.Label(self, text=self.fact + "\n\n" + self.source, font=("Calibri", 12),
                                           justify="left", anchor="w")
@@ -151,11 +147,9 @@ class IdlePage(tk.Frame):
 
         # structure the GUI page using a grid
         self.idle_label.grid(row=0, column=0, sticky="nw", padx=7, pady=7)
-        # self.water_cap_label.grid(row=0, column=2, sticky="ne", padx=7, pady=7)
         self.did_you_know_label.grid(row=1, column=1, sticky="nw")
         self.fact_source_label.grid(row=2, column=1, sticky="nw")
-        #self.next_btn.grid(row=3, column=0, columnspan=3, sticky="s")
-
+        
         self.fact_source_label.after(15000, self.update_text)
 
     def update_text(self):
@@ -176,7 +170,6 @@ class RFIDPage(tk.Frame):
 
         self.scan_card_label = tk.Label(self, text="PLEASE SCAN YOUR RFID CARD TO CONTINUE",
                                         font=("Calibri", 20)).pack()
-        # self.scan_card_label.grid(row=0, column=0)
 
         self.back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
                                   command=lambda: container.change_frame(IdlePage)).place(x=380, y=350)
@@ -185,7 +178,7 @@ class RFIDPage(tk.Frame):
                                        command=lambda: self.scan_rfid_card(container)).place(x=300, y=200)
 
         """
-        FOR USE WITHOUT RFID HARDWARE: CAN DELETE COMMENTED OUT BELOW IF HARDWARE PORTION IS WORKING
+        FOR USE WITHOUT RFID HARDWARE: USED FOR DEBUGGING
         """
         # self.new_user_btn = tk.Button(self, text="New User", font=("Calibri", 12), bg="green",
         #                               command=lambda: container.change_frame(UserRegistrationPage)).place(x=375, y=250)
@@ -204,7 +197,7 @@ class RFIDPage(tk.Frame):
         MoreInfoPage.uid = self.uid
 
         if self.state:
-            #UserHomeScreen.research_data(self)
+            # UserHomeScreen.research_data(self)
             container.update_frame(UserHomeScreen)
             container.change_frame(UserHomeScreen)
         else:
@@ -266,11 +259,13 @@ class UserRegistrationPage(tk.Frame):
         df.at[row_num[0], 'activity_level'] = self.s2.get()
         df.at[row_num[0], 'daily_hydration_lower'] = 0
         df.at[row_num[0], 'daily_hydration_upper'] = 0
-        df.at[row_num[0], 'water_dispensed'] = 0.0
+        df.at[row_num[0], 'water_dispensed'] = 0
+        df.at[row_num[0], 'total_dispensed'] = 0
         df.at[row_num[0], 'percent_dispensed_of_daily'] = 0.0
         df.at[row_num[0], 'num_days'] = 0
         df.at[row_num[0], 'num_days_goal'] = 0
         df.at[row_num[0], 'avg_intake'] = 0.0
+        df.at[row_num[0], 'last_login'] = ' '
 
         df.to_csv(self.file_path, index=False)
 
@@ -298,8 +293,8 @@ class UserHomeScreen(tk.Frame):
                                                     font=("Calibri", 30)).place(x=165, y=150)
         self.hydration_percentage = tk.Label(self, text=str(df.at[row_num[0], 'percent_dispensed_of_daily']) + "%",
                                              font=("Calibri", 30)).place(x=380, y=210)
-       # self.dispense_label = tk.Label(self, text="Dispense Button Enabled", font=("Calibri", 12),
-       #                                fg="green").place(x=340, y=320)
+        # self.dispense_label = tk.Label(self, text="Dispense Button Enabled", font=("Calibri", 12),
+        #                                fg="green").place(x=340, y=320)
 
         self.settings_btn = tk.Button(self, text="Settings", font=("Calibri", 12),
                                       command=lambda: container.change_frame(SettingsPage)).place(x=660, y=420)
@@ -314,10 +309,6 @@ class UserHomeScreen(tk.Frame):
 
     def research_data(self):
         
-        
-
-        #self.uid = "734a266f"
-        
         """
         Make sure this is RFID Hardware Compatible
         """
@@ -328,8 +319,8 @@ class UserHomeScreen(tk.Frame):
         df = pd.read_csv(self.file_path)
         row_num = df.index[df['card_uid'] == self.uid].tolist()
 
-       # if len(row_num) is 0:
-       #     row_num.append(0)
+        if len(row_num) is 0:
+            row_num.append(0)
         
         """
         This function needs to be called in multiple places: button to go to UserHomeScreen, Registration submit button, change attributes submit button
@@ -542,10 +533,12 @@ class DeletionConfirmationPage(tk.Frame):
         df.at[row_num[0], 'daily_hydration_lower'] = 0
         df.at[row_num[0], 'daily_hydration_upper'] = 0
         df.at[row_num[0], 'water_dispensed'] = 0
+        df.at[row_num[0], 'total_dispensed'] = 0
         df.at[row_num[0], 'percent_dispensed_of_daily'] = 0.0
         df.at[row_num[0], 'num_days'] = 0
         df.at[row_num[0], 'num_days_goal'] = 0
         df.at[row_num[0], 'avg_intake'] = 0.0
+        df.at[row_num[0], 'last_login'] = ' '
 
         df.to_csv(self.file_path, index=False)
 
@@ -564,7 +557,6 @@ class DeletionPage(tk.Frame):
 
 
 class MoreInfoPage(tk.Frame):
-    # TODO: add more parameters
     uid = ''
 
     def __init__(self, container, parent):
@@ -608,7 +600,6 @@ class MoreInfoPage(tk.Frame):
 
 class WaterData:
     def __init__(self):
-        #self.water_cap = 99  # TODO: determine water_cap from the pump system
 
         self.factDictionary = {"Water covers about 71% of the earth's surface.":
                                "- United States Bureau of Reclamation",
@@ -678,9 +669,6 @@ class WaterData:
                                    "- United States Geological Survey",
                                }
 
-    def get_water_cap(self):
-        return self.water_cap
-
     def get_fact_source(self):
         return random.choice(list(self.factDictionary.items()))
 
@@ -693,11 +681,10 @@ GUI_NO_HARDWARE Implementation: DELETE BELOW FOR FINAL PROJECT, UP TO LINE 1117
 class GUI_NO_HARDWARE(tk.Tk):
     # ADD FILE PATHS HERE, Comment out unused file_paths
 
-    #file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-    #file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
-    #file_path = "/home/pi/Desktop/CS179J-Smart-Water-Station/data/user_data.csv"
+    # file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
+    # file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+    # file_path = "/home/pi/Desktop/CS179J-Smart-Water-Station/data/user_data.csv"
     file_path = "/home/kenlee/Documents/GitHub/CS179J-Smart-Water-Station-Project/data/user_data.csv"
-
 
     def __init__(self):
         super().__init__()
@@ -755,17 +742,17 @@ class GUI_NO_HARDWARE(tk.Tk):
 
         if not path.exists(self.file_path):
             columns = ['card_uid', 'registration_state', 'name', 'age', 'sex', 'activity_level',
-                       'daily_hydration_lower', 'daily_hydration_upper', 'water_dispensed',
-                       'percent_dispensed_of_daily', 'num_days', 'num_days_goal', 'avg_intake'
+                       'daily_hydration_lower', 'daily_hydration_upper', 'water_dispensed', 'total_dispensed',
+                       'percent_dispensed_of_daily', 'num_days', 'num_days_goal', 'avg_intake', 'last_login'
                        ]
 
             user_data = [
-                ['734a266f', False, ' ', 0, ' ', ' ', 0, 0, 0, 0.0, 0, 0, 0.0],
-                ['5d81e96d', False, ' ', 0, ' ', ' ', 0, 0, 0, 0.0, 0, 0, 0.0],
-                ['4d71f56d', False, ' ', 0, ' ', ' ', 0, 0, 0, 0.0, 0, 0, 0.0],
-                ['fdd1a46b', False, ' ', 0, ' ', ' ', 0, 0, 0, 0.0, 0, 0, 0.0],
-                ['1d4ba46b', False, ' ', 0, ' ', ' ', 0, 0, 0, 0.0, 0, 0, 0.0],
-                ['dd8b9f6b', False, ' ', 0, ' ', ' ', 0, 0, 0, 0.0, 0, 0, 0.0]
+                ['734a266f', False, ' ', 0, ' ', ' ', 0, 0, 0, 0, 0.0, 0, 0, 0.0, ' '],
+                ['5d81e96d', False, ' ', 0, ' ', ' ', 0, 0, 0, 0, 0.0, 0, 0, 0.0, ' '],
+                ['4d71f56d', False, ' ', 0, ' ', ' ', 0, 0, 0, 0, 0.0, 0, 0, 0.0, ' '],
+                ['fdd1a46b', False, ' ', 0, ' ', ' ', 0, 0, 0, 0, 0.0, 0, 0, 0.0, ' '],
+                ['1d4ba46b', False, ' ', 0, ' ', ' ', 0, 0, 0, 0, 0.0, 0, 0, 0.0, ' '],
+                ['dd8b9f6b', False, ' ', 0, ' ', ' ', 0, 0, 0, 0, 0.0, 0, 0, 0.0, ' ']
             ]
 
             # open file, write data to file
@@ -792,13 +779,11 @@ class IdlePage_NH(tk.Frame):
         self.columnconfigure(2, minsize=200, weight=1)
 
         self.water_data = WaterData_NH()
-       # self.water_cap = self.water_data.get_water_cap()
+
         self.fact, self.source = self.water_data.get_fact_source()
 
         # define GUI labels and buttons
         self.idle_label = tk.Label(self, text="IDLE MODE", font=("Calibri", 12))
-       # self.water_cap_label = tk.Label(self, text=str(self.water_cap) + " % H2O Capacity",
-        #                                font=("Calibri", 12)).place(x=650, y=5)
         self.did_you_know_label = tk.Label(self, text="Did you know?\n\n", font=("Calibri", 12, "bold"))
         self.fact_source_label = tk.Label(self, text=self.fact + "\n\n" + self.source, font=("Calibri", 12),
                                           justify="left", anchor="w")
@@ -808,10 +793,8 @@ class IdlePage_NH(tk.Frame):
 
         # structure the GUI page using a grid
         self.idle_label.grid(row=0, column=0, sticky="nw", padx=7, pady=7)
-        # self.water_cap_label.grid(row=0, column=2, sticky="ne", padx=7, pady=7)
         self.did_you_know_label.grid(row=1, column=1, sticky="nw")
         self.fact_source_label.grid(row=2, column=1, sticky="nw")
-       # self.next_btn.grid(row=3, column=0, columnspan=3, sticky="s")
 
         self.fact_source_label.after(15000, self.update_text)
 
@@ -833,7 +816,6 @@ class RFIDPage_NH(tk.Frame):
 
         self.scan_card_label = tk.Label(self, text="PLEASE SCAN YOUR RFID CARD TO CONTINUE",
                                         font=("Calibri", 20)).pack()
-        # self.scan_card_label.grid(row=0, column=0)
 
         self.back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
                                   command=lambda: container.change_frame(IdlePage_NH)).place(x=380, y=350)
@@ -899,12 +881,14 @@ class UserRegistrationPage_NH(tk.Frame):
         df.at[row_num[0], 'activity_level'] = self.s2.get()
         df.at[row_num[0], 'daily_hydration_lower'] = 0
         df.at[row_num[0], 'daily_hydration_upper'] = 0
-        df.at[row_num[0], 'water_dispensed'] = 0.0
+        df.at[row_num[0], 'water_dispensed'] = 0
+        df.at[row_num[0], 'total_dispensed'] = 0
         df.at[row_num[0], 'percent_dispensed_of_daily'] = 0.0
         df.at[row_num[0], 'num_days'] = 0
         df.at[row_num[0], 'num_days_goal'] = 0
         df.at[row_num[0], 'avg_intake'] = 0.0
         df.at[row_num[0], 'registration_state'] = True
+        df.at[row_num[0], 'last_login'] = ' '
 
         df.to_csv(self.file_path, index=False)
 
@@ -1165,11 +1149,13 @@ class DeletionConfirmationPage_NH(tk.Frame):
         df.at[row_num[0], 'daily_hydration_lower'] = 0
         df.at[row_num[0], 'daily_hydration_upper'] = 0
         df.at[row_num[0], 'water_dispensed'] = 0
+        df.at[row_num[0], 'total_dispensed'] = 0
         df.at[row_num[0], 'percent_dispensed_of_daily'] = 0.0
         df.at[row_num[0], 'num_days'] = 0
         df.at[row_num[0], 'num_days_goal'] = 0
         df.at[row_num[0], 'avg_intake'] = 0.0
         df.at[row_num[0], 'registration_state'] = False
+        df.at[row_num[0], 'last_login'] = ' '
 
         df.to_csv(self.file_path, index=False)
 
@@ -1227,7 +1213,6 @@ class MoreInfoPage_NH(tk.Frame):
 
 class WaterData_NH:
     def __init__(self):
-        #self.water_cap = 99  # TODO: determine water_cap from the pump system
 
         self.factDictionary = {"Water covers about 71% of the earth's surface.":
                                "- United States Bureau of Reclamation",
@@ -1297,9 +1282,6 @@ class WaterData_NH:
                                    "- United States Geological Survey",
                                }
 
-    def get_water_cap(self):
-        return self.water_cap
-
     def get_fact_source(self):
         return random.choice(list(self.factDictionary.items()))
 
@@ -1329,6 +1311,6 @@ if __name__ == '__main__':
         self.rfid = RFID()                              (on Line 31)
     """
 
-    #root = GUI()
-    root = GUI_NO_HARDWARE()
+    root = GUI()
+    # root = GUI_NO_HARDWARE()
     root.mainloop()
