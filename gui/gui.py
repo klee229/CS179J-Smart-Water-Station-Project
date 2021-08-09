@@ -204,6 +204,7 @@ class RFIDPage(tk.Frame):
         MoreInfoPage.uid = self.uid
 
         if self.state:
+            #UserHomeScreen_NH.research_data(self)
             container.update_frame(UserHomeScreen)
             container.change_frame(UserHomeScreen)
         else:
@@ -243,8 +244,9 @@ class UserRegistrationPage(tk.Frame):
         self.usr_SSelection2.current()
 
         self.submit = tk.Button(self, text="Submit",
-                                command=lambda: [self.save_command(container), container.update_frame(UserHomeScreen),
-                                                 container.change_frame(UserHomeScreen)]).place(x=350, y=350)
+                                command=lambda: [self.save_command(container), UserHomeScreen_NH.research_data(self), 
+                                                container.update_frame(UserHomeScreen),
+                                                container.change_frame(UserHomeScreen)]).place(x=350, y=350)
 
         self.go_back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
                                      command=lambda: container.change_frame(RFIDPage)).place(x=345, y=400)
@@ -290,7 +292,8 @@ class UserHomeScreen(tk.Frame):
             row_num.append(0)
 
         self.welcome_home_screen = tk.Label(self, text="Hello, " + str(df.at[row_num[0], 'name']) + "!",
-                                            font=("Calibri", 20)).place(x=350, y=5)
+                                           font=("Calibri", 20))
+        self.welcome_home_screen.pack()
         self.hydration_percentage_header = tk.Label(self, text="Current Hydration Level:",
                                                     font=("Calibri", 30)).place(x=165, y=150)
         self.hydration_percentage = tk.Label(self, text=str(df.at[row_num[0], 'percent_dispensed_of_daily']) + "%",
@@ -303,9 +306,230 @@ class UserHomeScreen(tk.Frame):
         self.logout_btn = tk.Button(self, text="Log Out", font=("Calibri", 12),
                                     command=lambda: container.change_frame(IdlePage)).place(x=380, y=420)
         self.more_info_btn = tk.Button(self, text="More Info", font=("Calibri", 12),
-                                       command=lambda: container.change_frame(MoreInfoPage)).place(x=50, y=420)
+                                       command=lambda: [self.research_data(), container.update_frame(MoreInfoPage) ,container.change_frame(MoreInfoPage)]).place(x=50, y=420)
         self.dispense_btn = tk.Button(self, text="Enable Dispenser", font=("Calibri", 12),
                                       command=lambda: pump_active()).place(x=340, y=320)
+
+        df.to_csv(self.file_path, index=False)
+
+    def research_data(self):
+        
+        
+
+        #self.uid = "734a266f"
+        
+        """
+        Make sure this is RFID Hardware Compatible
+        """
+        self.file_path = GUI.file_path
+
+        self.uid = UserHomeScreen.uid
+
+        df = pd.read_csv(self.file_path)
+        row_num = df.index[df['card_uid'] == self.uid].tolist()
+
+       # if len(row_num) is 0:
+       #     row_num.append(0)
+        
+        """
+        These values are probably wrong, using them as placeholders for now
+        This function needs to be called in multiple places: button to go to UserHomeScreen, Registration submit button, change attributes submit button
+        """
+        
+        if df.at[row_num[0], 'age'] == 2 or df.at[row_num[0], 'age'] == 3:
+            df.at[row_num[0], 'daily_hydration_lower'] = 1076
+            df.at[row_num[0], 'daily_hydration_upper'] = 1076
+            
+            if df.at[row_num[0], 'activity_level'] == "Sedentary":
+                df.at[row_num[0], 'daily_hydration_lower'] = 256
+                df.at[row_num[0], 'daily_hydration_upper'] = 256
+
+        elif df.at[row_num[0], 'sex'] == "Male":
+            if df.at[row_num[0], 'age'] > 3 and df.at[row_num[0], 'age'] <= 8:
+                df.at[row_num[0], 'daily_hydration_lower'] = 1214
+                df.at[row_num[0], 'daily_hydration_upper'] = 1214
+
+                if df.at[row_num[0], 'activity_level'] == "Sedentary":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 144
+                    df.at[row_num[0], 'daily_hydration_upper'] = 144
+                
+                if df.at[row_num[0], 'activity_level'] == "Active":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 144
+                    df.at[row_num[0], 'daily_hydration_upper'] = 144
+        
+            elif df.at[row_num[0], 'age'] > 8 and df.at[row_num[0], 'age'] <= 13:
+                df.at[row_num[0], 'daily_hydration_lower'] = 1523
+                df.at[row_num[0], 'daily_hydration_upper'] = 1523
+
+                if df.at[row_num[0], 'activity_level'] == "Sedentary":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Moderate":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Active":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+            elif df.at[row_num[0], 'age'] > 13 and df.at[row_num[0], 'age'] <= 18:
+                df.at[row_num[0], 'daily_hydration_lower'] = 2450
+                df.at[row_num[0], 'daily_hydration_upper'] = 2450
+
+                if df.at[row_num[0], 'activity_level'] == "Sedentary":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Moderate":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Active":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+            
+            elif df.at[row_num[0], 'age'] > 18 and df.at[row_num[0], 'age'] <= 30:
+                df.at[row_num[0], 'daily_hydration_lower'] = 3189
+                df.at[row_num[0], 'daily_hydration_upper'] = 3189
+
+                if df.at[row_num[0], 'activity_level'] == "Sedentary":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Moderate":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Active":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+            
+            elif df.at[row_num[0], 'age'] > 30 and df.at[row_num[0], 'age'] <= 50:
+                df.at[row_num[0], 'daily_hydration_lower'] = 3361
+                df.at[row_num[0], 'daily_hydration_upper'] = 3361
+
+                if df.at[row_num[0], 'activity_level'] == "Sedentary":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Moderate":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Active":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+            elif df.at[row_num[0], 'age'] > 50:
+                df.at[row_num[0], 'daily_hydration_lower'] = 2595
+                df.at[row_num[0], 'daily_hydration_upper'] = 2595
+
+                if df.at[row_num[0], 'activity_level'] == "Sedentary":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Moderate":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Active":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+
+        elif df.at[row_num[0], 'sex'] == "Female":
+            if df.at[row_num[0], 'age'] > 3 and df.at[row_num[0], 'age'] <= 8:
+                df.at[row_num[0], 'daily_hydration_lower'] = 1214
+                df.at[row_num[0], 'daily_hydration_upper'] = 1214
+
+                if df.at[row_num[0], 'activity_level'] == "Sedentary":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 144
+                    df.at[row_num[0], 'daily_hydration_upper'] = 144
+                
+                if df.at[row_num[0], 'activity_level'] == "Active":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 144
+                    df.at[row_num[0], 'daily_hydration_upper'] = 144
+        
+            elif df.at[row_num[0], 'age'] > 8 and df.at[row_num[0], 'age'] <= 13:
+                df.at[row_num[0], 'daily_hydration_lower'] = 1523
+                df.at[row_num[0], 'daily_hydration_upper'] = 1523
+
+                if df.at[row_num[0], 'activity_level'] == "Sedentary":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Moderate":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Active":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+            elif df.at[row_num[0], 'age'] > 13 and df.at[row_num[0], 'age'] <= 18:
+                df.at[row_num[0], 'daily_hydration_lower'] = 2450
+                df.at[row_num[0], 'daily_hydration_upper'] = 2450
+
+                if df.at[row_num[0], 'activity_level'] == "Sedentary":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Moderate":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Active":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+            
+            elif df.at[row_num[0], 'age'] > 18 and df.at[row_num[0], 'age'] <= 30:
+                df.at[row_num[0], 'daily_hydration_lower'] = 3189
+                df.at[row_num[0], 'daily_hydration_upper'] = 3189
+
+                if df.at[row_num[0], 'activity_level'] == "Sedentary":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Moderate":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Active":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+            
+            elif df.at[row_num[0], 'age'] > 30 and df.at[row_num[0], 'age'] <= 50:
+                df.at[row_num[0], 'daily_hydration_lower'] = 3361
+                df.at[row_num[0], 'daily_hydration_upper'] = 3361
+
+                if df.at[row_num[0], 'activity_level'] == "Sedentary":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Moderate":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Active":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+            elif df.at[row_num[0], 'age'] > 50:
+                df.at[row_num[0], 'daily_hydration_lower'] = 2595
+                df.at[row_num[0], 'daily_hydration_upper'] = 2595
+
+                if df.at[row_num[0], 'activity_level'] == "Sedentary":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Moderate":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Active":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
 
         df.to_csv(self.file_path, index=False)
 
@@ -398,11 +622,11 @@ class EditAttributes(tk.Frame):
             self.usrSSelection2_edit.current()
 
         self.submit = tk.Button(self, text="Submit",
-                                command=lambda: [self.save_command1(container), container.update_frame(UserHomeScreen),
+                                command=lambda: [self.save_command1(container), UserHomeScreen.research_data(self), container.update_frame(UserHomeScreen),
                                                  container.change_frame(ChangeAttributesPage)]).place(x=370, y=350)
 
         self.back_btn = tk.Button(self, text="Go Back",
-                                  command=lambda: container.change_frame(ChangeAttributesPage_NH)).place(x=365, y=400)
+                                  command=lambda: container.change_frame(ChangeAttributesPage)).place(x=365, y=400)
 
     def save_command1(self, container):
         self.uid = container.get_card_uid()
@@ -757,7 +981,7 @@ class RFIDPage_NH(tk.Frame):
                                                                                                              y=250)
 
         self.new_user_btn = tk.Button(self, text="User Home", font=("Calibri", 12), bg="green",
-                                      command=lambda: [container.update_frame(UserHomeScreen_NH), 
+                                      command=lambda: [UserHomeScreen_NH.research_data(self), container.update_frame(UserHomeScreen_NH), 
                                       container.change_frame(UserHomeScreen_NH)]).place(x=365, y=300)
 
 
@@ -793,7 +1017,7 @@ class UserRegistrationPage_NH(tk.Frame):
         self.usr_SSelection2.current()
 
         self.submit = tk.Button(self, text="Submit",
-                                command=lambda: [self.save_command(container),
+                                command=lambda: [self.save_command(container),UserHomeScreen_NH.research_data(self),
                                                  container.update_frame(UserHomeScreen_NH),
                                                  container.change_frame(UserHomeScreen_NH)]).place(x=350, y=350)
 
@@ -838,6 +1062,7 @@ class UserHomeScreen_NH(tk.Frame):
 
         self.welcome_home_screen = tk.Label(self, text="Hello, " + str(df.at[row_num[0], 'name']) + "!",
                                             font=("Calibri", 20)).place(x=350, y=5)
+
         self.hydration_percentage_header = tk.Label(self, text="Current Hydration Level:",
                                                     font=("Calibri", 30)).place(x=165, y=150)
         self.hydration_percentage = tk.Label(self, text=str(df.at[row_num[0], 'percent_dispensed_of_daily']) + "%",
@@ -850,13 +1075,222 @@ class UserHomeScreen_NH(tk.Frame):
         self.logout_btn = tk.Button(self, text="Log Out", font=("Calibri", 12),
                                     command=lambda: container.change_frame(IdlePage_NH)).place(x=380, y=420)
         self.more_info_btn = tk.Button(self, text="More Info", font=("Calibri", 12),
-                                       command=lambda: container.change_frame(MoreInfoPage_NH)).place(x=50, y=420)
+                                       command=lambda: [self.research_data(), container.update_frame(MoreInfoPage_NH) ,container.change_frame(MoreInfoPage_NH)]).place(x=50, y=420)
         self.dispense_btn = tk.Button(self, text="Enable Dispenser", font=("Calibri", 12),fg="green",
                                       command=lambda: pump_active()).place(x=340, y=320)
         df.to_csv(self.file_path, index=False)
         
+    def research_data(self):
         
+        self.file_path = GUI.file_path
 
+        self.uid = "734a266f"
+        df = pd.read_csv(self.file_path)
+
+        row_num = df.index[df['card_uid'] == self.uid].tolist()
+        
+        """
+        These values are probably wrong, using them as placeholders for now
+        This function needs to be called in multiple places: button to go to UserHomeScreen, Registration submit button, change attributes submit button
+        """
+        
+        if df.at[row_num[0], 'age'] == 2 or df.at[row_num[0], 'age'] == 3:
+            df.at[row_num[0], 'daily_hydration_lower'] = 1076
+            df.at[row_num[0], 'daily_hydration_upper'] = 1076
+            
+            if df.at[row_num[0], 'activity_level'] == "Sedentary":
+                df.at[row_num[0], 'daily_hydration_lower'] = 256
+                df.at[row_num[0], 'daily_hydration_upper'] = 256
+
+        elif df.at[row_num[0], 'sex'] == "Male":
+            if df.at[row_num[0], 'age'] > 3 and df.at[row_num[0], 'age'] <= 8:
+                df.at[row_num[0], 'daily_hydration_lower'] = 1214
+                df.at[row_num[0], 'daily_hydration_upper'] = 1214
+
+                if df.at[row_num[0], 'activity_level'] == "Sedentary":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 144
+                    df.at[row_num[0], 'daily_hydration_upper'] = 144
+                
+                if df.at[row_num[0], 'activity_level'] == "Active":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 144
+                    df.at[row_num[0], 'daily_hydration_upper'] = 144
+        
+            elif df.at[row_num[0], 'age'] > 8 and df.at[row_num[0], 'age'] <= 13:
+                df.at[row_num[0], 'daily_hydration_lower'] = 1523
+                df.at[row_num[0], 'daily_hydration_upper'] = 1523
+
+                if df.at[row_num[0], 'activity_level'] == "Sedentary":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Moderate":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Active":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+            elif df.at[row_num[0], 'age'] > 13 and df.at[row_num[0], 'age'] <= 18:
+                df.at[row_num[0], 'daily_hydration_lower'] = 2450
+                df.at[row_num[0], 'daily_hydration_upper'] = 2450
+
+                if df.at[row_num[0], 'activity_level'] == "Sedentary":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Moderate":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Active":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+            
+            elif df.at[row_num[0], 'age'] > 18 and df.at[row_num[0], 'age'] <= 30:
+                df.at[row_num[0], 'daily_hydration_lower'] = 3189
+                df.at[row_num[0], 'daily_hydration_upper'] = 3189
+
+                if df.at[row_num[0], 'activity_level'] == "Sedentary":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Moderate":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Active":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+            
+            elif df.at[row_num[0], 'age'] > 30 and df.at[row_num[0], 'age'] <= 50:
+                df.at[row_num[0], 'daily_hydration_lower'] = 3361
+                df.at[row_num[0], 'daily_hydration_upper'] = 3361
+
+                if df.at[row_num[0], 'activity_level'] == "Sedentary":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Moderate":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Active":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+            elif df.at[row_num[0], 'age'] > 50:
+                df.at[row_num[0], 'daily_hydration_lower'] = 2595
+                df.at[row_num[0], 'daily_hydration_upper'] = 2595
+
+                if df.at[row_num[0], 'activity_level'] == "Sedentary":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Moderate":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Active":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+
+        elif df.at[row_num[0], 'sex'] == "Female":
+            if df.at[row_num[0], 'age'] > 3 and df.at[row_num[0], 'age'] <= 8:
+                df.at[row_num[0], 'daily_hydration_lower'] = 1214
+                df.at[row_num[0], 'daily_hydration_upper'] = 1214
+
+                if df.at[row_num[0], 'activity_level'] == "Sedentary":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 144
+                    df.at[row_num[0], 'daily_hydration_upper'] = 144
+                
+                if df.at[row_num[0], 'activity_level'] == "Active":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 144
+                    df.at[row_num[0], 'daily_hydration_upper'] = 144
+        
+            elif df.at[row_num[0], 'age'] > 8 and df.at[row_num[0], 'age'] <= 13:
+                df.at[row_num[0], 'daily_hydration_lower'] = 1523
+                df.at[row_num[0], 'daily_hydration_upper'] = 1523
+
+                if df.at[row_num[0], 'activity_level'] == "Sedentary":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Moderate":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Active":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+            elif df.at[row_num[0], 'age'] > 13 and df.at[row_num[0], 'age'] <= 18:
+                df.at[row_num[0], 'daily_hydration_lower'] = 2450
+                df.at[row_num[0], 'daily_hydration_upper'] = 2450
+
+                if df.at[row_num[0], 'activity_level'] == "Sedentary":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Moderate":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Active":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+            
+            elif df.at[row_num[0], 'age'] > 18 and df.at[row_num[0], 'age'] <= 30:
+                df.at[row_num[0], 'daily_hydration_lower'] = 3189
+                df.at[row_num[0], 'daily_hydration_upper'] = 3189
+
+                if df.at[row_num[0], 'activity_level'] == "Sedentary":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Moderate":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Active":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+            
+            elif df.at[row_num[0], 'age'] > 30 and df.at[row_num[0], 'age'] <= 50:
+                df.at[row_num[0], 'daily_hydration_lower'] = 3361
+                df.at[row_num[0], 'daily_hydration_upper'] = 3361
+
+                if df.at[row_num[0], 'activity_level'] == "Sedentary":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Moderate":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Active":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+            elif df.at[row_num[0], 'age'] > 50:
+                df.at[row_num[0], 'daily_hydration_lower'] = 2595
+                df.at[row_num[0], 'daily_hydration_upper'] = 2595
+
+                if df.at[row_num[0], 'activity_level'] == "Sedentary":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Moderate":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+                if df.at[row_num[0], 'activity_level'] == "Active":
+                    df.at[row_num[0], 'daily_hydration_lower'] = 73
+                    df.at[row_num[0], 'daily_hydration_upper'] = 73
+
+        df.to_csv(self.file_path, index=False)    
+        
 
 class SettingsPage_NH(tk.Frame):
     def __init__(self, container, parent):
@@ -950,11 +1384,11 @@ class EditAttributes_NH(tk.Frame):
             self.usrSSelection2_edit.current()
 
         self.submit = tk.Button(self, text="Submit",
-                                command=lambda: [self.save_command1(), container.update_frame(UserHomeScreen_NH),
+                                command=lambda: [self.save_command1(), UserHomeScreen_NH.research_data(self), container.update_frame(UserHomeScreen_NH),
                                                  container.change_frame(ChangeAttributesPage_NH)]).place(x=370, y=350)
 
         self.back_btn = tk.Button(self, text="Go Back",
-                                  command=lambda: container.change_frame(ChangeAttributesPage_NH)).place(x=365, y=400)
+                                  command=lambda:  container.change_frame(ChangeAttributesPage_NH)).place(x=365, y=400)
 
     def save_command1(self):
 
