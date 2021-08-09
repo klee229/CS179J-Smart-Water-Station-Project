@@ -204,7 +204,7 @@ class RFIDPage(tk.Frame):
         MoreInfoPage.uid = self.uid
 
         if self.state:
-            #UserHomeScreen_NH.research_data(self)
+            #UserHomeScreen.research_data(self)
             container.update_frame(UserHomeScreen)
             container.change_frame(UserHomeScreen)
         else:
@@ -244,7 +244,7 @@ class UserRegistrationPage(tk.Frame):
         self.usr_SSelection2.current()
 
         self.submit = tk.Button(self, text="Submit",
-                                command=lambda: [self.save_command(container), UserHomeScreen_NH.research_data(self), 
+                                command=lambda: [self.save_command(container), UserHomeScreen.research_data(self), 
                                                 container.update_frame(UserHomeScreen),
                                                 container.change_frame(UserHomeScreen)]).place(x=350, y=350)
 
@@ -581,23 +581,27 @@ class MoreInfoPage(tk.Frame):
             row_num.append(0)
 
         self.user_reg_stats = tk.Label(self, text="Your Attributes:", font=("Calibri", 30)).place(x=250, y=10)
-        self.attr_1 = tk.Label(self, text="Age: " + str(df.at[row_num[0], 'age']),
-                               font=("Calibri", 12)).place(x=250, y=120)
-        self.attr_2 = tk.Label(self, text="Sex: " + str(df.at[row_num[0], 'sex']), font=("Calibri", 12)).place(x=250,
-                                                                                                               y=145)
-        self.attr_3 = tk.Label(self, text="Activity Level: " + str(df.at[row_num[0], 'activity_level']),
-                               font=("Calibri", 12)).place(x=250, y=170)
-        self.attr_4 = tk.Label(self, text="Number of Days Where Goal Has Been Met: "
-                                          + str(df.at[row_num[0], 'num_days_goal']),
-                               font=("Calibri", 12)).place(x=220, y=195)
-        self.attr_5 = tk.Label(self, text="Water Amount You Have Dispensed: "
-                                          + str(df.at[row_num[0], 'water_dispensed']),
-                               font=("Calibri", 12)).place(x=220, y=220)
-        self.attr_6 = tk.Label(self, text="Your Average Water Intake: " + str(df.at[row_num[0], 'avg_intake']),
-                               font=("Calibri", 12)).place(x=220, y=245)
+        self.attr_1 = tk.Label(self, text="Age:  " + str(df.at[row_num[0], 'age']), 
+                                font=("Calibri", 12)).place(x=345, y=120)
+        self.attr_2 = tk.Label(self, text="Sex:  " + df.at[row_num[0], 'sex'], 
+                                font=("Calibri", 12)).place(x=345, y=145)
+        self.attr_3 = tk.Label(self, text="Activity Level:  " + df.at[row_num[0], 'activity_level'],
+                               font=("Calibri", 12)).place(x=270, y=170)
+        self.attr_4 = tk.Label(self,
+                               text="Recommended Range For Daily Hydration:  " + str(df.at[row_num[0], 'daily_hydration_lower']) + "mL to " + 
+                               str(df.at[row_num[0], 'daily_hydration_upper']) + " mL",
+                               font=("Calibri", 12)).place(x=40, y=195)
+        
+        self.attr_5 = tk.Label(self,
+                               text="Number of Days Where Goal Has Been Met:  " + str(df.at[row_num[0], 'num_days_goal']),
+                               font=("Calibri", 12)).place(x=30, y=220)
+        self.attr_6 = tk.Label(self, text="Water Amount You Have Dispensed:  " + str(df.at[row_num[0], 'water_dispensed']),
+                               font=("Calibri", 12)).place(x=90, y=245)
+        self.attr_7 = tk.Label(self, text="Your Average Water Intake:  " + str(df.at[row_num[0], 'avg_intake']),
+                               font=("Calibri", 12)).place(x=155, y=270)
 
         self.back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
-                                  command=lambda: container.change_frame(UserHomeScreen)).place(x=380, y=290)
+                                  command=lambda: container.change_frame(UserHomeScreen)).place(x=380, y=350)
 
         df.to_csv(self.file_path, index=False)
 
@@ -1198,20 +1202,25 @@ class MoreInfoPage_NH(tk.Frame):
         row_num = df.index[df['card_uid'] == self.uid].tolist()
 
         self.user_reg_stats = tk.Label(self, text="Your Attributes:", font=("Calibri", 30)).place(x=250, y=10)
-        self.attr_1 = tk.Label(self, text="Age: " + str(df.at[row_num[0], 'age']), font=("Calibri", 12)).place(x=250, y=120)
-        self.attr_2 = tk.Label(self, text="Sex: " + df.at[row_num[0], 'sex'], font=("Calibri", 12)).place(x=250, y=145)
-        self.attr_3 = tk.Label(self, text="Activity Level: " + df.at[row_num[0], 'activity_level'],
-                               font=("Calibri", 12)).place(x=250, y=170)
+        self.attr_1 = tk.Label(self, text="Age:  " + str(df.at[row_num[0], 'age']), font=("Calibri", 12)).place(x=345, y=120)
+        self.attr_2 = tk.Label(self, text="Sex:  " + df.at[row_num[0], 'sex'], font=("Calibri", 12)).place(x=345, y=145)
+        self.attr_3 = tk.Label(self, text="Activity Level:  " + df.at[row_num[0], 'activity_level'],
+                               font=("Calibri", 12)).place(x=270, y=170)
         self.attr_4 = tk.Label(self,
-                               text="Number of Days Where Goal Has Been Met: " + str(df.at[row_num[0], 'num_days_goal']),
-                               font=("Calibri", 12)).place(x=220, y=195)
-        self.attr_5 = tk.Label(self, text="Water Amount You Have Dispensed: " + str(df.at[row_num[0], 'water_dispensed']),
-                               font=("Calibri", 12)).place(x=220, y=220)
-        self.attr_6 = tk.Label(self, text="Your Average Water Intake: " + str(df.at[row_num[0], 'avg_intake']),
-                               font=("Calibri", 12)).place(x=220, y=245)
+                               text="Recommended Range For Daily Hydration:  " + str(df.at[row_num[0], 'daily_hydration_lower']) + "mL to " + 
+                               str(df.at[row_num[0], 'daily_hydration_upper']) + " mL",
+                               font=("Calibri", 12)).place(x=40, y=195)
+        
+        self.attr_5 = tk.Label(self,
+                               text="Number of Days Where Goal Has Been Met:  " + str(df.at[row_num[0], 'num_days_goal']),
+                               font=("Calibri", 12)).place(x=30, y=220)
+        self.attr_6 = tk.Label(self, text="Water Amount You Have Dispensed:  " + str(df.at[row_num[0], 'water_dispensed']),
+                               font=("Calibri", 12)).place(x=90, y=245)
+        self.attr_7 = tk.Label(self, text="Your Average Water Intake:  " + str(df.at[row_num[0], 'avg_intake']),
+                               font=("Calibri", 12)).place(x=155, y=270)
 
         self.back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
-                                  command=lambda: container.change_frame(UserHomeScreen_NH)).place(x=380, y=290)
+                                  command=lambda: container.change_frame(UserHomeScreen_NH)).place(x=380, y=350)
 
         df.to_csv(self.file_path, index=False)
 
