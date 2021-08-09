@@ -1,7 +1,6 @@
 from gpiozero import LED, Button, OutputDevice
 import time
 
-
 # OutputDevice is a generic device, which we can use as the basis
 # for a new class, which we will call "relay" and use to control it
 
