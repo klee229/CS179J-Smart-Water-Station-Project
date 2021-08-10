@@ -200,9 +200,8 @@ class RFIDPage(tk.Frame):
         UserHomeScreen.uid = self.uid
         MoreInfoPage.uid = self.uid
 
-        self.update_last_login_num_days()
-
         if self.state:
+            self.update_last_login_num_days()
             container.update_frame(UserHomeScreen)
             container.change_frame(UserHomeScreen)
         else:
@@ -216,6 +215,11 @@ class RFIDPage(tk.Frame):
 
         now = datetime.now()
         date_time = now.strftime("%m/%d/%Y %H:%M:%S")
+
+        date_time_cell = df.at[row_num[0], 'last_login']
+
+        if date_time_cell is ' ':
+            df.at[row_num[0], 'last_login'] = '01/01/1970 00:00:00'
 
         old_time = datetime.strptime(df.at[row_num[0], 'last_login'], "%m/%d/%Y %H:%M:%S")
 
