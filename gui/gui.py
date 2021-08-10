@@ -222,7 +222,7 @@ class RFIDPage(tk.Frame):
         time_diff = (now - old_time).days
 
         if time_diff > 0:
-            df.at[row_num[0], 'num_days'] += time_diff
+            df.at[row_num[0], 'num_days'] += 1
 
         df.at[row_num[0], 'last_login'] = date_time
 
@@ -787,7 +787,7 @@ class RFIDPage_NH(tk.Frame):
         time_diff = (now - old_time).days
 
         if time_diff > 0:
-            df.at[row_num[0], 'num_days'] += time_diff
+            df.at[row_num[0], 'num_days'] += 1
 
         df.at[row_num[0], 'last_login'] = date_time
 
