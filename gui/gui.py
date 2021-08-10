@@ -5,6 +5,7 @@ from os import path
 import random
 import csv
 import time
+from datetime import datetime
 
 from rfid.rfid import RFID
 from pump.pump import pump_active
@@ -165,6 +166,8 @@ class RFIDPage(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
+        self.file_path = GUI.file_path
+
         self.uid = ''
         self.state = False
 
@@ -197,12 +200,33 @@ class RFIDPage(tk.Frame):
         UserHomeScreen.uid = self.uid
         MoreInfoPage.uid = self.uid
 
+        self.update_last_login_num_days()
+
         if self.state:
             container.update_frame(UserHomeScreen)
             container.change_frame(UserHomeScreen)
         else:
             container.update_frame(UserRegistrationPage)
             container.change_frame(UserRegistrationPage)
+
+    def update_last_login_num_days(self):
+        df = pd.read_csv(self.file_path)
+
+        row_num = df.index[df['card_uid'] == self.uid].tolist()
+
+        now = datetime.now()
+        date_time = now.strftime("%m/%d/%Y %H:%M:%S")
+
+        old_time = datetime.strptime(df.at[row_num[0], 'last_login'], "%m/%d/%Y %H:%M:%S")
+
+        time_diff = (now - old_time).days
+
+        if time_diff > 0:
+            df.at[row_num[0], 'num_days'] += time_diff
+
+        df.at[row_num[0], 'last_login'] = date_time
+
+        df.to_csv(self.file_path, index=False)
 
 
 class UserRegistrationPage(tk.Frame):
@@ -252,6 +276,9 @@ class UserRegistrationPage(tk.Frame):
 
         row_num = df.index[df['card_uid'] == self.uid].tolist()
 
+        now = datetime.now()
+        date_time = now.strftime("%m/%d/%Y %H:%M:%S")
+
         df.at[row_num[0], 'name'] = self.input_name.get()
         df.at[row_num[0], 'age'] = self.input_age.get()
         df.at[row_num[0], 'sex'] = self.s.get()
@@ -261,10 +288,10 @@ class UserRegistrationPage(tk.Frame):
         df.at[row_num[0], 'water_dispensed'] = 0
         df.at[row_num[0], 'total_dispensed'] = 0
         df.at[row_num[0], 'percent_dispensed_of_daily'] = 0.0
-        df.at[row_num[0], 'num_days'] = 0
+        df.at[row_num[0], 'num_days'] = 1
         df.at[row_num[0], 'num_days_goal'] = 0
         df.at[row_num[0], 'avg_intake'] = 0.0
-        df.at[row_num[0], 'last_login'] = ' '
+        df.at[row_num[0], 'last_login'] = date_time
 
         df.to_csv(self.file_path, index=False)
 
@@ -517,7 +544,7 @@ class MoreInfoPage(tk.Frame):
 class WaterData:
     def __init__(self):
         self.factDictionary = {"Water covers about 71% of the earth's surface.":
-                               "- United States Bureau of Reclamation",
+                                   "- United States Bureau of Reclamation",
 
                                "2.5% of the earth's fresh water is unavailable: locked up \n"
                                "in glaciers, polar ice caps, atmosphere, and soil; \n"
@@ -1048,7 +1075,7 @@ class MoreInfoPage_NH(tk.Frame):
 class WaterData_NH:
     def __init__(self):
         self.factDictionary = {"Water covers about 71% of the earth's surface.":
-                               "- United States Bureau of Reclamation",
+                                   "- United States Bureau of Reclamation",
 
                                "2.5% of the earth's fresh water is unavailable: locked up \n"
                                "in glaciers, polar ice caps, atmosphere, and soil; \n"
@@ -1127,18 +1154,18 @@ DELETE UP TO HERE FOR FINAL PROJECT WITH HARDWARE ONLY
 if __name__ == '__main__':
     """
     FOR WORKING WITH RFID HARDWARE: 
-   
+
     Use root = GUI()
-    
+
     Uncomment RFID imports:
         from rfid.rfid import RFID                      (on Line 8)
         self.rfid = RFID()                              (on Line 31)
-    
-    
+
+
     FOR WORKING WITHOUT RFID HARDWARE: 
-    
+
     Use root = GUI_NO_HARDWARE(), and
-    
+
     comment out RFID imports: 
         from rfid.rfid import RFID                      (on Line 8)
         self.rfid = RFID()                              (on Line 31)
