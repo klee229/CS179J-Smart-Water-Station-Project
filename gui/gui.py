@@ -753,6 +753,8 @@ class RFIDPage_NH(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
+        self.file_path = GUI.file_path
+
         self.uid = ''
         self.state = False
 
@@ -768,7 +770,28 @@ class RFIDPage_NH(tk.Frame):
                                                                                                              y=250)
 
         self.new_user_btn = tk.Button(self, text="User Home", font=("Calibri", 12), bg="green",
-                                      command=lambda: container.change_frame(UserHomeScreen_NH)).place(x=375, y=300)
+                                      command=lambda: [self.update_last_login_num_days(), container.change_frame(UserHomeScreen_NH)]).place(x=375, y=300)
+
+    def update_last_login_num_days(self):
+        self.uid = "734a266f"
+
+        df = pd.read_csv(self.file_path)
+
+        row_num = df.index[df['card_uid'] == self.uid].tolist()
+
+        now = datetime.now()
+        date_time = now.strftime("%m/%d/%Y %H:%M:%S")
+
+        old_time = datetime.strptime(df.at[row_num[0], 'last_login'], "%m/%d/%Y %H:%M:%S")
+
+        time_diff = (now - old_time).days
+
+        if time_diff > 0:
+            df.at[row_num[0], 'num_days'] += time_diff
+
+        df.at[row_num[0], 'last_login'] = date_time
+
+        df.to_csv(self.file_path, index=False)
 
 
 class UserRegistrationPage_NH(tk.Frame):
@@ -817,6 +840,9 @@ class UserRegistrationPage_NH(tk.Frame):
 
         row_num = df.index[df['card_uid'] == self.uid].tolist()
 
+        now = datetime.now()
+        date_time = now.strftime("%m/%d/%Y %H:%M:%S")
+
         df.at[row_num[0], 'name'] = self.input_name.get()
         df.at[row_num[0], 'age'] = self.input_age.get()
         df.at[row_num[0], 'sex'] = self.s.get()
@@ -826,10 +852,10 @@ class UserRegistrationPage_NH(tk.Frame):
         df.at[row_num[0], 'water_dispensed'] = 0
         df.at[row_num[0], 'total_dispensed'] = 0
         df.at[row_num[0], 'percent_dispensed_of_daily'] = 0.0
-        df.at[row_num[0], 'num_days'] = 0
+        df.at[row_num[0], 'num_days'] = 1
         df.at[row_num[0], 'num_days_goal'] = 0
         df.at[row_num[0], 'avg_intake'] = 0.0
-        df.at[row_num[0], 'last_login'] = ' '
+        df.at[row_num[0], 'last_login'] = date_time
 
         df.to_csv(self.file_path, index=False)
 
