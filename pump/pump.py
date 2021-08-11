@@ -30,6 +30,6 @@ def pump_active():
 	return btn_press_time * 0.0275  # approximate calculation
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 	wtr = pump_active()
 	print("Water consumed: {:.2f} L".format(wtr))
