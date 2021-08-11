@@ -216,11 +216,6 @@ class RFIDPage(tk.Frame):
         now = datetime.now()
         date_time = now.strftime("%m/%d/%Y %H:%M:%S")
 
-        date_time_cell = df.at[row_num[0], 'last_login']
-
-        if date_time_cell is ' ':
-            df.at[row_num[0], 'last_login'] = '01/01/1970 00:00:00'
-
         old_time = datetime.strptime(df.at[row_num[0], 'last_login'], "%m/%d/%Y %H:%M:%S")
 
         time_diff = (now - old_time).days
