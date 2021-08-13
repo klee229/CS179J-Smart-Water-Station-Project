@@ -7,7 +7,7 @@ import csv
 import time
 from datetime import datetime
 
-# from rfid.rfid import RFID
+from rfid.rfid import RFID
 from pump.pump import Pump
 
 
@@ -15,8 +15,8 @@ class GUI(tk.Tk):
     # ADD FILE PATHS HERE, Comment out unused file_paths
 
     # file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-    # file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
-    file_path = "/home/pi/Desktop/CS179J-Smart-Water-Station/data/user_data.csv"
+    file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+    #file_path = "/home/pi/Desktop/CS179J-Smart-Water-Station/data/user_data.csv"
     # file_path = "/home/kenlee/Documents/GitHub/CS179J-Smart-Water-Station-Project/data/user_data.csv"   
 
     def __init__(self):
@@ -83,7 +83,7 @@ class GUI(tk.Tk):
                        ]
 
             user_data = [
-                ['734a266f', False, ' ', 0, ' ', ' ', 0, 0, 0.0, 0.0, 0.0, 0, 0, 0.0, ' '],
+                ['734a266f', False, ' ', 0, ' ', ' ', 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0.0, ' '],
                 ['5d81e96d', False, ' ', 0, ' ', ' ', 0, 0, 0.0, 0.0, 0.0, 0, 0, 0.0, ' '],
                 ['4d71f56d', False, ' ', 0, ' ', ' ', 0, 0, 0.0, 0.0, 0.0, 0, 0, 0.0, ' '],
                 ['fdd1a46b', False, ' ', 0, ' ', ' ', 0, 0, 0.0, 0.0, 0.0, 0, 0, 0.0, ' '],
@@ -285,8 +285,8 @@ class UserRegistrationPage(tk.Frame):
         df.at[row_num[0], 'age'] = self.input_age.get()
         df.at[row_num[0], 'sex'] = self.s.get()
         df.at[row_num[0], 'activity_level'] = self.s2.get()
-        df.at[row_num[0], 'daily_hydration_lower'] = 0
-        df.at[row_num[0], 'daily_hydration_upper'] = 0
+        df.at[row_num[0], 'daily_hydration_lower'] = 0.0
+        df.at[row_num[0], 'daily_hydration_upper'] = 0.0
         df.at[row_num[0], 'water_dispensed'] = 0.0
         df.at[row_num[0], 'total_dispensed'] = 0.0
         df.at[row_num[0], 'percent_dispensed_of_daily'] = 0.0
@@ -331,7 +331,7 @@ class UserHomeScreen(tk.Frame):
         self.more_info_btn = tk.Button(self, text="More Info", font=("Calibri", 12),
                                        command=lambda: [self.research_data(), container.update_frame(MoreInfoPage) ,container.change_frame(MoreInfoPage)]).place(x=50, y=420)
         self.dispense_btn = tk.Button(self, text="Enable Dispenser", font=("Calibri", 12),
-                                      command=lambda: container.pump.dispense_water(container, False)).place(x=340, y=320)
+                                      command=lambda: [container.pump.dispense_water(container, False), container.update_frame(UserHomeScreen), container.change_frame(UserHomeScreen)]).place(x=340, y=320)
 
         df.to_csv(self.file_path, index=False)
 
@@ -409,6 +409,23 @@ class UserHomeScreen(tk.Frame):
                 df.at[row_num[0], 'daily_hydration_upper'] = 1800
 
         df.to_csv(self.file_path, index=False)
+        
+   # def update_percentage_of_daily(self):
+            
+       # self.file_path = GUI.file_path
+
+       # self.uid = UserHomeScreen.uid
+
+       # df = pd.read_csv(self.file_path)
+       # row_num = df.index[df['card_uid'] == self.uid].tolist()
+
+       # if len(row_num) is 0:
+                # row_num.append(0)
+            
+       # df.at[row_num[0], 'percentage_dispensed_of_daily'] = ((df.at[row_num[0], 'water_dispensed']/(df.at[row_num[0],'daily_hydration_lower']+df.at[row_num[0],'daily_hydration_upper'])/2)) * 100
+            
+       # df.to_csv(self.file_path, index=False)
+                
 
 
 class SettingsPage(tk.Frame):
@@ -558,8 +575,8 @@ class DeletionConfirmationPage(tk.Frame):
         df.at[row_num[0], 'age'] = 0
         df.at[row_num[0], 'sex'] = ' '
         df.at[row_num[0], 'activity_level'] = ' '
-        df.at[row_num[0], 'daily_hydration_lower'] = 0
-        df.at[row_num[0], 'daily_hydration_upper'] = 0
+        df.at[row_num[0], 'daily_hydration_lower'] = 0.0
+        df.at[row_num[0], 'daily_hydration_upper'] = 0.0
         df.at[row_num[0], 'water_dispensed'] = 0.0
         df.at[row_num[0], 'total_dispensed'] = 0.0
         df.at[row_num[0], 'percent_dispensed_of_daily'] = 0.0
@@ -608,16 +625,16 @@ class MoreInfoPage(tk.Frame):
         self.attr_3 = tk.Label(self, text="Activity Level:  " + df.at[row_num[0], 'activity_level'],
                                font=("Calibri", 12)).place(x=270, y=170)
         self.attr_4 = tk.Label(self,
-                               text="Recommended Range For Daily Hydration:  " + str(df.at[row_num[0], 'daily_hydration_lower']) + "mL to " + 
+                               text="Recommended Range For Daily Hydration:  " + str(df.at[row_num[0], 'daily_hydration_lower']) + " mL to " + 
                                str(df.at[row_num[0], 'daily_hydration_upper']) + " mL",
                                font=("Calibri", 12)).place(x=40, y=195)
         
         self.attr_5 = tk.Label(self,
                                text="Number of Days Where Goal Has Been Met:  " + str(df.at[row_num[0], 'num_days_goal']),
                                font=("Calibri", 12)).place(x=30, y=220)
-        self.attr_6 = tk.Label(self, text="Water Amount You Have Dispensed:  " + str(df.at[row_num[0], 'water_dispensed']),
+        self.attr_6 = tk.Label(self, text="Water Amount You Have Dispensed:  " + str(df.at[row_num[0], 'total_dispensed'] * 1000) + " mL",
                                font=("Calibri", 12)).place(x=90, y=245)
-        self.attr_7 = tk.Label(self, text="Your Average Water Intake:  " + str(df.at[row_num[0], 'avg_intake']),
+        self.attr_7 = tk.Label(self, text="Your Average Water Intake:  " + str(df.at[row_num[0], 'avg_intake'] * 1000) + " mL",
                                font=("Calibri", 12)).place(x=155, y=270)
 
         self.back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
@@ -1374,6 +1391,6 @@ if __name__ == '__main__':
         self.rfid = RFID()                              (on Line 31)
     """
 
-    #root = GUI()
-    root = GUI_NO_HARDWARE()
+    root = GUI()
+    # root = GUI_NO_HARDWARE()
     root.mainloop()
