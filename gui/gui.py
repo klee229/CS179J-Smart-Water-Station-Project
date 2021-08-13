@@ -7,8 +7,8 @@ import csv
 import time
 from datetime import datetime
 
-from rfid.rfid import RFID
-from pump.pump import pump_active
+# from rfid.rfid import RFID
+from pump.pump import Pump
 
 
 class GUI(tk.Tk):
@@ -16,8 +16,8 @@ class GUI(tk.Tk):
 
     # file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
     # file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
-    # file_path = "/home/pi/Desktop/CS179J-Smart-Water-Station/data/user_data.csv"
-    file_path = "/home/kenlee/Documents/GitHub/CS179J-Smart-Water-Station-Project/data/user_data.csv"   
+    file_path = "/home/pi/Desktop/CS179J-Smart-Water-Station/data/user_data.csv"
+    # file_path = "/home/kenlee/Documents/GitHub/CS179J-Smart-Water-Station-Project/data/user_data.csv"   
 
     def __init__(self):
         super().__init__()
@@ -35,6 +35,8 @@ class GUI(tk.Tk):
         self.rfid = RFID()
         self.card_uid = ''
         self.card_state = False
+        
+        self.pump = Pump()
 
     def setup_gui(self):
         self.title("Smart Water Station")
@@ -81,12 +83,12 @@ class GUI(tk.Tk):
                        ]
 
             user_data = [
-                ['734a266f', False, ' ', 0, ' ', ' ', 0, 0, 0, 0, 0.0, 0, 0, 0.0, ' '],
-                ['5d81e96d', False, ' ', 0, ' ', ' ', 0, 0, 0, 0, 0.0, 0, 0, 0.0, ' '],
-                ['4d71f56d', False, ' ', 0, ' ', ' ', 0, 0, 0, 0, 0.0, 0, 0, 0.0, ' '],
-                ['fdd1a46b', False, ' ', 0, ' ', ' ', 0, 0, 0, 0, 0.0, 0, 0, 0.0, ' '],
-                ['1d4ba46b', False, ' ', 0, ' ', ' ', 0, 0, 0, 0, 0.0, 0, 0, 0.0, ' '],
-                ['dd8b9f6b', False, ' ', 0, ' ', ' ', 0, 0, 0, 0, 0.0, 0, 0, 0.0, ' ']
+                ['734a266f', False, ' ', 0, ' ', ' ', 0, 0, 0.0, 0.0, 0.0, 0, 0, 0.0, ' '],
+                ['5d81e96d', False, ' ', 0, ' ', ' ', 0, 0, 0.0, 0.0, 0.0, 0, 0, 0.0, ' '],
+                ['4d71f56d', False, ' ', 0, ' ', ' ', 0, 0, 0.0, 0.0, 0.0, 0, 0, 0.0, ' '],
+                ['fdd1a46b', False, ' ', 0, ' ', ' ', 0, 0, 0.0, 0.0, 0.0, 0, 0, 0.0, ' '],
+                ['1d4ba46b', False, ' ', 0, ' ', ' ', 0, 0, 0.0, 0.0, 0.0, 0, 0, 0.0, ' '],
+                ['dd8b9f6b', False, ' ', 0, ' ', ' ', 0, 0, 0.0, 0.0, 0.0, 0, 0, 0.0, ' ']
             ]
 
             # open file, write data to file
@@ -285,8 +287,8 @@ class UserRegistrationPage(tk.Frame):
         df.at[row_num[0], 'activity_level'] = self.s2.get()
         df.at[row_num[0], 'daily_hydration_lower'] = 0
         df.at[row_num[0], 'daily_hydration_upper'] = 0
-        df.at[row_num[0], 'water_dispensed'] = 0
-        df.at[row_num[0], 'total_dispensed'] = 0
+        df.at[row_num[0], 'water_dispensed'] = 0.0
+        df.at[row_num[0], 'total_dispensed'] = 0.0
         df.at[row_num[0], 'percent_dispensed_of_daily'] = 0.0
         df.at[row_num[0], 'num_days'] = 1
         df.at[row_num[0], 'num_days_goal'] = 0
@@ -321,7 +323,7 @@ class UserHomeScreen(tk.Frame):
                                              font=("Calibri", 30)).place(x=380, y=210)
         # self.dispense_label = tk.Label(self, text="Dispense Button Enabled", font=("Calibri", 12),
         #                                fg="green").place(x=340, y=320)
-
+        
         self.settings_btn = tk.Button(self, text="Settings", font=("Calibri", 12),
                                       command=lambda: container.change_frame(SettingsPage)).place(x=660, y=420)
         self.logout_btn = tk.Button(self, text="Log Out", font=("Calibri", 12),
@@ -329,7 +331,7 @@ class UserHomeScreen(tk.Frame):
         self.more_info_btn = tk.Button(self, text="More Info", font=("Calibri", 12),
                                        command=lambda: [self.research_data(), container.update_frame(MoreInfoPage) ,container.change_frame(MoreInfoPage)]).place(x=50, y=420)
         self.dispense_btn = tk.Button(self, text="Enable Dispenser", font=("Calibri", 12),
-                                      command=lambda: pump_active()).place(x=340, y=320)
+                                      command=lambda: container.pump.dispense_water(container, False)).place(x=340, y=320)
 
         df.to_csv(self.file_path, index=False)
 
@@ -558,8 +560,8 @@ class DeletionConfirmationPage(tk.Frame):
         df.at[row_num[0], 'activity_level'] = ' '
         df.at[row_num[0], 'daily_hydration_lower'] = 0
         df.at[row_num[0], 'daily_hydration_upper'] = 0
-        df.at[row_num[0], 'water_dispensed'] = 0
-        df.at[row_num[0], 'total_dispensed'] = 0
+        df.at[row_num[0], 'water_dispensed'] = 0.0
+        df.at[row_num[0], 'total_dispensed'] = 0.0
         df.at[row_num[0], 'percent_dispensed_of_daily'] = 0.0
         df.at[row_num[0], 'num_days'] = 0
         df.at[row_num[0], 'num_days_goal'] = 0
@@ -709,8 +711,8 @@ class GUI_NO_HARDWARE(tk.Tk):
 
     # file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
     # file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
-    # file_path = "/home/pi/Desktop/CS179J-Smart-Water-Station/data/user_data.csv"
-    file_path = "/home/kenlee/Documents/GitHub/CS179J-Smart-Water-Station-Project/data/user_data.csv"
+    file_path = "/home/pi/Desktop/CS179J-Smart-Water-Station/data/user_data.csv"
+    # file_path = "/home/kenlee/Documents/GitHub/CS179J-Smart-Water-Station-Project/data/user_data.csv"
 
     def __init__(self):
         super().__init__()
@@ -727,6 +729,8 @@ class GUI_NO_HARDWARE(tk.Tk):
 
         self.card_uid = ''
         self.card_state = False
+        
+        self.pump = Pump()
 
     def setup_gui(self):
         self.title("Smart Water Station")
@@ -773,12 +777,12 @@ class GUI_NO_HARDWARE(tk.Tk):
                        ]
 
             user_data = [
-                ['734a266f', False, ' ', 0, ' ', ' ', 0, 0, 0, 0, 0.0, 0, 0, 0.0, ' '],
-                ['5d81e96d', False, ' ', 0, ' ', ' ', 0, 0, 0, 0, 0.0, 0, 0, 0.0, ' '],
-                ['4d71f56d', False, ' ', 0, ' ', ' ', 0, 0, 0, 0, 0.0, 0, 0, 0.0, ' '],
-                ['fdd1a46b', False, ' ', 0, ' ', ' ', 0, 0, 0, 0, 0.0, 0, 0, 0.0, ' '],
-                ['1d4ba46b', False, ' ', 0, ' ', ' ', 0, 0, 0, 0, 0.0, 0, 0, 0.0, ' '],
-                ['dd8b9f6b', False, ' ', 0, ' ', ' ', 0, 0, 0, 0, 0.0, 0, 0, 0.0, ' ']
+                ['734a266f', False, ' ', 0, ' ', ' ', 0, 0, 0.0, 0.0, 0.0, 0, 0, 0.0, ' '],
+                ['5d81e96d', False, ' ', 0, ' ', ' ', 0, 0, 0.0, 0.0, 0.0, 0, 0, 0.0, ' '],
+                ['4d71f56d', False, ' ', 0, ' ', ' ', 0, 0, 0.0, 0.0, 0.0, 0, 0, 0.0, ' '],
+                ['fdd1a46b', False, ' ', 0, ' ', ' ', 0, 0, 0.0, 0.0, 0.0, 0, 0, 0.0, ' '],
+                ['1d4ba46b', False, ' ', 0, ' ', ' ', 0, 0, 0.0, 0.0, 0.0, 0, 0, 0.0, ' '],
+                ['dd8b9f6b', False, ' ', 0, ' ', ' ', 0, 0, 0.0, 0.0, 0.0, 0, 0, 0.0, ' ']
             ]
 
             # open file, write data to file
@@ -940,8 +944,8 @@ class UserRegistrationPage_NH(tk.Frame):
         df.at[row_num[0], 'activity_level'] = self.s2.get()
         df.at[row_num[0], 'daily_hydration_lower'] = 0
         df.at[row_num[0], 'daily_hydration_upper'] = 0
-        df.at[row_num[0], 'water_dispensed'] = 0
-        df.at[row_num[0], 'total_dispensed'] = 0
+        df.at[row_num[0], 'water_dispensed'] = 0.0
+        df.at[row_num[0], 'total_dispensed'] = 0.0
         df.at[row_num[0], 'percent_dispensed_of_daily'] = 0.0
         df.at[row_num[0], 'num_days'] = 1
         df.at[row_num[0], 'num_days_goal'] = 0
@@ -974,7 +978,7 @@ class UserHomeScreen_NH(tk.Frame):
                                              font=("Calibri", 30)).place(x=380, y=210)
       #  self.dispense_label = tk.Label(self, text="Dispense Button Enabled", font=("Calibri", 12),
       #                                 fg="green").place(x=340, y=320)
-
+      
         self.settings_btn = tk.Button(self, text="Settings", font=("Calibri", 12),
                                       command=lambda: container.change_frame(SettingsPage_NH)).place(x=660, y=420)
         self.logout_btn = tk.Button(self, text="Log Out", font=("Calibri", 12),
@@ -982,7 +986,7 @@ class UserHomeScreen_NH(tk.Frame):
         self.more_info_btn = tk.Button(self, text="More Info", font=("Calibri", 12),
                                        command=lambda: [self.research_data(), container.update_frame(MoreInfoPage_NH) ,container.change_frame(MoreInfoPage_NH)]).place(x=50, y=420)
         self.dispense_btn = tk.Button(self, text="Enable Dispenser", font=("Calibri", 12),fg="green",
-                                      command=lambda: pump_active()).place(x=340, y=320)
+                                      command=lambda: container.pump.dispense_water(container, False)).place(x=340, y=320)
         df.to_csv(self.file_path, index=False)
         
     def research_data(self):
@@ -1207,8 +1211,8 @@ class DeletionConfirmationPage_NH(tk.Frame):
         df.at[row_num[0], 'activity_level'] = ' '
         df.at[row_num[0], 'daily_hydration_lower'] = 0
         df.at[row_num[0], 'daily_hydration_upper'] = 0
-        df.at[row_num[0], 'water_dispensed'] = 0
-        df.at[row_num[0], 'total_dispensed'] = 0
+        df.at[row_num[0], 'water_dispensed'] = 0.0
+        df.at[row_num[0], 'total_dispensed'] = 0.0
         df.at[row_num[0], 'percent_dispensed_of_daily'] = 0.0
         df.at[row_num[0], 'num_days'] = 0
         df.at[row_num[0], 'num_days_goal'] = 0
@@ -1370,6 +1374,6 @@ if __name__ == '__main__':
         self.rfid = RFID()                              (on Line 31)
     """
 
-    root = GUI()
-    # root = GUI_NO_HARDWARE()
+    #root = GUI()
+    root = GUI_NO_HARDWARE()
     root.mainloop()
