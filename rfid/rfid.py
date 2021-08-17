@@ -11,9 +11,6 @@ import pandas as pd
 class RFID:
 
     def __init__(self):
-        self.reset_pin = DigitalInOut(board.D6)
-        self.req_pin = DigitalInOut(board.D12)
-
         # SPI connection:
         self.spi = busio.SPI(board.SCK, board.MOSI, board.MISO)
         self.cs_pin = DigitalInOut(board.D5)
