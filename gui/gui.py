@@ -227,14 +227,19 @@ class UserRegistrationPage(tk.Frame):
 
         self.uid = ''
 
+        valid_command_name = (self.register(self.input_validation_name), '%S')
+        valid_command_age = (self.register(self.input_validation_age), '%S')
+
         self.welcome_new_user_screen = tk.Label(self, text="Hello, New User!", font=("Calibri", 12)).place(x=350, y=0)
         self.user_intro = tk.Label(self, text="What is your: ", font=("Calibri", 15)).place(x=240, y=120)
         self.user_name = tk.Label(self, text="Name").place(x=240, y=160)
         self.user_age = tk.Label(self, text="Age").place(x=240, y=200)
         self.input_name = tk.StringVar()
-        self.usr_name_in = tk.Entry(self, width=30, textvariable=self.input_name).place(x=310, y=160)
+        self.usr_name_in = tk.Entry(self, width=30, textvariable=self.input_name, validate="key",
+                                    validatecommand=valid_command_name).place(x=310, y=160)
         self.input_age = tk.StringVar()
-        self.usr_age_in = tk.Entry(self, textvariable=self.input_age, width=30).place(x=310, y=200)
+        self.usr_age_in = tk.Entry(self, textvariable=self.input_age, width=30, validate="key",
+                                   validatecommand=valid_command_age).place(x=310, y=200)
 
         self.usr_S = tk.Label(self, text="Are you: ").place(x=240, y=240)
         self.s = tk.StringVar()
@@ -257,6 +262,18 @@ class UserRegistrationPage(tk.Frame):
 
         self.go_back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
                                      command=lambda: container.change_frame(RFIDPage)).place(x=345, y=400)
+
+    def input_validation_name(self, keypress):
+        if keypress.isalpha() or keypress.isspace():
+            return True
+        else:
+            return False
+
+    def input_validation_age(self, keypress):
+        if keypress.isnumeric():
+            return True
+        else:
+            return False
 
     def save_command(self, container):
         self.uid = container.get_card_uid()
