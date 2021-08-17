@@ -17,7 +17,8 @@ class GUI(tk.Tk):
     # file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
     file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
     #file_path = "/home/pi/Desktop/CS179J-Smart-Water-Station/data/user_data.csv"
-    # file_path = "/home/kenlee/Documents/GitHub/CS179J-Smart-Water-Station-Project/data/user_data.csv"   
+    # file_path = "/home/kenlee/Documents/GitHub/CS179J-Smart-Water-Station-Project/data/user_data.csv"
+    already_counted_goal = 0   
 
     def __init__(self):
         super().__init__()
@@ -225,6 +226,7 @@ class RFIDPage(tk.Frame):
         if time_diff > 0:
             df.at[row_num[0], 'num_days'] += 1
             df.at[row_num[0], 'percent_dispensed_of_daily'] = 0.0
+            GUI.already_counted_goal = 0
 
         df.at[row_num[0], 'last_login'] = date_time
 
@@ -408,6 +410,10 @@ class UserHomeScreen(tk.Frame):
             elif df.at[row_num[0], 'age'] > 50:
                 df.at[row_num[0], 'daily_hydration_lower'] = 1800
                 df.at[row_num[0], 'daily_hydration_upper'] = 1800
+                
+        if df.at[row_num[0], 'percent_dispensed_of_daily'] >= 100 and GUI.already_counted_goal == 0:
+                df.at[row_num[0], 'num_days_goal'] += 1
+                GUI.already_counted_goal = 1
 
         df.to_csv(self.file_path, index=False)
 
@@ -623,6 +629,9 @@ class MoreInfoPage(tk.Frame):
 
         self.back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
                                   command=lambda: container.change_frame(UserHomeScreen)).place(x=380, y=350)
+                                  
+        self.disclaimer = tk.Label(self, text="*The recommended ranges are based off of estimates\n and may not be representative of your actual needs",
+                               font=("Calibri", 8)).place(x=35, y=400)
 
         df.to_csv(self.file_path, index=False)
 
