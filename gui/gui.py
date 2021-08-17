@@ -622,8 +622,8 @@ class MoreInfoPage(tk.Frame):
         self.attr_5 = tk.Label(self,
                                text="Number of Days Where Goal Has Been Met:  " + str(df.at[row_num[0], 'num_days_goal']),
                                font=("Calibri", 12)).place(x=30, y=220)
-        self.attr_6 = tk.Label(self, text="Water Amount You Have Dispensed:  " + str(df.at[row_num[0], 'total_dispensed'] * 1000) + " mL",
-                               font=("Calibri", 12)).place(x=90, y=245)
+        self.attr_6 = tk.Label(self, text="Water Dispensed Last Session:  " + str(df.at[row_num[0], 'water_dispensed'] * 1000) + " mL",
+                               font=("Calibri", 12)).place(x=135, y=245)
         self.attr_7 = tk.Label(self, text="Your Average Water Intake:  " + str(df.at[row_num[0], 'avg_intake'] * 1000) + " mL",
                                font=("Calibri", 12)).place(x=155, y=270)
 
