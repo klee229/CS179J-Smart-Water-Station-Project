@@ -21,7 +21,8 @@ class RFIDNoHardware:
         # self.pn532.SAM_configuration()
 
         # NOTE: enter the exact path for your machine to run locally
-        self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+        # self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
+        self.file_path = "/home/chris/PycharmProjects/CS179J-Smart-Water-Station/data/user_data.csv"
         self.uid = ''
 
     # def output_uid(self):
