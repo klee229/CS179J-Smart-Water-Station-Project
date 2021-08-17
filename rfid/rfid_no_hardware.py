@@ -24,16 +24,16 @@ class RFIDNoHardware:
         self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
         self.uid = ''
 
-    def output_uid(self):
-        print("Waiting for RFID/NFC card...")
-        while True:
-            # Check if a card is available to read
-            self.uid = self.pn532.read_passive_target(timeout=0.5)
-            print(".", end="")
-            # Try again if no card is available.
-            if self.uid is None:
-                continue
-            print("Found card with UID:", [hex(i) for i in self.uid])
+    # def output_uid(self):
+    #     print("Waiting for RFID/NFC card...")
+    #     while True:
+    #         # Check if a card is available to read
+    #         self.uid = self.pn532.read_passive_target(timeout=0.5)
+    #         print(".", end="")
+    #         # Try again if no card is available.
+    #         if self.uid is None:
+    #             continue
+    #         print("Found card with UID:", [hex(i) for i in self.uid])
 
     def set_uid(self, uid):
         self.uid = uid
@@ -41,17 +41,17 @@ class RFIDNoHardware:
     def get_uid(self):
         return self.uid
 
-    def scan_card(self):
-        self.uid = None
-
-        while self.uid is None:
-            self.uid = self.pn532.read_passive_target(timeout=0.5)
-
-        uid = [hex(i) for i in self.uid]
-        self.uid = ''
-
-        for string in uid:
-            self.uid += string[2:]
+    # def scan_card(self):
+    #     self.uid = None
+    #
+    #     while self.uid is None:
+    #         self.uid = self.pn532.read_passive_target(timeout=0.5)
+    #
+    #     uid = [hex(i) for i in self.uid]
+    #     self.uid = ''
+    #
+    #     for string in uid:
+    #         self.uid += string[2:]
 
     def register_card(self, the_uid):
         df = pd.read_csv(self.file_path)
