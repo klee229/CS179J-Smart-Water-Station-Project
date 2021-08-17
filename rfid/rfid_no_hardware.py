@@ -1,24 +1,24 @@
 # SPDX-FileCopyrightText: 2021 ladyada for Adafruit Industries
 # SPDX-License-Identifier: MIT
 
-import board
-import busio
-from digitalio import DigitalInOut
-from adafruit_pn532.spi import PN532_SPI
+# import board
+# import busio
+# from digitalio import DigitalInOut
+# from adafruit_pn532.spi import PN532_SPI
 import pandas as pd
 
 
-class RFID:
+class RFIDNoHardware:
 
     def __init__(self):
         # SPI connection:
-        self.spi = busio.SPI(board.SCK, board.MOSI, board.MISO)
-        self.cs_pin = DigitalInOut(board.D5)
-        self.pn532 = PN532_SPI(self.spi, self.cs_pin, debug=False)
-        self.ic, self.ver, self.rev, self.support = self.pn532.firmware_version
+        # self.spi = busio.SPI(board.SCK, board.MOSI, board.MISO)
+        # self.cs_pin = DigitalInOut(board.D5)
+        # self.pn532 = PN532_SPI(self.spi, self.cs_pin, debug=False)
+        # self.ic, self.ver, self.rev, self.support = self.pn532.firmware_version
 
         # Configure PN532 to communicate with MiFare cards
-        self.pn532.SAM_configuration()
+        # self.pn532.SAM_configuration()
 
         # NOTE: enter the exact path for your machine to run locally
         self.file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
@@ -91,4 +91,4 @@ class RFID:
 
 
 if __name__ == '__main__':
-    rfid = RFID()
+    rfid = RFIDNoHardware()
