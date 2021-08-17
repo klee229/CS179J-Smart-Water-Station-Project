@@ -81,12 +81,12 @@ class GUI_NO_HARDWARE(tk.Tk):
                        ]
 
             user_data = [
-                ['734a266f', False, ' ', 0, ' ', ' ', 0, 0, 0.0, 0.0, 0.0, 0, 0, 0.0, ' '],
-                ['5d81e96d', False, ' ', 0, ' ', ' ', 0, 0, 0.0, 0.0, 0.0, 0, 0, 0.0, ' '],
-                ['4d71f56d', False, ' ', 0, ' ', ' ', 0, 0, 0.0, 0.0, 0.0, 0, 0, 0.0, ' '],
-                ['fdd1a46b', False, ' ', 0, ' ', ' ', 0, 0, 0.0, 0.0, 0.0, 0, 0, 0.0, ' '],
-                ['1d4ba46b', False, ' ', 0, ' ', ' ', 0, 0, 0.0, 0.0, 0.0, 0, 0, 0.0, ' '],
-                ['dd8b9f6b', False, ' ', 0, ' ', ' ', 0, 0, 0.0, 0.0, 0.0, 0, 0, 0.0, ' ']
+                ['734a266f', False, ' ', 0, ' ', ' ', 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0.0, ' '],
+                ['5d81e96d', False, ' ', 0, ' ', ' ', 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0.0, ' '],
+                ['4d71f56d', False, ' ', 0, ' ', ' ', 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0.0, ' '],
+                ['fdd1a46b', False, ' ', 0, ' ', ' ', 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0.0, ' '],
+                ['1d4ba46b', False, ' ', 0, ' ', ' ', 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0.0, ' '],
+                ['dd8b9f6b', False, ' ', 0, ' ', ' ', 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0.0, ' ']
             ]
 
             # open file, write data to file
@@ -178,7 +178,7 @@ class RFIDPage_NH(tk.Frame):
 
         date_time_cell = df.at[row_num[0], 'last_login']
 
-        if date_time_cell is ' ':
+        if date_time_cell == ' ':
             df.at[row_num[0], 'last_login'] = date_time
 
         old_time = datetime.strptime(df.at[row_num[0], 'last_login'], "%m/%d/%Y %H:%M:%S")
@@ -246,8 +246,8 @@ class UserRegistrationPage_NH(tk.Frame):
         df.at[row_num[0], 'age'] = self.input_age.get()
         df.at[row_num[0], 'sex'] = self.s.get()
         df.at[row_num[0], 'activity_level'] = self.s2.get()
-        df.at[row_num[0], 'daily_hydration_lower'] = 0
-        df.at[row_num[0], 'daily_hydration_upper'] = 0
+        df.at[row_num[0], 'daily_hydration_lower'] = 0.0
+        df.at[row_num[0], 'daily_hydration_upper'] = 0.0
         df.at[row_num[0], 'water_dispensed'] = 0.0
         df.at[row_num[0], 'total_dispensed'] = 0.0
         df.at[row_num[0], 'percent_dispensed_of_daily'] = 0.0
@@ -517,8 +517,8 @@ class DeletionConfirmationPage_NH(tk.Frame):
         df.at[row_num[0], 'age'] = 0
         df.at[row_num[0], 'sex'] = ' '
         df.at[row_num[0], 'activity_level'] = ' '
-        df.at[row_num[0], 'daily_hydration_lower'] = 0
-        df.at[row_num[0], 'daily_hydration_upper'] = 0
+        df.at[row_num[0], 'daily_hydration_lower'] = 0.0
+        df.at[row_num[0], 'daily_hydration_upper'] = 0.0
         df.at[row_num[0], 'water_dispensed'] = 0.0
         df.at[row_num[0], 'total_dispensed'] = 0.0
         df.at[row_num[0], 'percent_dispensed_of_daily'] = 0.0
