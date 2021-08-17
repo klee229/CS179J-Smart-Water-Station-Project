@@ -19,11 +19,11 @@ class Pump:
 		self.has_dispensed = False
 		self.last_amount = 0.0
 		
-	def dispense_water(self, container, refil_bool):
+	def dispense_water(self, container, refill_bool):
 		temp_amount = self.pump_active()
 		print(temp_amount)
 		
-		if refil_bool == True:
+		if refill_bool:
 			temp_amount -= 0.0825
 		
 		pump_uid = container.get_card_uid()
@@ -35,13 +35,13 @@ class Pump:
 		
 		# print(percentage_amount)
 		temp_amount_trunc = (int(temp_amount * (10**2))/(10**2))
-		#temp_amount_trunc = '{:.{prec}f}'.format(temp_amount, prec = 2)
+		# temp_amount_trunc = '{:.{prec}f}'.format(temp_amount, prec = 2)
 		df.at[row_num[0], 'water_dispensed'] = temp_amount_trunc
 		df.at[row_num[0], 'total_dispensed'] = df.at[row_num[0], 'total_dispensed'] + temp_amount_trunc
 		
 		percentage_amount = df.at[row_num[0], 'percent_dispensed_of_daily'] + ((df.at[row_num[0], 'water_dispensed'])/((df.at[row_num[0],'daily_hydration_lower'] + df.at[row_num[0],'daily_hydration_upper'])/2)) * 100 * 1000
 		percentage_amount_trunc = (int(percentage_amount * (10**2))/(10**2))
-		#percentage_amount_trunc = '{:.{prec}f}'.format(percentage_amount, prec = 2)
+		# percentage_amount_trunc = '{:.{prec}f}'.format(percentage_amount, prec = 2)
 		df.at[row_num[0], 'percent_dispensed_of_daily'] = percentage_amount_trunc
 		
 		average_formula = df.at[row_num[0], 'total_dispensed']/df.at[row_num[0], 'num_days']

@@ -7,11 +7,11 @@ import csv
 import time
 from datetime import datetime
 
-# from rfid.rfid import RFID
+from rfid.rfid_no_hardware import RFIDNoHardware
 from pump.pump import Pump
 
 
-class GUI_NO_HARDWARE(tk.Tk):
+class GUINoHardware(tk.Tk):
     # file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
     # file_path = "/home/kenlee/Documents/GitHub/CS179J-Smart-Water-Station-Project/data/user_data.csv"
     # file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
@@ -31,6 +31,7 @@ class GUI_NO_HARDWARE(tk.Tk):
         self.create_container()
         self.create_frames()
 
+        self.rfid = RFIDNoHardware()
         self.card_uid = ''
         self.card_state = False
 
@@ -46,16 +47,17 @@ class GUI_NO_HARDWARE(tk.Tk):
         self.container.pack()
 
     def create_frames(self):
-        self.frame_object_list = [IdlePage_NH, RFIDPage_NH, UserRegistrationPage_NH, UserHomeScreen_NH, SettingsPage_NH,
-                                  DeletionConfirmationPage_NH, DeletionPage_NH, MoreInfoPage_NH,
-                                  ChangeAttributesPage_NH, EditAttributes_NH]
+        self.frame_object_list = [IdlePageNoHardware, RFIDPageNoHardware, UserRegistrationPageNoHardware, 
+                                  UserHomeScreenNoHardware, SettingsPageNoHardware, DeletionConfirmationPageNoHardware, 
+                                  DeletionPageNoHardware, MoreInfoPageNoHardware, ChangeAttributesPageNoHardware, 
+                                  EditAttributesNoHardware]
 
         for the_frame in self.frame_object_list:
             self.frame = the_frame(self, self.container)
             self.frame_dictionary[the_frame] = self.frame
             self.frame.grid(row=0, column=0, sticky="news")
 
-        self.change_frame(IdlePage_NH)
+        self.change_frame(IdlePageNoHardware)
 
     def update_frame(self, f):
         self.frame = self.frame_dictionary[f]
@@ -98,7 +100,7 @@ class GUI_NO_HARDWARE(tk.Tk):
             csv_file.close()
 
 
-class IdlePage_NH(tk.Frame):
+class IdlePageNoHardware(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
@@ -123,7 +125,7 @@ class IdlePage_NH(tk.Frame):
                                           justify="left", anchor="w")
 
         self.next_btn = tk.Button(self, text="-- Press this button to continue --", font=("Calibri", 12),
-                                  command=lambda: container.change_frame(RFIDPage_NH)).place(x=250, y=400)
+                                  command=lambda: container.change_frame(RFIDPageNoHardware)).place(x=250, y=400)
 
         # structure the GUI page using a grid
         self.idle_label.grid(row=0, column=0, sticky="nw", padx=7, pady=7)
@@ -141,11 +143,11 @@ class IdlePage_NH(tk.Frame):
         self.fact_source_label.after(15000, self.update_text)
 
 
-class RFIDPage_NH(tk.Frame):
+class RFIDPageNoHardware(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
-        self.file_path = GUI_NO_HARDWARE.file_path
+        self.file_path = GUINoHardware.file_path
 
         self.uid = ''
         self.state = False
@@ -154,17 +156,17 @@ class RFIDPage_NH(tk.Frame):
                                         font=("Calibri", 20)).pack()
 
         self.back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
-                                  command=lambda: container.change_frame(IdlePage_NH)).place(x=380, y=350)
+                                  command=lambda: container.change_frame(IdlePageNoHardware)).place(x=380, y=350)
 
         self.new_user_btn = tk.Button(self, text="New User", font=("Calibri", 12), bg="green",
-                                      command=lambda: container.change_frame(UserRegistrationPage_NH)).place(x=370,
+                                      command=lambda: container.change_frame(UserRegistrationPageNoHardware)).place(x=370,
                                                                                                              y=250)
 
         self.new_user_btn = tk.Button(self, text="User Home", font=("Calibri", 12), bg="green",
                                       command=lambda: [self.update_last_login_num_days(),
-                                                       UserHomeScreen_NH.research_data(self),
-                                                       container.update_frame(UserHomeScreen_NH),
-                                                       container.change_frame(UserHomeScreen_NH)]).place(x=375, y=300)
+                                                       UserHomeScreenNoHardware.research_data(self),
+                                                       container.update_frame(UserHomeScreenNoHardware),
+                                                       container.change_frame(UserHomeScreenNoHardware)]).place(x=375, y=300)
 
     def update_last_login_num_days(self):
         self.uid = "734a266f"
@@ -193,11 +195,11 @@ class RFIDPage_NH(tk.Frame):
         df.to_csv(self.file_path, index=False)
 
 
-class UserRegistrationPage_NH(tk.Frame):
+class UserRegistrationPageNoHardware(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
-        self.file_path = GUI_NO_HARDWARE.file_path
+        self.file_path = GUINoHardware.file_path
 
         self.uid = ''
 
@@ -230,12 +232,12 @@ class UserRegistrationPage_NH(tk.Frame):
         self.usr_SSelection2.current()
 
         self.submit = tk.Button(self, text="Submit",
-                                command=lambda: [self.save_command(container), UserHomeScreen_NH.research_data(self),
-                                                 container.update_frame(UserHomeScreen_NH),
-                                                 container.change_frame(UserHomeScreen_NH)]).place(x=350, y=350)
+                                command=lambda: [self.save_command(container), UserHomeScreenNoHardware.research_data(self),
+                                                 container.update_frame(UserHomeScreenNoHardware),
+                                                 container.change_frame(UserHomeScreenNoHardware)]).place(x=350, y=350)
 
         self.go_back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
-                                     command=lambda: container.change_frame(RFIDPage_NH)).place(x=345, y=400)
+                                     command=lambda: container.change_frame(RFIDPageNoHardware)).place(x=345, y=400)
 
     def input_validation_name(self, keypress):
         if keypress.isalpha() or keypress.isspace():
@@ -277,13 +279,13 @@ class UserRegistrationPage_NH(tk.Frame):
         df.to_csv(self.file_path, index=False)
 
 
-class UserHomeScreen_NH(tk.Frame):
+class UserHomeScreenNoHardware(tk.Frame):
     uid = ''
 
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
-        self.file_path = GUI_NO_HARDWARE.file_path
+        self.file_path = GUINoHardware.file_path
 
         self.uid = "734a266f"
         df = pd.read_csv(self.file_path)
@@ -301,12 +303,12 @@ class UserHomeScreen_NH(tk.Frame):
         #                                 fg="green").place(x=340, y=320)
 
         self.settings_btn = tk.Button(self, text="Settings", font=("Calibri", 12),
-                                      command=lambda: container.change_frame(SettingsPage_NH)).place(x=660, y=420)
+                                      command=lambda: container.change_frame(SettingsPageNoHardware)).place(x=660, y=420)
         self.logout_btn = tk.Button(self, text="Log Out", font=("Calibri", 12),
-                                    command=lambda: container.change_frame(IdlePage_NH)).place(x=380, y=420)
+                                    command=lambda: container.change_frame(IdlePageNoHardware)).place(x=380, y=420)
         self.more_info_btn = tk.Button(self, text="More Info", font=("Calibri", 12),
-                                       command=lambda: [self.research_data(), container.update_frame(MoreInfoPage_NH),
-                                                        container.change_frame(MoreInfoPage_NH)]).place(x=50, y=420)
+                                       command=lambda: [self.research_data(), container.update_frame(MoreInfoPageNoHardware),
+                                                        container.change_frame(MoreInfoPageNoHardware)]).place(x=50, y=420)
         self.dispense_btn = tk.Button(self, text="Enable Dispenser", font=("Calibri", 12), fg="green",
                                       command=lambda: container.pump.dispense_water(container, False)).place(x=340,
                                                                                                              y=320)
@@ -314,7 +316,7 @@ class UserHomeScreen_NH(tk.Frame):
 
     def research_data(self):
 
-        self.file_path = GUI_NO_HARDWARE.file_path
+        self.file_path = GUINoHardware.file_path
 
         self.uid = "734a266f"
         df = pd.read_csv(self.file_path)
@@ -383,7 +385,7 @@ class UserHomeScreen_NH(tk.Frame):
         df.to_csv(self.file_path, index=False)
 
 
-class SettingsPage_NH(tk.Frame):
+class SettingsPageNoHardware(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
@@ -391,18 +393,18 @@ class SettingsPage_NH(tk.Frame):
                                               font=("Calibri", 20)).place(x=250, y=0)
 
         self.delete_user_btn = tk.Button(self, text="Delete User", font=("Calibri", 12), bg="red",
-                                         command=lambda: container.change_frame(DeletionConfirmationPage_NH)).place(
+                                         command=lambda: container.change_frame(DeletionConfirmationPageNoHardware)).place(
             x=370,
             y=100)
         self.change_user_attr_btn = tk.Button(self, text="Edit My Attributes", font=("Calibri", 12),
-                                              command=lambda: container.change_frame(ChangeAttributesPage_NH)).place(
+                                              command=lambda: container.change_frame(ChangeAttributesPageNoHardware)).place(
             x=350, y=200)
 
         self.go_back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
-                                     command=lambda: container.change_frame(UserHomeScreen_NH)).place(x=380, y=300)
+                                     command=lambda: container.change_frame(UserHomeScreenNoHardware)).place(x=380, y=300)
 
 
-class ChangeAttributesPage_NH(tk.Frame):
+class ChangeAttributesPageNoHardware(tk.Frame):
     attribute_selection = 0
 
     def __init__(self, container, parent):
@@ -413,60 +415,60 @@ class ChangeAttributesPage_NH(tk.Frame):
 
         self.delete_user_btn1 = tk.Button(self, text="My Name", font=("Calibri", 12),
                                           command=lambda: [self.attribute_change(1),
-                                                           container.update_frame(EditAttributes_NH),
-                                                           container.change_frame(EditAttributes_NH)]).place(x=150,
+                                                           container.update_frame(EditAttributesNoHardware),
+                                                           container.change_frame(EditAttributesNoHardware)]).place(x=150,
                                                                                                              y=200)
 
         self.change_user_attr_btn = tk.Button(self, text="My Age", font=("Calibri", 12),
                                               command=lambda: [self.attribute_change(2),
-                                                               container.update_frame(EditAttributes_NH),
-                                                               container.change_frame(EditAttributes_NH)]).place(x=280,
+                                                               container.update_frame(EditAttributesNoHardware),
+                                                               container.change_frame(EditAttributesNoHardware)]).place(x=280,
                                                                                                                  y=200)
 
         self.change_user_attr_btn = tk.Button(self, text="My Sex", font=("Calibri", 12),
                                               command=lambda: [self.attribute_change(3),
-                                                               container.update_frame(EditAttributes_NH),
-                                                               container.change_frame(EditAttributes_NH)]).place(x=390,
+                                                               container.update_frame(EditAttributesNoHardware),
+                                                               container.change_frame(EditAttributesNoHardware)]).place(x=390,
                                                                                                                  y=200)
 
         self.change_user_attr_btn = tk.Button(self, text="My Activity Level", font=("Calibri", 12),
                                               command=lambda: [self.attribute_change(4),
-                                                               container.update_frame(EditAttributes_NH),
-                                                               container.change_frame(EditAttributes_NH)]).place(x=510,
+                                                               container.update_frame(EditAttributesNoHardware),
+                                                               container.change_frame(EditAttributesNoHardware)]).place(x=510,
                                                                                                                  y=200)
 
         self.go_back_btn1 = tk.Button(self, text="I'm Done, Go Back", font=("Calibri", 12),
-                                      command=lambda: container.change_frame(SettingsPage_NH)).place(x=350, y=300)
+                                      command=lambda: container.change_frame(SettingsPageNoHardware)).place(x=350, y=300)
 
     def attribute_change(self, num):
-        ChangeAttributesPage_NH.attribute_selection = num
+        ChangeAttributesPageNoHardware.attribute_selection = num
 
 
-class EditAttributes_NH(tk.Frame):
+class EditAttributesNoHardware(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
-        self.file_path = GUI_NO_HARDWARE.file_path
+        self.file_path = GUINoHardware.file_path
 
         self.uid = ''
 
-        if ChangeAttributesPage_NH.attribute_selection == 1:
+        if ChangeAttributesPageNoHardware.attribute_selection == 1:
             self.userName1 = tk.Label(self, text="Name").place(x=240, y=160)
             self.inputName1 = tk.StringVar()
             self.usrNameIn1 = tk.Entry(self, width=30, textvariable=self.inputName1).place(x=310, y=160)
 
-        elif ChangeAttributesPage_NH.attribute_selection == 2:
+        elif ChangeAttributesPageNoHardware.attribute_selection == 2:
             self.userAge1 = tk.Label(self, text="Age").place(x=260, y=160)
             self.inputAge1 = tk.StringVar()
             self.usrAgeIn1 = tk.Entry(self, width=30, textvariable=self.inputAge1).place(x=310, y=160)
-        elif ChangeAttributesPage_NH.attribute_selection == 3:
+        elif ChangeAttributesPageNoHardware.attribute_selection == 3:
             self.usrS_edit = tk.Label(self, text="Are you: ").place(x=270, y=160)
             self.s_edit = tk.StringVar()
             self.usrSSelection_edit = ttk.Combobox(self, width=7, textvariable=self.s_edit)
             self.usrSSelection_edit.place(x=340, y=160)
             self.usrSSelection_edit['values'] = ('Male', 'Female')
             self.usrSSelection_edit.current()
-        elif ChangeAttributesPage_NH.attribute_selection == 4:
+        elif ChangeAttributesPageNoHardware.attribute_selection == 4:
             self.usrS2_edit = tk.Label(self, text="What is your activity level? ").place(x=240, y=160)
             self.s2_edit = tk.StringVar()
             self.usrSSelection2_edit = ttk.Combobox(self, width=20, textvariable=self.s2_edit)
@@ -475,12 +477,12 @@ class EditAttributes_NH(tk.Frame):
             self.usrSSelection2_edit.current()
 
         self.submit = tk.Button(self, text="Submit",
-                                command=lambda: [self.save_command1(), UserHomeScreen_NH.research_data(self),
-                                                 container.update_frame(UserHomeScreen_NH),
-                                                 container.change_frame(ChangeAttributesPage_NH)]).place(x=370, y=350)
+                                command=lambda: [self.save_command1(), UserHomeScreenNoHardware.research_data(self),
+                                                 container.update_frame(UserHomeScreenNoHardware),
+                                                 container.change_frame(ChangeAttributesPageNoHardware)]).place(x=370, y=350)
 
         self.back_btn = tk.Button(self, text="Go Back",
-                                  command=lambda: container.change_frame(ChangeAttributesPage_NH)).place(x=365, y=400)
+                                  command=lambda: container.change_frame(ChangeAttributesPageNoHardware)).place(x=365, y=400)
 
     def save_command1(self):
 
@@ -490,26 +492,26 @@ class EditAttributes_NH(tk.Frame):
 
         row_num = df.index[df['card_uid'] == self.uid].tolist()
 
-        if ChangeAttributesPage_NH.attribute_selection == 1:
+        if ChangeAttributesPageNoHardware.attribute_selection == 1:
             df.at[row_num[0], 'name'] = self.inputName1.get()
 
-        elif ChangeAttributesPage_NH.attribute_selection == 2:
+        elif ChangeAttributesPageNoHardware.attribute_selection == 2:
             df.at[row_num[0], 'age'] = self.inputAge1.get()
 
-        elif ChangeAttributesPage_NH.attribute_selection == 3:
+        elif ChangeAttributesPageNoHardware.attribute_selection == 3:
             df.at[row_num[0], 'sex'] = self.s_edit.get()
 
-        elif ChangeAttributesPage_NH.attribute_selection == 4:
+        elif ChangeAttributesPageNoHardware.attribute_selection == 4:
             df.at[row_num[0], 'activity_level'] = self.s2_edit.get()
 
         df.to_csv(self.file_path, index=False)
 
 
-class DeletionConfirmationPage_NH(tk.Frame):
+class DeletionConfirmationPageNoHardware(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
-        self.file_path = GUI_NO_HARDWARE.file_path
+        self.file_path = GUINoHardware.file_path
 
         self.uid = ''
 
@@ -519,9 +521,9 @@ class DeletionConfirmationPage_NH(tk.Frame):
 
         self.continue_btn = tk.Button(self, text="Yes, I'm Sure", font=("Calibri", 12), bg="red",
                                       command=lambda: [self.delete_user_command(container),
-                                                       container.change_frame(DeletionPage_NH)]).place(x=500, y=280)
+                                                       container.change_frame(DeletionPageNoHardware)]).place(x=500, y=280)
         self.continue_btn = tk.Button(self, text="No, Go Back", font=("Calibri", 12),
-                                      command=lambda: container.change_frame(SettingsPage_NH)).place(x=190, y=280)
+                                      command=lambda: container.change_frame(SettingsPageNoHardware)).place(x=190, y=280)
 
     def delete_user_command(self, container):
         self.uid = "734a266f"
@@ -548,7 +550,7 @@ class DeletionConfirmationPage_NH(tk.Frame):
         df.to_csv(self.file_path, index=False)
 
 
-class DeletionPage_NH(tk.Frame):
+class DeletionPageNoHardware(tk.Frame):
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
@@ -558,16 +560,16 @@ class DeletionPage_NH(tk.Frame):
                                            font=("Calibri", 12)).place(x=250, y=230)
 
         self.continue_btn = tk.Button(self, text="Continue", font=("Calibri", 12),
-                                      command=lambda: container.change_frame(IdlePage_NH)).place(x=360, y=290)
+                                      command=lambda: container.change_frame(IdlePageNoHardware)).place(x=360, y=290)
 
 
-class MoreInfoPage_NH(tk.Frame):
+class MoreInfoPageNoHardware(tk.Frame):
     uid = ''
 
     def __init__(self, container, parent):
         tk.Frame.__init__(self, parent)
 
-        self.file_path = GUI_NO_HARDWARE.file_path
+        self.file_path = GUINoHardware.file_path
 
         self.uid = "734a266f"
 
@@ -598,7 +600,7 @@ class MoreInfoPage_NH(tk.Frame):
                                font=("Calibri", 12)).place(x=155, y=270)
 
         self.back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
-                                  command=lambda: container.change_frame(UserHomeScreen_NH)).place(x=380, y=350)
+                                  command=lambda: container.change_frame(UserHomeScreenNoHardware)).place(x=380, y=350)
 
         df.to_csv(self.file_path, index=False)
 
@@ -678,5 +680,5 @@ class WaterData_NH:
 
 
 if __name__ == '__main__':
-    root = GUI_NO_HARDWARE()
+    root = GUINoHardware()
     root.mainloop()
