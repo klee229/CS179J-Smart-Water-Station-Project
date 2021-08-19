@@ -12,9 +12,6 @@ from pump.pump import Pump
 
 
 class GUI(tk.Tk):
-    # file_path = "C:/Users/kenle/Documents/GitHub/CS179JSmartWaterDispenserProject/data/user_data.csv"
-    # file_path = "/home/kenlee/Documents/GitHub/CS179J-Smart-Water-Station-Project/data/user_data.csv"
-    # file_path = "/home/pi/Desktop/CS179J-Smart-Water-Station/data/user_data.csv"
     file_path = "/home/pi/Documents/CS179J-Smart-Water-Station/data/user_data.csv"
 
     already_counted_goal = 0   
@@ -160,6 +157,7 @@ class IdlePage(tk.Frame):
 
         self.fact_source_label.config(text=self.fact + "\n\n" + self.source, font=("Calibri", 12), justify="left",
                                       anchor="w")
+
         # 15000 = 15 seconds, this can change to a different value if need be
         self.fact_source_label.after(15000, self.update_text)
 
@@ -174,7 +172,7 @@ class RFIDPage(tk.Frame):
         self.state = False
 
         self.scan_card_label = tk.Label(self, text="PLEASE SCAN YOUR RFID CARD TO CONTINUE",
-                                        font=("Calibri", 20)).place(x=100,y=10)
+                                        font=("Calibri", 20)).place(x=100, y=10)
 
         self.back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
                                   command=lambda: container.change_frame(IdlePage)).place(x=380, y=350)
@@ -231,8 +229,8 @@ class UserRegistrationPage(tk.Frame):
 
         self.uid = ''
 
-        valid_command_name = (self.register(self.input_validation_name), '%S')
-        valid_command_age = (self.register(self.input_validation_age), '%S')
+        self.valid_command_name = (self.register(self.input_validation_name), '%S')
+        self.valid_command_age = (self.register(self.input_validation_age), '%S')
 
         self.welcome_new_user_screen = tk.Label(self, text="Hello, New User!", font=("Calibri", 20)).place(x=320, y=0)
         self.user_intro = tk.Label(self, text="What is your: ", font=("Calibri", 15)).place(x=240, y=120)
@@ -240,10 +238,10 @@ class UserRegistrationPage(tk.Frame):
         self.user_age = tk.Label(self, text="Age").place(x=240, y=200)
         self.input_name = tk.StringVar()
         self.usr_name_in = tk.Entry(self, width=30, textvariable=self.input_name, validate="key",
-                                    validatecommand=valid_command_name).place(x=310, y=160)
+                                    validatecommand=self.valid_command_name).place(x=310, y=160)
         self.input_age = tk.StringVar()
         self.usr_age_in = tk.Entry(self, textvariable=self.input_age, width=30, validate="key",
-                                   validatecommand=valid_command_age).place(x=310, y=200)
+                                   validatecommand=self.valid_command_age).place(x=310, y=200)
 
         self.usr_S = tk.Label(self, text="Are you: ").place(x=240, y=240)
         self.s = tk.StringVar()
@@ -260,7 +258,7 @@ class UserRegistrationPage(tk.Frame):
         self.usr_SSelection2.current()
 
         self.submit = tk.Button(self, text="Submit",
-                                command=lambda: [self.save_command(container), UserHomeScreen.research_data(self), 
+                                command=lambda: [self.save_command(container), UserHomeScreen.research_data(self),
                                                  container.update_frame(UserHomeScreen),
                                                  container.change_frame(UserHomeScreen)]).place(x=385, y=350)
 
@@ -326,7 +324,7 @@ class UserHomeScreen(tk.Frame):
 
         self.welcome_home_screen = tk.Label(self, text="Hello, " + str(df.at[row_num[0], 'name']) + "!",
                                             font=("Calibri", 20)).place(x=320, y=10)
-        #self.welcome_home_screen.pack()
+        # self.welcome_home_screen.pack()
 
         self.hydration_percentage_header = tk.Label(self, text="Current Hydration Level:",
                                                     font=("Calibri", 30)).place(x=160, y=150)
@@ -422,10 +420,10 @@ class UserHomeScreen(tk.Frame):
             elif df.at[row_num[0], 'age'] > 50:
                 df.at[row_num[0], 'daily_hydration_lower'] = 1800
                 df.at[row_num[0], 'daily_hydration_upper'] = 1800
-                
+
         if df.at[row_num[0], 'percent_dispensed_of_daily'] >= 100 and GUI.already_counted_goal == 0:
-                df.at[row_num[0], 'num_days_goal'] += 1
-                GUI.already_counted_goal = 1
+            df.at[row_num[0], 'num_days_goal'] += 1
+            GUI.already_counted_goal = 1
 
         df.to_csv(self.file_path, index=False)
 
@@ -494,14 +492,19 @@ class EditAttributes(tk.Frame):
 
         self.uid = ''
 
+        self.valid_command_name = (self.register(self.input_validation_name), '%S')
+        self.valid_command_age = (self.register(self.input_validation_age), '%S')
+
         if ChangeAttributesPage.attribute_selection == 1:
             self.userName1 = tk.Label(self, text="Name").place(x=240, y=160)
             self.inputName1 = tk.StringVar()
-            self.usrNameIn1 = tk.Entry(self, width=30, textvariable=self.inputName1).place(x=310, y=160)
+            self.usrNameIn1 = tk.Entry(self, width=30, textvariable=self.inputName1, validate="key",
+                                       validatecommand=self.valid_command_name).place(x=310, y=160)
         elif ChangeAttributesPage.attribute_selection == 2:
             self.userAge1 = tk.Label(self, text="Age").place(x=260, y=160)
             self.inputAge1 = tk.StringVar()
-            self.usrAgeIn1 = tk.Entry(self, width=30, textvariable=self.inputAge1).place(x=310, y=160)
+            self.usrAgeIn1 = tk.Entry(self, width=30, textvariable=self.inputAge1, validate="key",
+                                      validatecommand=self.valid_command_age).place(x=310, y=160)
         elif ChangeAttributesPage.attribute_selection == 3:
             self.usrS_edit = tk.Label(self, text="Are you: ").place(x=270, y=160)
             self.s_edit = tk.StringVar()
@@ -524,6 +527,18 @@ class EditAttributes(tk.Frame):
 
         self.back_btn = tk.Button(self, text="Go Back",
                                   command=lambda: container.change_frame(ChangeAttributesPage)).place(x=365, y=400)
+
+    def input_validation_name(self, keypress):
+        if keypress.isalpha() or keypress.isspace():
+            return True
+        else:
+            return False
+
+    def input_validation_age(self, keypress):
+        if keypress.isnumeric():
+            return True
+        else:
+            return False
 
     def save_command1(self, container):
         self.uid = container.get_card_uid()
@@ -627,29 +642,28 @@ class MoreInfoPage(tk.Frame):
                                font=("Calibri", 12)).place(x=345, y=145)
         self.attr_3 = tk.Label(self, text="Activity Level:  " + df.at[row_num[0], 'activity_level'],
                                font=("Calibri", 12)).place(x=270, y=170)
-        self.attr_4 = tk.Label(self,
-                               text="Recommended Range For Daily Hydration:  "
-                                    + str(df.at[row_num[0], 'daily_hydration_lower']) + " mL to "
-                                    + str(df.at[row_num[0], 'daily_hydration_upper']) + " mL",
+        self.attr_4 = tk.Label(self, text="Recommended Range For Daily Hydration:  "
+                                          + str(df.at[row_num[0], 'daily_hydration_lower']) + " mL to "
+                                          + str(df.at[row_num[0], 'daily_hydration_upper']) + " mL",
                                font=("Calibri", 12)).place(x=40, y=195)
 
-        self.attr_5 = tk.Label(self,
-                               text="Number of Days Where Goal Has Been Met:  "
-                                    + str(df.at[row_num[0], 'num_days_goal']),
+        self.attr_5 = tk.Label(self, text="Number of Days Where Goal Has Been Met:  "
+                                          + str(df.at[row_num[0], 'num_days_goal']),
                                font=("Calibri", 12)).place(x=30, y=220)
 
-        self.attr_6 = tk.Label(self, text="Water Dispensed Last Session:  " 
-                               + str(df.at[row_num[0], 'water_dispensed'] * 1000) + " mL",
+        self.attr_6 = tk.Label(self, text="Water Dispensed Last Session:  "
+                                          + str(df.at[row_num[0], 'water_dispensed'] * 1000) + " mL",
                                font=("Calibri", 12)).place(x=135, y=245)
-        self.attr_7 = tk.Label(self, text="Your Average Water Intake:  " 
-                               + str(df.at[row_num[0], 'avg_intake'] * 1000) + " mL",
+        self.attr_7 = tk.Label(self, text="Your Average Water Intake:  "
+                                          + str(df.at[row_num[0], 'avg_intake'] * 1000) + " mL",
                                font=("Calibri", 12)).place(x=155, y=270)
 
         self.back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
                                   command=lambda: container.change_frame(UserHomeScreen)).place(x=380, y=350)
-                                  
-        self.disclaimer = tk.Label(self, text="*The recommended ranges are based off of estimates\n and may not be representative of your actual needs",
-                               font=("Calibri", 8)).place(x=35, y=400)
+
+        self.disclaimer = tk.Label(self, text="*The recommended ranges are based off of estimates\n "
+                                              "and may not be representative of your actual needs",
+                                   font=("Calibri", 8)).place(x=35, y=400)
 
         df.to_csv(self.file_path, index=False)
 
