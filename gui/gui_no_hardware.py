@@ -139,6 +139,7 @@ class IdlePageNoHardware(tk.Frame):
 
         self.fact_source_label.config(text=self.fact + "\n\n" + self.source, font=("Calibri", 12),
                                       justify="left", anchor="w")
+
         # 15000 = 15 seconds, this can change to a different value if need be
         self.fact_source_label.after(15000, self.update_text)
 
@@ -158,15 +159,15 @@ class RFIDPageNoHardware(tk.Frame):
         self.back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
                                   command=lambda: container.change_frame(IdlePageNoHardware)).place(x=380, y=350)
 
-        self.new_user_btn = tk.Button(self, text="New User", font=("Calibri", 12), bg="green",
-                                      command=lambda: container.change_frame(UserRegistrationPageNoHardware)).place(x=370,
-                                                                                                             y=250)
+        self.new_user_btn = tk.Button(self, text="New User", font=("Calibri", 12), bg="green", command=lambda:
+                                      container.change_frame(UserRegistrationPageNoHardware)).place(x=370, y=250)
 
         self.new_user_btn = tk.Button(self, text="User Home", font=("Calibri", 12), bg="green",
                                       command=lambda: [self.update_last_login_num_days(),
                                                        UserHomeScreenNoHardware.research_data(self),
                                                        container.update_frame(UserHomeScreenNoHardware),
-                                                       container.change_frame(UserHomeScreenNoHardware)]).place(x=375, y=300)
+                                                       container.change_frame(UserHomeScreenNoHardware)]).place(x=375,
+                                                                                                                y=300)
 
     def update_last_login_num_days(self):
         self.uid = "734a266f"
@@ -203,8 +204,8 @@ class UserRegistrationPageNoHardware(tk.Frame):
 
         self.uid = ''
 
-        valid_command_name = (self.register(self.input_validation_name), '%S')
-        valid_command_age = (self.register(self.input_validation_age), '%S')
+        self.valid_command_name = (self.register(self.input_validation_name), '%S')
+        self.valid_command_age = (self.register(self.input_validation_age), '%S')
 
         self.welcome_new_user_screen = tk.Label(self, text="Hello, New User!", font=("Calibri", 12)).place(x=350, y=0)
         self.user_intro = tk.Label(self, text="What is your: ", font=("Calibri", 15)).place(x=240, y=120)
@@ -212,11 +213,10 @@ class UserRegistrationPageNoHardware(tk.Frame):
         self.user_age = tk.Label(self, text="Age").place(x=240, y=200)
         self.input_name = tk.StringVar()
         self.usr_name_in = tk.Entry(self, width=30, textvariable=self.input_name, validate="key",
-                                    validatecommand=valid_command_name).place(x=310, y=160)
+                                    validatecommand=self.valid_command_name).place(x=310, y=160)
         self.input_age = tk.StringVar()
         self.usr_age_in = tk.Entry(self, textvariable=self.input_age, width=30, validate="key",
-                                   validatecommand=valid_command_age).place(x=310, y=200)
-
+                                   validatecommand=self.valid_command_age).place(x=310, y=200)
         self.usr_S = tk.Label(self, text="Are you: ").place(x=240, y=240)
         self.s = tk.StringVar()
         self.usr_SSelection = ttk.Combobox(self, width=7, textvariable=self.s)
@@ -232,7 +232,8 @@ class UserRegistrationPageNoHardware(tk.Frame):
         self.usr_SSelection2.current()
 
         self.submit = tk.Button(self, text="Submit",
-                                command=lambda: [self.save_command(container), UserHomeScreenNoHardware.research_data(self),
+                                command=lambda: [self.save_command(container),
+                                                 UserHomeScreenNoHardware.research_data(self),
                                                  container.update_frame(UserHomeScreenNoHardware),
                                                  container.change_frame(UserHomeScreenNoHardware)]).place(x=350, y=350)
 
@@ -302,13 +303,15 @@ class UserHomeScreenNoHardware(tk.Frame):
         #  self.dispense_label = tk.Label(self, text="Dispense Button Enabled", font=("Calibri", 12),
         #                                 fg="green").place(x=340, y=320)
 
-        self.settings_btn = tk.Button(self, text="Settings", font=("Calibri", 12),
-                                      command=lambda: container.change_frame(SettingsPageNoHardware)).place(x=660, y=420)
+        self.settings_btn = tk.Button(self, text="Settings", font=("Calibri", 12), command=lambda:
+                                      container.change_frame(SettingsPageNoHardware)).place(x=660, y=420)
         self.logout_btn = tk.Button(self, text="Log Out", font=("Calibri", 12),
                                     command=lambda: container.change_frame(IdlePageNoHardware)).place(x=380, y=420)
         self.more_info_btn = tk.Button(self, text="More Info", font=("Calibri", 12),
-                                       command=lambda: [self.research_data(), container.update_frame(MoreInfoPageNoHardware),
-                                                        container.change_frame(MoreInfoPageNoHardware)]).place(x=50, y=420)
+                                       command=lambda: [self.research_data(),
+                                                        container.update_frame(MoreInfoPageNoHardware),
+                                                        container.change_frame(MoreInfoPageNoHardware)]).place(x=50,
+                                                                                                               y=420)
         self.dispense_btn = tk.Button(self, text="Enable Dispenser", font=("Calibri", 12), fg="green",
                                       command=lambda: container.pump.dispense_water(container, False)).place(x=340,
                                                                                                              y=320)
@@ -392,16 +395,14 @@ class SettingsPageNoHardware(tk.Frame):
         self.settings_intro_header = tk.Label(self, text="What Would You Like To Do?",
                                               font=("Calibri", 20)).place(x=250, y=0)
 
-        self.delete_user_btn = tk.Button(self, text="Delete User", font=("Calibri", 12), bg="red",
-                                         command=lambda: container.change_frame(DeletionConfirmationPageNoHardware)).place(
-            x=370,
-            y=100)
-        self.change_user_attr_btn = tk.Button(self, text="Edit My Attributes", font=("Calibri", 12),
-                                              command=lambda: container.change_frame(ChangeAttributesPageNoHardware)).place(
-            x=350, y=200)
+        self.delete_user_btn = tk.Button(self, text="Delete User", font=("Calibri", 12), bg="red", command=lambda:
+                                         container.change_frame(DeletionConfirmationPageNoHardware)).place(x=370, y=100)
+        self.change_user_attr_btn = tk.Button(self, text="Edit My Attributes", font=("Calibri", 12), command=lambda:
+                                              container.change_frame(ChangeAttributesPageNoHardware)).place(x=350,
+                                                                                                            y=200)
 
-        self.go_back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
-                                     command=lambda: container.change_frame(UserHomeScreenNoHardware)).place(x=380, y=300)
+        self.go_back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12), command=lambda:
+                                     container.change_frame(UserHomeScreenNoHardware)).place(x=380, y=300)
 
 
 class ChangeAttributesPageNoHardware(tk.Frame):
@@ -416,29 +417,30 @@ class ChangeAttributesPageNoHardware(tk.Frame):
         self.delete_user_btn1 = tk.Button(self, text="My Name", font=("Calibri", 12),
                                           command=lambda: [self.attribute_change(1),
                                                            container.update_frame(EditAttributesNoHardware),
-                                                           container.change_frame(EditAttributesNoHardware)]).place(x=150,
-                                                                                                             y=200)
+                                                           container.change_frame(EditAttributesNoHardware)]).place(
+                                                           x=150, y=200)
 
         self.change_user_attr_btn = tk.Button(self, text="My Age", font=("Calibri", 12),
                                               command=lambda: [self.attribute_change(2),
                                                                container.update_frame(EditAttributesNoHardware),
-                                                               container.change_frame(EditAttributesNoHardware)]).place(x=280,
-                                                                                                                 y=200)
+                                                               container.change_frame(EditAttributesNoHardware)]).place(
+                                                               x=280, y=200)
 
         self.change_user_attr_btn = tk.Button(self, text="My Sex", font=("Calibri", 12),
                                               command=lambda: [self.attribute_change(3),
                                                                container.update_frame(EditAttributesNoHardware),
-                                                               container.change_frame(EditAttributesNoHardware)]).place(x=390,
-                                                                                                                 y=200)
+                                                               container.change_frame(EditAttributesNoHardware)]).place(
+                                                               x=390, y=200)
 
         self.change_user_attr_btn = tk.Button(self, text="My Activity Level", font=("Calibri", 12),
                                               command=lambda: [self.attribute_change(4),
                                                                container.update_frame(EditAttributesNoHardware),
-                                                               container.change_frame(EditAttributesNoHardware)]).place(x=510,
-                                                                                                                 y=200)
+                                                               container.change_frame(EditAttributesNoHardware)]).place(
+                                                               x=510, y=200)
 
         self.go_back_btn1 = tk.Button(self, text="I'm Done, Go Back", font=("Calibri", 12),
-                                      command=lambda: container.change_frame(SettingsPageNoHardware)).place(x=350, y=300)
+                                      command=lambda: container.change_frame(SettingsPageNoHardware)).place(x=350,
+                                                                                                            y=300)
 
     def attribute_change(self, num):
         ChangeAttributesPageNoHardware.attribute_selection = num
@@ -452,15 +454,19 @@ class EditAttributesNoHardware(tk.Frame):
 
         self.uid = ''
 
+        self.valid_command_name = (self.register(self.input_validation_name), '%S')
+        self.valid_command_age = (self.register(self.input_validation_age), '%S')
+
         if ChangeAttributesPageNoHardware.attribute_selection == 1:
             self.userName1 = tk.Label(self, text="Name").place(x=240, y=160)
             self.inputName1 = tk.StringVar()
-            self.usrNameIn1 = tk.Entry(self, width=30, textvariable=self.inputName1).place(x=310, y=160)
-
+            self.usrNameIn1 = tk.Entry(self, width=30, textvariable=self.inputName1, validate="key",
+                                       validatecommand=self.valid_command_name).place(x=310, y=160)
         elif ChangeAttributesPageNoHardware.attribute_selection == 2:
             self.userAge1 = tk.Label(self, text="Age").place(x=260, y=160)
             self.inputAge1 = tk.StringVar()
-            self.usrAgeIn1 = tk.Entry(self, width=30, textvariable=self.inputAge1).place(x=310, y=160)
+            self.usrAgeIn1 = tk.Entry(self, width=30, textvariable=self.inputAge1, validate="key",
+                                      validatecommand=self.valid_command_age).place(x=310, y=160)
         elif ChangeAttributesPageNoHardware.attribute_selection == 3:
             self.usrS_edit = tk.Label(self, text="Are you: ").place(x=270, y=160)
             self.s_edit = tk.StringVar()
@@ -479,10 +485,24 @@ class EditAttributesNoHardware(tk.Frame):
         self.submit = tk.Button(self, text="Submit",
                                 command=lambda: [self.save_command1(), UserHomeScreenNoHardware.research_data(self),
                                                  container.update_frame(UserHomeScreenNoHardware),
-                                                 container.change_frame(ChangeAttributesPageNoHardware)]).place(x=370, y=350)
+                                                 container.change_frame(ChangeAttributesPageNoHardware)]).place(x=370,
+                                                                                                                y=350)
 
         self.back_btn = tk.Button(self, text="Go Back",
-                                  command=lambda: container.change_frame(ChangeAttributesPageNoHardware)).place(x=365, y=400)
+                                  command=lambda: container.change_frame(ChangeAttributesPageNoHardware)).place(x=365,
+                                                                                                                y=400)
+
+    def input_validation_name(self, keypress):
+        if keypress.isalpha() or keypress.isspace():
+            return True
+        else:
+            return False
+
+    def input_validation_age(self, keypress):
+        if keypress.isnumeric():
+            return True
+        else:
+            return False
 
     def save_command1(self):
 
@@ -521,9 +541,11 @@ class DeletionConfirmationPageNoHardware(tk.Frame):
 
         self.continue_btn = tk.Button(self, text="Yes, I'm Sure", font=("Calibri", 12), bg="red",
                                       command=lambda: [self.delete_user_command(container),
-                                                       container.change_frame(DeletionPageNoHardware)]).place(x=500, y=280)
+                                                       container.change_frame(DeletionPageNoHardware)]).place(x=500,
+                                                                                                              y=280)
         self.continue_btn = tk.Button(self, text="No, Go Back", font=("Calibri", 12),
-                                      command=lambda: container.change_frame(SettingsPageNoHardware)).place(x=190, y=280)
+                                      command=lambda: container.change_frame(SettingsPageNoHardware)).place(x=190,
+                                                                                                            y=280)
 
     def delete_user_command(self, container):
         self.uid = "734a266f"
