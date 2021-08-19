@@ -642,14 +642,13 @@ class MoreInfoPage(tk.Frame):
                                font=("Calibri", 12)).place(x=345, y=145)
         self.attr_3 = tk.Label(self, text="Activity Level:  " + df.at[row_num[0], 'activity_level'],
                                font=("Calibri", 12)).place(x=270, y=170)
-        self.attr_4 = tk.Label(self,
-                               text="Recommended Range For Daily Hydration:  "
-                                    + str(df.at[row_num[0], 'daily_hydration_lower']) + " mL to "
-                                    + str(df.at[row_num[0], 'daily_hydration_upper']) + " mL",
+        self.attr_4 = tk.Label(self, text="Recommended Range For Daily Hydration:  "
+                                          + str(df.at[row_num[0], 'daily_hydration_lower']) + " mL to "
+                                          + str(df.at[row_num[0], 'daily_hydration_upper']) + " mL",
                                font=("Calibri", 12)).place(x=40, y=195)
 
-        self.attr_5 = tk.Label(self,  text="Number of Days Where Goal Has Been Met:  "
-                                           + str(df.at[row_num[0], 'num_days_goal']),
+        self.attr_5 = tk.Label(self, text="Number of Days Where Goal Has Been Met:  "
+                                          + str(df.at[row_num[0], 'num_days_goal']),
                                font=("Calibri", 12)).place(x=30, y=220)
 
         self.attr_6 = tk.Label(self, text="Water Dispensed Last Session:  "
