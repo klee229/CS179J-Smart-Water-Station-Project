@@ -191,7 +191,6 @@ class RFIDPage(tk.Frame):
         MoreInfoPage.uid = self.uid
 
         if self.state:
-            # UserHomeScreen.research_data(self)
             self.update_last_login_num_days()
             container.update_frame(UserHomeScreen)
             container.change_frame(UserHomeScreen)
@@ -324,14 +323,11 @@ class UserHomeScreen(tk.Frame):
 
         self.welcome_home_screen = tk.Label(self, text="Hello, " + str(df.at[row_num[0], 'name']) + "!",
                                             font=("Calibri", 20)).place(x=320, y=10)
-        # self.welcome_home_screen.pack()
 
         self.hydration_percentage_header = tk.Label(self, text="Current Hydration Level:",
                                                     font=("Calibri", 30)).place(x=160, y=150)
         self.hydration_percentage = tk.Label(self, text=str(df.at[row_num[0], 'percent_dispensed_of_daily']) + "%",
                                              font=("Calibri", 30)).place(x=370, y=210)
-        # self.dispense_label = tk.Label(self, text="Dispense Button Enabled", font=("Calibri", 12),
-        #                                fg="green").place(x=340, y=320)
 
         self.settings_btn = tk.Button(self, text="Settings", font=("Calibri", 12),
                                       command=lambda: container.change_frame(SettingsPage)).place(x=660, y=400)
@@ -341,7 +337,7 @@ class UserHomeScreen(tk.Frame):
                                        command=lambda: [self.research_data(), container.update_frame(MoreInfoPage),
                                                         container.change_frame(MoreInfoPage)]).place(x=50, y=400)
 
-        self.dispense_btn = tk.Button(self, text="Enable Dispenser", font=("Calibri", 12),
+        self.dispense_btn = tk.Button(self, text="Enable Dispenser", font=("Calibri", 12), fg="green",
                                       command=lambda: [container.pump.dispense_water(container, False),
                                                        container.update_frame(UserHomeScreen),
                                                        container.change_frame(UserHomeScreen)]).place(x=340, y=320)
@@ -349,9 +345,7 @@ class UserHomeScreen(tk.Frame):
         df.to_csv(self.file_path, index=False)
 
     def research_data(self):
-        """
-        Make sure this is RFID Hardware Compatible
-        """
+        
         self.file_path = GUI.file_path
 
         self.uid = UserHomeScreen.uid
@@ -361,11 +355,6 @@ class UserHomeScreen(tk.Frame):
 
         if len(row_num) is 0:
             row_num.append(0)
-
-        """
-        This function needs to be called in multiple places: button to go to UserHomeScreen, 
-        Registration submit button, change attributes submit button
-        """
 
         if df.at[row_num[0], 'age'] == 2 or df.at[row_num[0], 'age'] == 3:
             df.at[row_num[0], 'daily_hydration_lower'] = 1000
@@ -496,20 +485,20 @@ class EditAttributes(tk.Frame):
         self.valid_command_age = (self.register(self.input_validation_age), '%S')
 
         if ChangeAttributesPage.attribute_selection == 1:
-            self.userName1 = tk.Label(self, text="Name").place(x=240, y=160)
+            self.userName1 = tk.Label(self, text="Name: ").place(x=240, y=160)
             self.inputName1 = tk.StringVar()
             self.usrNameIn1 = tk.Entry(self, width=30, textvariable=self.inputName1, validate="key",
                                        validatecommand=self.valid_command_name).place(x=310, y=160)
         elif ChangeAttributesPage.attribute_selection == 2:
-            self.userAge1 = tk.Label(self, text="Age").place(x=260, y=160)
+            self.userAge1 = tk.Label(self, text="Age: ").place(x=260, y=160)
             self.inputAge1 = tk.StringVar()
             self.usrAgeIn1 = tk.Entry(self, width=30, textvariable=self.inputAge1, validate="key",
                                       validatecommand=self.valid_command_age).place(x=310, y=160)
         elif ChangeAttributesPage.attribute_selection == 3:
-            self.usrS_edit = tk.Label(self, text="Are you: ").place(x=270, y=160)
+            self.usrS_edit = tk.Label(self, text="Are you: ").place(x=320, y=160)
             self.s_edit = tk.StringVar()
             self.usrSSelection_edit = ttk.Combobox(self, width=7, textvariable=self.s_edit)
-            self.usrSSelection_edit.place(x=340, y=160)
+            self.usrSSelection_edit.place(x=390, y=160)
             self.usrSSelection_edit['values'] = ('Male', 'Female')
             self.usrSSelection_edit.current()
         elif ChangeAttributesPage.attribute_selection == 4:
