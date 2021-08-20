@@ -45,7 +45,7 @@ class GUI(tk.Tk):
         self.container.pack()
 
     def create_frames(self):
-        self.frame_object_list = [IdlePage, RFIDPage, UserRegistrationPage, UserHomeScreen, SettingsPage,
+        self.frame_object_list = [IdlePage, RFIDPage, RefillPage, UserRegistrationPage, UserHomeScreen, SettingsPage,
                                   DeletionConfirmationPage, DeletionPage, MoreInfoPage, ChangeAttributesPage,
                                   EditAttributes]
 
@@ -142,8 +142,12 @@ class IdlePage(tk.Frame):
         self.fact_source_label = tk.Label(self, text=self.fact + "\n\n" + self.source, font=("Calibri", 12),
                                           justify="left", anchor="w")
 
-        self.next_btn = tk.Button(self, text="-- Press this button to continue --", font=("Calibri", 12),
-                                  command=lambda: container.change_frame(RFIDPage)).place(x=250, y=400)
+        self.next_btn = tk.Button(self, text="-- Press this button to continue --", font=("Calibri", 12), bg = "light green",
+                                  command=lambda: container.change_frame(RFIDPage)).place(x= 120, y=380)
+                                  
+        self.refil_btn = tk.Button(self, text="-- Refill Container --", font=("Calibri", 12),  
+                                  command=lambda: container.change_frame(RefillPage)).place(x=470, y=380)
+
 
         # structure the GUI page using a grid
         self.idle_label.grid(row=0, column=0, sticky="nw", padx=7, pady=7)
@@ -160,6 +164,20 @@ class IdlePage(tk.Frame):
 
         # 15000 = 15 seconds, this can change to a different value if need be
         self.fact_source_label.after(15000, self.update_text)
+        
+class RefillPage(tk.Frame):
+    def __init__(self, container, parent):
+        tk.Frame.__init__(self, parent)
+
+        self.scan_card_label = tk.Label(self, text= "Remove Hose\n\n Place hose in new container\n\n Place cup under nossle\n\n Push button until water is dispensed",
+                                        font=("Calibri", 20)).place(x=170, y=10)
+
+        self.refil_btn = tk.Button(self, text="-- Unlock Pump --", font=("Calibri", 12),  
+                                  command=lambda: container.pump.pump_active()).place(x=315, y=280)
+                                  
+        self.back_btn = tk.Button(self, text="Done", font=("Calibri", 12),
+                                  command=lambda: container.change_frame(IdlePage)).place(x=360, y=380)
+
 
 
 class RFIDPage(tk.Frame):
@@ -213,6 +231,7 @@ class RFIDPage(tk.Frame):
         if time_diff > 0:
             df.at[row_num[0], 'num_days'] += 1
             df.at[row_num[0], 'percent_dispensed_of_daily'] = 0.0
+            df.at[row_num[0], 'water_dispensed'] = 0.0
             GUI.already_counted_goal = 0
 
         df.at[row_num[0], 'last_login'] = date_time
@@ -634,18 +653,18 @@ class MoreInfoPage(tk.Frame):
         self.attr_4 = tk.Label(self, text="Recommended Range For Daily Hydration:  "
                                           + str(df.at[row_num[0], 'daily_hydration_lower']) + " mL to "
                                           + str(df.at[row_num[0], 'daily_hydration_upper']) + " mL",
-                               font=("Calibri", 12)).place(x=40, y=195)
+                               font=("Calibri", 12)).place(x=40, y=245)
 
         self.attr_5 = tk.Label(self, text="Number of Days Where Goal Has Been Met:  "
                                           + str(df.at[row_num[0], 'num_days_goal']),
-                               font=("Calibri", 12)).place(x=30, y=220)
+                               font=("Calibri", 12)).place(x=30, y=270)
 
-        self.attr_6 = tk.Label(self, text="Water Dispensed Last Session:  "
+        self.attr_6 = tk.Label(self, text="Water Dispensed Today:  "
                                           + str(df.at[row_num[0], 'water_dispensed'] * 1000) + " mL",
-                               font=("Calibri", 12)).place(x=135, y=245)
+                               font=("Calibri", 12)).place(x=183, y=195)
         self.attr_7 = tk.Label(self, text="Your Average Water Intake:  "
                                           + str(df.at[row_num[0], 'avg_intake'] * 1000) + " mL",
-                               font=("Calibri", 12)).place(x=155, y=270)
+                               font=("Calibri", 12)).place(x=158, y=220)
 
         self.back_btn = tk.Button(self, text="Go Back", font=("Calibri", 12),
                                   command=lambda: container.change_frame(UserHomeScreen)).place(x=380, y=350)
