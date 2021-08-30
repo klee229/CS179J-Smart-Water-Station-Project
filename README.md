@@ -16,8 +16,7 @@ This project is brought to you by [Ken](https://github.com/klee229), [Ivann](htt
 
 ### Demo
 - - -
-####Final Prototype (Front)
-<!--- ![Final Prototype Front Image](https://github.com/klee229/CS179J-Smart-Water-Station-Project/images/final-prototype-front.jpg) --->
+#### Final Prototype (Front)
 ![Final Prototype Front Image](images/final-prototype-front.jpg)
 
 [YouTube Demo](https://www.youtube.com/watch?v=06_9gGf-8D4)
